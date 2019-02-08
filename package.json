@@ -1,0 +1,19 @@
+{
+  "name": "clientdatastructure",
+  "version": "1.0.0",
+  "description": "A common structure for Client data",
+  "main": "Address.js",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "unit.js": "^2.1.0",
+    "mocha": "5.2.0"
+  },
+  "scripts": {
+    "test": "mocha test/*"
+  },
+  "license": "MIT"
+}
