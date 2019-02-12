@@ -1,5 +1,5 @@
 {
-  "name": "clientdatastructure",
+  "name": "@cyrrus/clientdatastructure",
   "version": "1.0.0",
   "description": "A common structure for Client data",
   "directories": {
