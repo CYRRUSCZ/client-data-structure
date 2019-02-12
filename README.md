@@ -7,9 +7,10 @@ structure across ecosystem.
 
 ## Features
 
-* serializes to and from JSON
+* serializes to and from plain objects (JSONable)
 * defaults to null values when instantiated empty
-* provides serialization and a factory method
+* supports Date object serialization
+* provides serialization and factory methods
 * unit tested
 
 ## TODO
