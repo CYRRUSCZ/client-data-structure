@@ -1,4 +1,4 @@
-const BankingInformation = require('../lib/BankingInformation.js')
+const BankingInformation = require('../dist/clientdatastructure').BankingInformation
 const test = require('unit.js');
 
 const bankingInformation = new BankingInformation(

@@ -35,7 +35,7 @@ module.exports = {
             currency: null,
             iban: null,
             swift: null,
-            bank_name_address: null,
-            account_name: null
+            bankNameAddress: null,
+            accountName: null
         }
 }

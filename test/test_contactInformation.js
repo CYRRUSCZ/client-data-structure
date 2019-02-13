@@ -1,4 +1,4 @@
-const ContactInformation = require('../lib/ContactInformation.js')
+const ContactInformation = require('../dist/clientdatastructure').ContactInformation
 const test = require('unit.js');
 
 const contactInformation = new ContactInformation(

@@ -1,7 +1,7 @@
-const ClientData = require('../lib/ClientData.js')
-const Address = require('../lib/Address.js')
-const ContactInformation = require('../lib/ContactInformation.js')
-const BankingInformation = require('../lib/BankingInformation.js')
+const ClientData = require('../dist/clientdatastructure').ClientData
+const Address = require('../dist/clientdatastructure').Address
+const ContactInformation = require('../dist/clientdatastructure').ContactInformation
+const BankingInformation = require('../dist/clientdatastructure').BankingInformation
 const test = require('unit.js');
 
 let clientData = new ClientData(
@@ -46,7 +46,6 @@ describe('ClientData', () => {
     it('serializes', () => {
         let plain = require('./mock/clientDataPlainObject.js')
         let serialized = clientData.toPlainObject()
-
         test.assert.deepEqual(plain, serialized)
     })
 

@@ -1,4 +1,4 @@
-const Address = require('../lib/Address.js')
+const Address = require('../dist/clientdatastructure').Address
 const test = require('unit.js');
 
 const address = new Address(
