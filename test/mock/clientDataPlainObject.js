@@ -9,8 +9,7 @@ module.exports = {
             mailingAddress:
                 {
                     recipient: null,
-                    streetName: 'Baker Street',
-                    houseNumber: '221B',
+                    street: 'Baker Street 221B',
                     city: 'London',
                     country: 'United Kingdom',
                     postalCode: 'NW1 6XE'
@@ -18,8 +17,7 @@ module.exports = {
             address:
                 {
                     recipient: null,
-                    streetName: 'Grimmauld Place',
-                    houseNumber: '12',
+                    street: 'Grimmauld Place 12',
                     city: 'London',
                     country: 'United Kingdom',
                     postalCode: 'NW1 6XE'

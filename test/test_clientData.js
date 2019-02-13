@@ -12,16 +12,14 @@ let clientData = new ClientData(
     new Date(Date.parse('November 30, 1874')),
     new Address(
         null,
-        'Baker Street',
-        '221B',
+        'Baker Street 221B',
         'London',
         'United Kingdom',
         'NW1 6XE'
     ),
     new Address(
         null,
-        'Grimmauld Place',
-        '12',
+        'Grimmauld Place 12',
         'London',
         'United Kingdom',
         'NW1 6XE'
