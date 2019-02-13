@@ -7,6 +7,7 @@
     "lib": "lib",
     "test": "test"
   },
+  "main": "dist/clientdatastructure.esm.js",
   "dependencies": {},
   "devDependencies": {
     "unit.js": "^2.1.0",
