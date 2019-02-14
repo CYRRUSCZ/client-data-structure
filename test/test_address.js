@@ -1,28 +1,39 @@
-const Address = require('../dist/clientdatastructure').Address
-const test = require('unit.js');
+/* global describe, it */
+const { Address, AddressInformation } = require('../dist/clientdatastructure')
+const test = require('unit.js')
+const clientDataset = require('./mock/clientDataset.js')
 
-const address = new Address(
-    null,
-    'Grimmauld Place',
-    '12',
-    'London',
-    'United Kingdom',
-    'NW1 6XE'
-);
+const regularAddress = new Address(
+    clientDataset[AddressInformation.PLAIN_OBJECT_KEY][Address.ADDRESS_TYPE_REGULAR]
+)
+
+const mailingAddress = new Address(
+    clientDataset[AddressInformation.PLAIN_OBJECT_KEY][Address.ADDRESS_TYPE_MAILING]
+)
 
 describe('Address', () => {
-    it('instance -> plain object -> instance', () => {
-        let plain = address.toPlainObject();
-        test.assert.deepEqual(address, Address.fromPlainObject(plain))
+    it('regular address instance -> plain object -> instance', () => {
+        let plainObject = regularAddress.toPlainObject()
+        test.assert.deepEqual(regularAddress, Address.fromPlainObject(plainObject))
     })
 
-    it('instance -> plain object -> JSON.stringify -> JSON.parse -> instance', () => {
-        let string = JSON.stringify(address.toPlainObject())
-        test.assert.deepEqual(address, Address.fromPlainObject(JSON.parse(string)))
+    it('regular address instance -> JSON.stringify -> JSON.parse -> instance', () => {
+        let plainObject = JSON.parse(JSON.stringify(regularAddress))
+        test.assert.deepEqual(regularAddress, Address.fromPlainObject(plainObject))
+    })
+
+    it('mailing address instance -> plain object -> instance', () => {
+        let plainObject = mailingAddress.toPlainObject()
+        test.assert.deepEqual(mailingAddress, Address.fromPlainObject(plainObject))
+    })
+
+    it('mailing address instance -> JSON.stringify -> JSON.parse -> instance', () => {
+        let plainObject = JSON.parse(JSON.stringify(mailingAddress))
+        test.assert.deepEqual(mailingAddress, Address.fromPlainObject(plainObject))
     })
 
     it('defaults to null values', () => {
-        let empty = new Address();
+        let empty = new Address()
         test.assert.equal(null, empty.city)
         test.assert.equal(null, empty.recipient)
     })

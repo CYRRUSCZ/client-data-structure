@@ -29,7 +29,8 @@
   },
   "scripts": {
     "build": "cross-env eslint ./lib/*.js --fix && rollup -c",
-    "test": "mocha test/*"
+    "test": "cross-env mocha ./npm test/test_*.js",
+    "buildTest": "cross-env npm run build && npm run test"
   },
   "publishConfig": {
     "registry": "https://nexus.cyrrus.cz/repository/npm-hosted/"

@@ -1,15 +1,11 @@
-const BankingInformation = require('../dist/clientdatastructure').BankingInformation
-const test = require('unit.js');
+/* global describe, it */
+
+const { BankingInformation } = require('../dist/clientdatastructure')
+const test = require('unit.js')
+const clientDataset = require('./mock/clientDataset.js')
 
 const bankingInformation = new BankingInformation(
-    'abc?',
-    'this has weird structure',
-    'ABV',
-    'CZK',
-    'GB98 MIDL 0700 9312 3456 78',
-    'AAAA BB CC DDD',
-    'What kind of data is supposed to be here?',
-    'tučnej oučet'
+    clientDataset[BankingInformation.PLAIN_OBJECT_KEY]
 )
 
 describe('BankingInformation', () => {
@@ -25,7 +21,7 @@ describe('BankingInformation', () => {
 
     it('defaults to null values', () => {
         let empty = new BankingInformation()
-        test.assert.equal(null, empty.iban )
-        test.assert.equal(null, empty.swift )
+        test.assert.equal(null, empty.iban)
+        test.assert.equal(null, empty.swift)
     })
 })
