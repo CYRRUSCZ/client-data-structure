@@ -1,17 +1,17 @@
 /* global describe, it */
-const { Address, AddressInformation } = require('../dist/clientdatastructure')
+const { Address, AddressInformation, ClientData } = require('../dist/clientdatastructure')
 const test = require('unit.js')
 const clientDataset = require('./mock/clientDataset.js')
 
 const regularAddress = new Address(
-    clientDataset[AddressInformation.PLAIN_OBJECT_KEY][Address.ADDRESS_TYPE_REGULAR]
+    clientDataset[ClientData.PLAIN_OBJECT_KEY_ADDRESS][ClientData.ADDRESS_TYPE_REGULAR]
 )
 
 const mailingAddress = new Address(
-    clientDataset[AddressInformation.PLAIN_OBJECT_KEY][Address.ADDRESS_TYPE_MAILING]
+    clientDataset[ClientData.PLAIN_OBJECT_KEY_ADDRESS][ClientData.ADDRESS_TYPE_MAILING]
 )
 
-const address = new AddressInformation(clientDataset[AddressInformation.PLAIN_OBJECT_KEY])
+const address = new AddressInformation(clientDataset[ClientData.PLAIN_OBJECT_KEY_ADDRESS])
 
 describe('Address', () => {
     it('address information -> plain object -> instance', () => {
@@ -25,17 +25,17 @@ describe('Address', () => {
     })
 
     it('regular address instance is same as AddressInformation.address', () => {
-        test.assert.deepEqual(address[Address.ADDRESS_TYPE_REGULAR], regularAddress)
+        test.assert.deepEqual(address[ClientData.ADDRESS_TYPE_REGULAR], regularAddress)
     })
 
     it('mailing address instance is same as AddressInformation.address', () => {
-        test.assert.deepEqual(address[Address.ADDRESS_TYPE_MAILING], mailingAddress)
+        test.assert.deepEqual(address[ClientData.ADDRESS_TYPE_MAILING], mailingAddress)
     })
 
     it('defaults to null and empty values', () => {
         let empty = new AddressInformation()
         test.assert.equal(false, empty.useMailingAddress)
-        test.assert.deepEqual(new Address(), empty[Address.ADDRESS_TYPE_REGULAR])
-        test.assert.deepEqual(new Address(), empty[Address.ADDRESS_TYPE_MAILING])
+        test.assert.deepEqual(new Address(), empty[ClientData.ADDRESS_TYPE_REGULAR])
+        test.assert.deepEqual(new Address(), empty[ClientData.ADDRESS_TYPE_MAILING])
     })
 })

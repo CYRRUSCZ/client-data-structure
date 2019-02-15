@@ -1,11 +1,11 @@
 /* global describe, it */
 
-const { BankingInformation } = require('../dist/clientdatastructure')
+const { BankingInformation, ClientData } = require('../dist/clientdatastructure')
 const test = require('unit.js')
 const clientDataset = require('./mock/clientDataset.js')
 
 const bankingInformation = new BankingInformation(
-    clientDataset[BankingInformation.PLAIN_OBJECT_KEY]
+    clientDataset[ClientData.PLAIN_OBJECT_KEY_BANK_ACCOUNT]
 )
 
 describe('BankingInformation', () => {

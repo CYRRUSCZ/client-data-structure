@@ -1,14 +1,14 @@
 /* global describe, it */
-const { Address, AddressInformation } = require('../dist/clientdatastructure')
+const { Address, ClientData } = require('../dist/clientdatastructure')
 const test = require('unit.js')
 const clientDataset = require('./mock/clientDataset.js')
 
 const regularAddress = new Address(
-    clientDataset[AddressInformation.PLAIN_OBJECT_KEY][Address.ADDRESS_TYPE_REGULAR]
+    clientDataset[ClientData.PLAIN_OBJECT_KEY_ADDRESS][ClientData.ADDRESS_TYPE_REGULAR]
 )
 
 const mailingAddress = new Address(
-    clientDataset[AddressInformation.PLAIN_OBJECT_KEY][Address.ADDRESS_TYPE_MAILING]
+    clientDataset[ClientData.PLAIN_OBJECT_KEY_ADDRESS][ClientData.ADDRESS_TYPE_MAILING]
 )
 
 describe('Address', () => {

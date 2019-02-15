@@ -1,11 +1,11 @@
 /* global describe, it */
 
-const { IdCardInformation } = require('../dist/clientdatastructure')
+const { IdCardInformation, ClientData } = require('../dist/clientdatastructure')
 const test = require('unit.js')
 const clientDataset = require('./mock/clientDataset.js')
 
 const idInformation = new IdCardInformation(
-    clientDataset[IdCardInformation.PLAIN_OBJECT_KEY]
+    clientDataset[ClientData.PLAIN_OBJECT_KEY_ID_CARD]
 )
 
 describe('IdCardInformation', () => {

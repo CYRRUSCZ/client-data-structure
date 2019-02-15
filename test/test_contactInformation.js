@@ -1,11 +1,11 @@
 /* global describe, it */
 
-const { ContactInformation } = require('../dist/clientdatastructure')
+const { ContactInformation, ClientData } = require('../dist/clientdatastructure')
 const test = require('unit.js')
 const clientDataset = require('./mock/clientDataset.js')
 
 const contactInformation = new ContactInformation(
-    clientDataset[ContactInformation.PLAIN_OBJECT_KEY]
+    clientDataset[ClientData.PLAIN_OBJECT_KEY_CONTACT]
 )
 
 describe('ContactInformation', () => {

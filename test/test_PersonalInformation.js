@@ -1,11 +1,11 @@
 /* global describe, it */
 
-const { PersonalInformation } = require('../dist/clientdatastructure')
+const { PersonalInformation, ClientData } = require('../dist/clientdatastructure')
 const test = require('unit.js')
 const clientDataset = require('./mock/clientDataset.js')
 
 const personal = new PersonalInformation(
-    clientDataset[PersonalInformation.PLAIN_OBJECT_KEY]
+    clientDataset[ClientData.PLAIN_OBJECT_KEY_PERSONAL]
 )
 
 describe('PersonalInformation', () => {
