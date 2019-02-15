@@ -5,7 +5,7 @@ module.exports = {
         dataOriginId: '123456789'
     },
     personal: {
-        degree: 'Ing.',
+        prenominal: 'Ing.',
         firstName: 'Karel',
         lastName: 'Hovnivý',
         postnominal: 'Csc. MBA',
