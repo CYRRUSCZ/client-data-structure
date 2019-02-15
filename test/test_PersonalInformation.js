@@ -24,4 +24,21 @@ describe('PersonalInformation', () => {
         test.assert.equal(null, empty.firstName)
         test.assert.equal(true, (empty.dateOfBirth instanceof Date))
     })
+
+    it('constructor vs create', () => {
+        let fromCreate = PersonalInformation.create(
+            personal.prenominal,
+            personal.firstName,
+            personal.lastName,
+            personal.postnominal,
+            personal.birthNumber,
+            personal.dateOfBirth,
+            personal.noBirthNumber,
+            personal.birthNumberCountry,
+            personal.taxDomicile,
+            personal.placeOfBirth,
+            personal.citizenship
+        )
+        test.assert.deepEqual(fromCreate, personal)
+    })
 })

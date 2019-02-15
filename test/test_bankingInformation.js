@@ -24,4 +24,19 @@ describe('BankingInformation', () => {
         test.assert.equal(null, empty.iban)
         test.assert.equal(null, empty.swift)
     })
+
+    it('constructor vs create', () => {
+        let fromCreate = BankingInformation.create(
+            bankingInformation.prefix,
+            bankingInformation.account,
+            bankingInformation.code,
+            bankingInformation.currency,
+            bankingInformation.iban,
+            bankingInformation.swift,
+            bankingInformation.bankNameAddress,
+            bankingInformation.accountName,
+            bankingInformation.foreign
+        )
+        test.assert.deepEqual(fromCreate, bankingInformation)
+    })
 })

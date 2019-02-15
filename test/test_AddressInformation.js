@@ -13,7 +13,7 @@ const mailingAddress = new Address(
 
 const address = new AddressInformation(clientDataset[ClientData.PLAIN_OBJECT_KEY_ADDRESS])
 
-describe('Address', () => {
+describe('AddressInformation', () => {
     it('address information -> plain object -> instance', () => {
         let plainObject = address.toPlainObject()
         test.assert.deepEqual(address, AddressInformation.fromPlainObject(plainObject))
@@ -37,5 +37,14 @@ describe('Address', () => {
         test.assert.equal(false, empty.useMailingAddress)
         test.assert.deepEqual(new Address(), empty[ClientData.ADDRESS_TYPE_REGULAR])
         test.assert.deepEqual(new Address(), empty[ClientData.ADDRESS_TYPE_MAILING])
+    })
+
+    it('constructor vs create', () => {
+        let fromCreate = AddressInformation.create(
+            address.address, 
+            address.mailingAddress, 
+            address.useMailingAddress
+        )
+        test.assert.deepEqual(fromCreate, address)
     })
 })
