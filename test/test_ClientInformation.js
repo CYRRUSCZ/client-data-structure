@@ -23,4 +23,13 @@ describe('ClientInformation', () => {
         let empty = new ClientInformation()
         test.assert.equal(null, empty.dataOriginId)
     })
+
+    it('constructor vs create', () => {
+        let fromCreate = ClientInformation.create(
+            clientInformation.type,
+            clientInformation.dataOrigin,
+            clientInformation.dataOriginId
+        )
+        test.assert.deepEqual(fromCreate, clientInformation)
+    })
 })

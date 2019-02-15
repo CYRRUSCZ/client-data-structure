@@ -23,4 +23,13 @@ describe('ContactInformation', () => {
         let empty = new ContactInformation()
         test.assert.equal(null, empty.phoneNumber)
     })
+
+    it('constructor vs create', () => {
+        let fromCreate = ContactInformation.create(
+            contactInformation.email, 
+            contactInformation.phoneNumber,
+            contactInformation.phonePassword
+        )
+        test.assert.deepEqual(fromCreate, contactInformation)
+    })
 })

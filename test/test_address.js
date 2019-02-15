@@ -17,6 +17,17 @@ describe('Address', () => {
         test.assert.deepEqual(regularAddress, Address.fromPlainObject(plainObject))
     })
 
+    it('constructor vs create', () => {
+        let fromCreate = Address.create(
+            regularAddress.recipient,
+            regularAddress.street,
+            regularAddress.city,
+            regularAddress.country,
+            regularAddress.postalCode
+        )
+        test.assert.deepEqual(fromCreate, regularAddress)
+    })
+
     it('regular address instance -> JSON.stringify -> JSON.parse -> instance', () => {
         let plainObject = JSON.parse(JSON.stringify(regularAddress))
         test.assert.deepEqual(regularAddress, Address.fromPlainObject(plainObject))

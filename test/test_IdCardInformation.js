@@ -24,4 +24,14 @@ describe('IdCardInformation', () => {
         test.assert.equal(null, empty.issuedBy)
         test.assert.equal(true, (empty.validity instanceof Date))
     })
+
+    it('constructor vs create', () => {
+        let fromCreate = IdCardInformation.create(
+            idInformation.number,
+            idInformation.issuedBy,
+            idInformation.country,
+            idInformation.validity
+        )
+        test.assert.deepEqual(fromCreate, idInformation)
+    })
 })

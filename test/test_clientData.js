@@ -43,4 +43,42 @@ describe('ClientData', () => {
         test.assert.deepEqual(empty[ClientData.PLAIN_OBJECT_KEY_PERSONAL], new PersonalInformation())
         test.assert.deepEqual(empty[ClientData.PLAIN_OBJECT_KEY_CLIENT], new ClientInformation())
     })
+
+    it('constructor vs create', () => {
+        let fromCreate = ClientData.create(
+            client.client,
+            client.personal,
+            client.idCard,
+            client.address,
+            client.contact,
+            client.bankAccount
+        )
+        test.assert.deepEqual(fromCreate, client)
+    })
+
+    it('regullar address override', () => {
+        let fromCreate = ClientData.create(
+            client.client,
+            client.personal,
+            client.idCard,
+            client.address,
+            client.contact,
+            client.bankAccount,
+            client.address.mailingAddress
+        )
+        test.assert.deepEqual(fromCreate.address.address, client.address.mailingAddress)
+    })
+
+    it('regullar address override undefined address information', () => {
+        let fromCreate = ClientData.create(
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            client.address.mailingAddress
+        )
+        test.assert.deepEqual(fromCreate.address.address, client.address.mailingAddress)
+    })
 })
