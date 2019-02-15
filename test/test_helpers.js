@@ -5,7 +5,7 @@ const clientDataset = require('./mock/clientDataset.js')
 const test = require('unit.js')
 
 describe('helpers', () => {
-    it('getStringOrNull could pass', () => {
+    it('getStringOrNull should pass', () => {
         const testData = [
             {
                 input: '',
@@ -45,7 +45,7 @@ describe('helpers', () => {
         }
     })
 
-    it('getValidDate could pass', () => {
+    it('getValidDate should pass', () => {
         const testData = [
             {
                 input: new Date('2019-02-14T12:00:00.000Z'),
@@ -72,7 +72,7 @@ describe('helpers', () => {
         })
     })
 
-    it('isES6Class could pass', () => {
+    it('isESClass should pass', () => {
         test.assert.equal(helpers.isESClass(String), true)
         test.assert.equal(helpers.isESClass(ClientData), true)
         test.assert.equal(helpers.isESClass('asdf'), false)
@@ -80,10 +80,12 @@ describe('helpers', () => {
         test.assert.equal(helpers.isESClass(null), false)
     })
 
-    it('getInstanceOfClass could pass', () => {
+    it('getInstanceOfClass should pass', () => {
         test.assert.deepEqual(helpers.getInstanceOfClass(new ClientData(clientDataset), ClientData), new ClientData(clientDataset))
         test.assert.deepEqual(helpers.getInstanceOfClass(clientDataset, ClientData), new ClientData(clientDataset))
         test.assert.equal((helpers.getInstanceOfClass('hovna na inputu', ClientData) instanceof ClientData), true)
+        test.assert.equal((helpers.getInstanceOfClass(undefined, ClientData) instanceof ClientData), true)
+        test.assert.equal((helpers.getInstanceOfClass(null, ClientData) instanceof ClientData), true)
         test.assert.equal((helpers.getInstanceOfClass(new Date(), ClientData) instanceof ClientData), true)
         test.assert.equal((helpers.getInstanceOfClass(new Date(), Date) instanceof Date), true)
     })

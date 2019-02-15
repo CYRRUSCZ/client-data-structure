@@ -81,4 +81,16 @@ describe('ClientData', () => {
         )
         test.assert.deepEqual(fromCreate.address.address, client.address.mailingAddress)
     })
+
+    it('getter fullAddress should return same address as Address instance', () => {
+        test.assert.equal(client.fullAddress, address.mailingAddress.fullAddress)
+    })
+
+    it('getter fullName should return same fullName as PersonalInformation instance', () => {
+        test.assert.equal(client.fullName, personal.fullName)
+    })
+
+    it('getter email should return same email as ContactInformation instance', () => {
+        test.assert.equal(client.email, contact.email)
+    })
 })

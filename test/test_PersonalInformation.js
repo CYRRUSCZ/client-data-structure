@@ -41,4 +41,16 @@ describe('PersonalInformation', () => {
         )
         test.assert.deepEqual(fromCreate, personal)
     })
+
+    it('fullName should be same as lastName + " " + firstName', () => {
+        test.assert.equal(personal.fullName, (personal.lastName + ' ' + personal.firstName))
+    })
+
+    it('fullName without lastName should be same as firstName', () => {
+        let tmp = new PersonalInformation({
+            firstName: personal.firstName, 
+            lastName: null
+        })
+        test.assert.equal(tmp.fullName, personal.firstName)
+    })
 })
