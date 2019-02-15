@@ -68,4 +68,17 @@ describe('ClientData', () => {
         )
         test.assert.deepEqual(fromCreate.address.address, client.address.mailingAddress)
     })
+
+    it('regullar address override undefined address information', () => {
+        let fromCreate = ClientData.create(
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            client.address.mailingAddress
+        )
+        test.assert.deepEqual(fromCreate.address.address, client.address.mailingAddress)
+    })
 })
