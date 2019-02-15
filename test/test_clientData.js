@@ -1,76 +1,46 @@
-const ClientData = require('../dist/clientdatastructure').ClientData
-const Address = require('../dist/clientdatastructure').Address
-const ContactInformation = require('../dist/clientdatastructure').ContactInformation
-const BankingInformation = require('../dist/clientdatastructure').BankingInformation
-const test = require('unit.js');
+/* global describe, it */
 
-let clientData = new ClientData(
-    'Sherlock',
-    'Black',
-    'phd.',
-    '123456789',
-    new Date(Date.parse('November 30, 1874')),
-    new Address(
-        null,
-        'Baker Street 221B',
-        'London',
-        'United Kingdom',
-        'NW1 6XE'
-    ),
-    new Address(
-        null,
-        'Grimmauld Place 12',
-        'London',
-        'United Kingdom',
-        'NW1 6XE'
-    ),
-    new ContactInformation(
-        'ChunkyLover53@aol.com',
-        '206-709-3100'
-    ),
-    new BankingInformation(
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null
-    )
-)
+const { ClientData, AddressInformation, BankingInformation, 
+    ContactInformation, IdCardInformation, PersonalInformation, 
+    ClientInformation } = require('../dist/clientdatastructure')
+const test = require('unit.js')
+const clientDataset = require('./mock/clientDataset.js')
+
+const client = new ClientData(clientDataset)
+const address = new AddressInformation(clientDataset[ClientData.PLAIN_OBJECT_KEY_ADDRESS])
+const bank = new BankingInformation(clientDataset[ClientData.PLAIN_OBJECT_KEY_BANK_ACCOUNT])
+const contact = new ContactInformation(clientDataset[ClientData.PLAIN_OBJECT_KEY_CONTACT])
+const idCard = new IdCardInformation(clientDataset[ClientData.PLAIN_OBJECT_KEY_ID_CARD])
+const personal = new PersonalInformation(clientDataset[ClientData.PLAIN_OBJECT_KEY_PERSONAL])
+const clientInfo = new ClientInformation(clientDataset[ClientData.PLAIN_OBJECT_KEY_CLIENT])
 
 describe('ClientData', () => {
-    it('serializes', () => {
-        let plain = require('./mock/clientDataPlainObject.js')
-        let serialized = clientData.toPlainObject()
-        test.assert.deepEqual(plain, serialized)
-    })
-
     it('instance -> plain object -> instance', () => {
-        let plain = clientData.toPlainObject()
-        let deserialized = ClientData.fromPlainObject(plain);
-
-        test.assert.deepEqual(clientData, deserialized)
+        let plainObject = client.toPlainObject()
+        test.assert.deepEqual(client, ClientData.fromPlainObject(plainObject))
     })
 
-    it('instance -> plain object -> JSON.stringify -> JSON.parse -> instance ', () => {
-        let string = JSON.stringify(clientData.toPlainObject())
-        let deserialized = ClientData.fromPlainObject(JSON.parse(string));
-
-        test.assert.deepEqual(clientData, deserialized)
+    it('instance -> plain object -> JSON.stringify -> JSON.parse -> instance', () => {
+        let string = JSON.stringify(client.toPlainObject())
+        test.assert.deepEqual(client, ClientData.fromPlainObject(JSON.parse(string)))
     })
 
-    it('defaults to null values', () => {
-        let empty = new ClientData();
-        test.assert.equal(empty.firstName, null)
-        test.assert.equal(empty.lastName, null)
+    it('all subclass instances are deep equal', () => {
+        test.assert.deepEqual(client[ClientData.PLAIN_OBJECT_KEY_ADDRESS], address)
+        test.assert.deepEqual(client[ClientData.PLAIN_OBJECT_KEY_BANK_ACCOUNT], bank)
+        test.assert.deepEqual(client[ClientData.PLAIN_OBJECT_KEY_CONTACT], contact)
+        test.assert.deepEqual(client[ClientData.PLAIN_OBJECT_KEY_ID_CARD], idCard)
+        test.assert.deepEqual(client[ClientData.PLAIN_OBJECT_KEY_PERSONAL], personal)
+        test.assert.deepEqual(client[ClientData.PLAIN_OBJECT_KEY_CLIENT], clientInfo)
     })
 
-    it('empty instance -> plain object -> JSON.stringify -> JSON.parse -> empty instance', () => {
-        let string = JSON.stringify(new ClientData().toPlainObject())
-        let deserialized = ClientData.fromPlainObject(JSON.parse(string))
-
-        test.assert.deepEqual(new ClientData(), deserialized)
+    it('defaults to empty instances', () => {
+        let empty = new ClientData()
+        test.assert.deepEqual(empty[ClientData.PLAIN_OBJECT_KEY_ADDRESS], new AddressInformation())
+        test.assert.deepEqual(empty[ClientData.PLAIN_OBJECT_KEY_BANK_ACCOUNT], new BankingInformation())
+        test.assert.deepEqual(empty[ClientData.PLAIN_OBJECT_KEY_CONTACT], new ContactInformation())
+        test.assert.deepEqual(empty[ClientData.PLAIN_OBJECT_KEY_ID_CARD], new IdCardInformation())
+        test.assert.deepEqual(empty[ClientData.PLAIN_OBJECT_KEY_PERSONAL], new PersonalInformation())
+        test.assert.deepEqual(empty[ClientData.PLAIN_OBJECT_KEY_CLIENT], new ClientInformation())
     })
 })

@@ -1,25 +1,26 @@
-const ContactInformation = require('../dist/clientdatastructure').ContactInformation
-const test = require('unit.js');
+/* global describe, it */
+
+const { ContactInformation, ClientData } = require('../dist/clientdatastructure')
+const test = require('unit.js')
+const clientDataset = require('./mock/clientDataset.js')
 
 const contactInformation = new ContactInformation(
-    'me@myself.i',
-    '994 12 4980335'
+    clientDataset[ClientData.PLAIN_OBJECT_KEY_CONTACT]
 )
 
 describe('ContactInformation', () => {
     it('instance -> plain object -> instance', () => {
-        let plain = contactInformation.toPlainObject();
-        test.assert.deepEqual(contactInformation, ContactInformation.fromPlainObject(plain))
+        let plainObject = contactInformation.toPlainObject()
+        test.assert.deepEqual(contactInformation, ContactInformation.fromPlainObject(plainObject))
     })
 
     it('instance -> plain object -> JSON.stringify -> JSON.parse -> instance', () => {
         let string = JSON.stringify(contactInformation.toPlainObject())
-        test.assert.deepEqual(contactInformation,ContactInformation.fromPlainObject(JSON.parse(string)))
+        test.assert.deepEqual(contactInformation, ContactInformation.fromPlainObject(JSON.parse(string)))
     })
 
     it('defaults to null values', () => {
         let empty = new ContactInformation()
         test.assert.equal(null, empty.phoneNumber)
-        test.assert.equal(null, empty.email)
     })
 })

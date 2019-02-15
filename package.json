@@ -1,6 +1,6 @@
 {
   "name": "@cyrrus/clientdatastructure",
-  "version": "1.0.5",
+  "version": "2.0.1",
   "repository": "https://github.com/CYRRUSMarketing/clientdatastructure",
   "description": "A common structure for Client data",
   "directories": {
@@ -29,7 +29,8 @@
   },
   "scripts": {
     "build": "cross-env eslint ./lib/*.js --fix && rollup -c",
-    "test": "mocha test/*"
+    "test": "cross-env mocha ./npm test/test_*.js",
+    "buildTest": "cross-env npm run build && npm run test"
   },
   "publishConfig": {
     "registry": "https://nexus.cyrrus.cz/repository/npm-hosted/"
