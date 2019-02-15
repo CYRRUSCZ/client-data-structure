@@ -84,6 +84,8 @@ describe('helpers', () => {
         test.assert.deepEqual(helpers.getInstanceOfClass(new ClientData(clientDataset), ClientData), new ClientData(clientDataset))
         test.assert.deepEqual(helpers.getInstanceOfClass(clientDataset, ClientData), new ClientData(clientDataset))
         test.assert.equal((helpers.getInstanceOfClass('hovna na inputu', ClientData) instanceof ClientData), true)
+        test.assert.equal((helpers.getInstanceOfClass(undefined, ClientData) instanceof ClientData), true)
+        test.assert.equal((helpers.getInstanceOfClass(null, ClientData) instanceof ClientData), true)
         test.assert.equal((helpers.getInstanceOfClass(new Date(), ClientData) instanceof ClientData), true)
         test.assert.equal((helpers.getInstanceOfClass(new Date(), Date) instanceof Date), true)
     })
