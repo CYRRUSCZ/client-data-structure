@@ -6,7 +6,7 @@ module.exports = {
     },
     personal: {
         prenominal: 'Ing.',
-        firstName: 'Karel',
+        firstName: 'Tomáš',
         lastName: 'Hovnivý',
         postnominal: 'Csc. MBA',
         birthNumber: '987654321',
