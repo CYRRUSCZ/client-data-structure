@@ -94,8 +94,13 @@ describe('ClientData', () => {
         test.assert.equal(client.type, clientInfo.type)
     })
 
-    it('getter fullAddress should return same address as Address instance', () => {
+    it('getter fullAddress should return same address as mailing Address instance', () => {
         test.assert.equal(client.fullAddress, address.mailingAddress.fullAddress)
+    })
+
+    it('getter fullAddress should return same address as Address instance', () => {
+        client.address._useMailingAddress = false
+        test.assert.equal(client.fullAddress, address.address.fullAddress)
     })
 
     it('getter fullName should return same fullName as PersonalInformation instance', () => {
