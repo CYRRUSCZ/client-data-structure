@@ -6,18 +6,18 @@ const map = new ClientDataMap()
 
 describe('ClientDataMap',() => {
     it('Returns mapped data entry', () => {
-        let email = map.getMappedEntry('email',client)
+        let email = map.getMappedEntry('email', client)
         test.assert.equal(client.email, email)
     })
 
     it('Returns nested mapped data entry', () => {
-        let prefix = map.getMappedEntry('bankAccount.prefix',client)
+        let prefix = map.getMappedEntry('bankAccountPrefix', client)
         test.assert.equal(client.bankAccount.prefix, prefix)
     })
 
     it('throws an error when non existent entry is requested', () => {
         test.assert.throws(function(){
-            let prefix = map.getMappedEntry('blah blah blah',client)
+            let prefix = map.getMappedEntry('blah blah blah', client)
         }, Error)
     })
 })
