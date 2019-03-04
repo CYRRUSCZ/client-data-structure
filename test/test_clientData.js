@@ -1,8 +1,8 @@
 /* global describe, it */
 
-const { ClientData, AddressInformation, BankingInformation,
+const { ClientData, AddressInformation, BankingInformation, 
     ContactInformation, IdCardInformation, PersonalInformation, 
-    ClientInformation, CompanyInformation } = require('../dist/clientdatastructure')
+    ClientInformation } = require('../dist/clientdatastructure')
 const test = require('unit.js')
 const clientDataset = require('./mock/clientDataset.js')
 
@@ -13,7 +13,6 @@ const contact = new ContactInformation(clientDataset[ClientData.PLAIN_OBJECT_KEY
 const idCard = new IdCardInformation(clientDataset[ClientData.PLAIN_OBJECT_KEY_ID_CARD])
 const personal = new PersonalInformation(clientDataset[ClientData.PLAIN_OBJECT_KEY_PERSONAL])
 const clientInfo = new ClientInformation(clientDataset[ClientData.PLAIN_OBJECT_KEY_CLIENT])
-const companyInfo = new CompanyInformation(clientDataset[ClientData.PLAIN_OBJECT_KEY_COMPANY])
 
 describe('ClientData', () => {
     it('instance -> plain object -> instance', () => {
@@ -43,7 +42,6 @@ describe('ClientData', () => {
         test.assert.deepEqual(empty[ClientData.PLAIN_OBJECT_KEY_ID_CARD], new IdCardInformation())
         test.assert.deepEqual(empty[ClientData.PLAIN_OBJECT_KEY_PERSONAL], new PersonalInformation())
         test.assert.deepEqual(empty[ClientData.PLAIN_OBJECT_KEY_CLIENT], new ClientInformation())
-        test.assert.deepEqual(empty[ClientData.PLAIN_OBJECT_KEY_COMPANY], new CompanyInformation())
     })
 
     it('constructor vs create', () => {
@@ -53,13 +51,12 @@ describe('ClientData', () => {
             client.idCard,
             client.address,
             client.contact,
-            client.bankAccount,
-            client.company
+            client.bankAccount
         )
         test.assert.deepEqual(fromCreate, client)
     })
 
-    it('regular address override', () => {
+    it('regullar address override', () => {
         let fromCreate = ClientData.create(
             client.client,
             client.personal,
@@ -67,13 +64,12 @@ describe('ClientData', () => {
             client.address,
             client.contact,
             client.bankAccount,
-            client.companyInfo,
             client.address.mailingAddress
         )
         test.assert.deepEqual(fromCreate.address.address, client.address.mailingAddress)
     })
 
-    it('regular address override undefined address information', () => {
+    it('regullar address override undefined address information', () => {
         let fromCreate = ClientData.create(
             undefined,
             undefined,
@@ -81,31 +77,13 @@ describe('ClientData', () => {
             undefined,
             undefined,
             undefined,
-            undefined,
             client.address.mailingAddress
         )
         test.assert.deepEqual(fromCreate.address.address, client.address.mailingAddress)
     })
 
-    it('getter dataOrigin should return same value as ClientInformation instance', () => {
-        test.assert.equal(client.dataOrigin, clientInfo.dataOrigin)
-    })
-    
-    it('getter dataOriginId should return same value as ClientInformation instance', () => {
-        test.assert.equal(client.dataOriginId, clientInfo.dataOriginId)
-    })
-    
-    it('getter type should return same value as ClientInformation instance', () => {
-        test.assert.equal(client.type, clientInfo.type)
-    })
-
-    it('getter fullAddress should return same address as mailing Address instance', () => {
-        test.assert.equal(client.fullAddress, address.mailingAddress.fullAddress)
-    })
-
     it('getter fullAddress should return same address as Address instance', () => {
-        client.address._useMailingAddress = false
-        test.assert.equal(client.fullAddress, address.address.fullAddress)
+        test.assert.equal(client.fullAddress, address.mailingAddress.fullAddress)
     })
 
     it('getter fullName should return same fullName as PersonalInformation instance', () => {

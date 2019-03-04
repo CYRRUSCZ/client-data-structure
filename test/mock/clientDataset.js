@@ -6,7 +6,7 @@ module.exports = {
     },
     personal: {
         prenominal: 'Ing.',
-        firstName: 'Tomáš',
+        firstName: 'Karel',
         lastName: 'Hovnivý',
         postnominal: 'Csc. MBA',
         birthNumber: '987654321',
@@ -51,16 +51,5 @@ module.exports = {
         code: '0800',
         currency: 'CZK',
         foreign: false
-    },
-    company: {
-        ic: '49551655',
-        dic: 'CZ49551655',
-        address: {
-            recipient: 'TOI TOI, sanitární systémy, s r.o.',
-            street: 'Pražská 264',
-            city: 'Slaný',
-            postalCode: '27401',
-            country: 'CZE'
-        }
     }
 }
