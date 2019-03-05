@@ -28,4 +28,11 @@ describe('CompanyInformation', () => {
         )
         test.assert.deepEqual(fromCreate, companyInformation)
     })
+
+    it('has correct fields', () => {
+        let plain = companyInformation.toPlainObject()
+        test.assert(plain.hasOwnProperty('ic'))
+        test.assert(plain.hasOwnProperty('dic'))
+        test.assert(plain.address.hasOwnProperty('street'))
+    })
 })
