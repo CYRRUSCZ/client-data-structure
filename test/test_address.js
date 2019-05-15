@@ -49,6 +49,10 @@ describe('Address', () => {
         test.assert.equal(null, empty.recipient)
     })
 
+    it('country code can be converted to correct country name', () => {
+        test.assert.equal(regularAddress.countryName, 'Česko')
+    })
+
     it('fullAddress getter returns correct address', () => {
         let expectedAddress = `${regularAddress.recipient}, ${regularAddress.street}, ${regularAddress.city}, ${regularAddress.country}, ${regularAddress.postalCode}`
         test.assert.equal(regularAddress.fullAddress, expectedAddress)

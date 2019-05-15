@@ -34,4 +34,8 @@ describe('IdCardInformation', () => {
         )
         test.assert.deepEqual(fromCreate, idInformation)
     })
+
+    it('country code can be converted to correct country name', () => {
+        test.assert.equal(idInformation.countryName, 'Česko')
+    })
 })
