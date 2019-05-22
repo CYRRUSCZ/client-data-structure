@@ -49,13 +49,17 @@ describe('Address', () => {
         test.assert.equal(null, empty.recipient)
     })
 
+    it('country code can be converted to correct country name', () => {
+        test.assert.equal(regularAddress.countryName, 'Česko')
+    })
+
     it('fullAddress getter returns correct address', () => {
-        let expectedAddress = `${regularAddress.recipient}, ${regularAddress.street}, ${regularAddress.city}, ${regularAddress.country}, ${regularAddress.postalCode}`
+        let expectedAddress = `${regularAddress.recipient}, ${regularAddress.street}, ${regularAddress.city}, ${regularAddress.countryName}, ${regularAddress.postalCode}`
         test.assert.equal(regularAddress.fullAddress, expectedAddress)
     })
 
     it('fullAddress getter returns correct address with missing parts', () => {
-        let expectedAddress = `${regularAddress.recipient}, ${regularAddress.city}, ${regularAddress.country}, ${regularAddress.postalCode}`
+        let expectedAddress = `${regularAddress.recipient}, ${regularAddress.city}, ${regularAddress.countryName}, ${regularAddress.postalCode}`
         test.assert.equal((Address.create(
             regularAddress.recipient,
             null,

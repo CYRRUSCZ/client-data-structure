@@ -1,6 +1,6 @@
 {
   "name": "@cyrrus/clientdatastructure",
-  "version": "3.1.1",
+  "version": "3.1.0",
   "repository": "https://github.com/CYRRUSMarketing/clientdatastructure",
   "description": "A common structure for Client data",
   "directories": {
@@ -8,7 +8,9 @@
     "test": "test"
   },
   "main": "dist/clientdatastructure",
-  "dependencies": {},
+  "dependencies": {
+    "@cyrrus/locale-utils": "^1.0.0"
+  },
   "devDependencies": {
     "@babel/core": "^7.3.3",
     "@babel/preset-env": "^7.2.3",
@@ -33,7 +35,7 @@
     "buildTest": "cross-env npm run build && npm run test"
   },
   "publishConfig": {
-    "registry": "https://nexus.cyrrus.cz/repository/npm-hosted/"
+    "registry": "https://nexus.cyrrus.cz/repository/npm-hosted"
   },
   "license": "MIT"
 }

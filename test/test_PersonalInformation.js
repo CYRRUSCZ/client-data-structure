@@ -42,6 +42,12 @@ describe('PersonalInformation', () => {
         test.assert.deepEqual(fromCreate, personal)
     })
 
+    it('country code can be converted to correct country name', () => {
+        test.assert.equal(personal.birthNumberCountryName, 'Česko')
+        test.assert.equal(personal.citizenshipCountryName, 'Česko')
+        test.assert.equal(personal.taxDomicileCountryName, 'Česko')
+    })
+
     it('fullName should be same as lastName + " " + firstName', () => {
         test.assert.equal(personal.fullName, (personal.lastName + ' ' + personal.firstName))
     })
