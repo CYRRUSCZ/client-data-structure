@@ -28,7 +28,10 @@ describe('ClientInformation', () => {
         let fromCreate = ClientInformation.create(
             clientInformation.type,
             clientInformation.dataOrigin,
-            clientInformation.dataOriginId
+            clientInformation.dataOriginId,
+            clientInformation.capitolId,
+            clientInformation.crmId
+
         )
         test.assert.deepEqual(fromCreate, clientInformation)
     })
