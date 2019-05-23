@@ -2,7 +2,9 @@ module.exports = {
     client: {
         type: 'person',
         dataOrigin: 'capitol',
-        dataOriginId: '123456789'
+        dataOriginId: '123456789',
+        crmId: 'FooBaarBaZqaz',
+        capitolId: 'crapItAll'
     },
     personal: {
         prenominal: 'Ing.',
