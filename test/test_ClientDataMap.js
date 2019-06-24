@@ -1,3 +1,5 @@
+/* global describe, it */
+
 const { ClientData, ClientDataMap } = require('../dist/clientdatastructure')
 const test = require('unit.js')
 const clientDataset = require('./mock/clientDataset.js')
@@ -16,7 +18,7 @@ describe('ClientDataMap',() => {
     })
 
     it('throws an error when non existent entry is requested', () => {
-        test.assert.throws(function(){
+        test.assert.throws(function() {
             let prefix = map.getMappedEntry('blah blah blah', client)
         }, Error)
     })

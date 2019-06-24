@@ -17,7 +17,8 @@ module.exports = {
         birthNumberCountry: 'CZE',
         taxDomicile: 'CZE',
         placeOfBirth: 'Řiťka',
-        citizenship: 'CZE'
+        citizenship: 'CZE',
+        gender: 'male'
     },
     idCard: {
         number: '123456789',

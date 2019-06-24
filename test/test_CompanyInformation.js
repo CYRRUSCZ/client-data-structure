@@ -1,8 +1,8 @@
+/* global describe, it */
 const { CompanyInformation } = require('../dist/clientdatastructure')
 const test = require('unit.js')
 const clientDataset = require('./mock/clientDataset.js')
 const companyInformation = new CompanyInformation(clientDataset.company)
-
 
 describe('CompanyInformation', () => {
     it('instance -> plain object -> instance', () => {
