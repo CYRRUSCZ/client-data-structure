@@ -6,7 +6,7 @@ const clientDataset = require('./mock/clientDataset.js')
 const client = new ClientData(clientDataset)
 const map = new ClientDataMap()
 
-describe('ClientDataMap',() => {
+describe('ClientDataMap', () => {
     it('Returns mapped data entry', () => {
         let email = map.getMappedEntry('email', client)
         test.assert.equal(client.email, email)
@@ -19,7 +19,7 @@ describe('ClientDataMap',() => {
 
     it('throws an error when non existent entry is requested', () => {
         test.assert.throws(function() {
-            let prefix = map.getMappedEntry('blah blah blah', client)
+            map.getMappedEntry('blah blah blah', client)
         }, Error)
     })
 })

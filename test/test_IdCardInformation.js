@@ -30,7 +30,8 @@ describe('IdCardInformation', () => {
             idInformation.number,
             idInformation.issuedBy,
             idInformation.country,
-            idInformation.validity
+            idInformation.validity,
+            idInformation.type
         )
         test.assert.deepEqual(fromCreate, idInformation)
     })

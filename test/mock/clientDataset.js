@@ -24,7 +24,8 @@ module.exports = {
         number: '123456789',
         issuedBy: 'Městys Prdelní Lhota',
         country: 'CZE',
-        validity: new Date('2021-02-14T12:00:00.000Z')
+        validity: new Date('2021-02-14T12:00:00.000Z'),
+        type: 'OP'
     },
     address: {
         address: {
