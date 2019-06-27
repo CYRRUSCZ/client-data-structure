@@ -59,12 +59,42 @@ module.exports = {
     company: {
         ic: '49551655',
         dic: 'CZ49551655',
-        address: {
-            recipient: 'TOI TOI, sanitární systémy, s r.o.',
-            street: 'Pražská 264',
-            city: 'Slaný',
-            postalCode: '27401',
-            country: 'CZE'
-        }
+        lei: 'someleiid',
+        name: 'TOI TOI, sanitární systémy, s r.o.',
+        representatives: [
+            {
+                id: null,
+                personal: {
+                    prenominal: 'Ing.',
+                    firstName: 'Tomáš',
+                    lastName: 'Hovnivý',
+                    postnominal: 'Csc. MBA',
+                    birthNumber: '987654321',
+                    dateOfBirth: new Date('2019-02-14T12:00:00.000Z'),
+                    noBirthNumber: false,
+                    birthNumberCountry: 'CZE',
+                    taxDomicile: 'CZE',
+                    placeOfBirth: 'Řiťka',
+                    citizenship: 'CZE',
+                    gender: 'male'
+                },
+                position: 'jednatel',
+                politician: true,
+                address: {
+                    recipient: 'První kanální a.s.',
+                    street: 'Zasmrádlá 554/6a',
+                    city: 'Prdelní Lhota',
+                    postalCode: '66609',
+                    country: 'CZE'
+                },
+                idCard: {
+                    number: '123456789',
+                    issuedBy: 'Městys Prdelní Lhota',
+                    country: 'CZE',
+                    validity: new Date('2021-02-14T12:00:00.000Z'),
+                    type: 'OP'
+                }
+            }
+        ]
     }
 }
