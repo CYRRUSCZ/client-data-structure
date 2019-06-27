@@ -26,6 +26,7 @@ describe('CompanyInformation', () => {
           companyInformation.dic,
           companyInformation.lei,
           companyInformation.representatives,
+          companyInformation.taxDomicile,
           companyInformation.name
         )
         test.assert.deepEqual(fromCreate, companyInformation)
@@ -37,6 +38,7 @@ describe('CompanyInformation', () => {
         test.assert(plain.hasOwnProperty('dic'))
         test.assert(plain.hasOwnProperty('lei'))
         test.assert(plain.hasOwnProperty('representatives'))
+        test.assert(plain.hasOwnProperty('taxDomicile'))
         test.assert(plain.representatives[0].hasOwnProperty('personal'))
         test.assert(plain.representatives[0].personal.hasOwnProperty('lastName'))
         test.assert(plain.hasOwnProperty('name'))

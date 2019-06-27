@@ -61,6 +61,7 @@ module.exports = {
         dic: 'CZ49551655',
         lei: 'someleiid',
         name: 'TOI TOI, sanitární systémy, s r.o.',
+        taxDomicile: 'CZE',
         representatives: [
             {
                 id: null,
