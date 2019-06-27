@@ -24,7 +24,9 @@ describe('CompanyInformation', () => {
         let fromCreate = CompanyInformation.create(
           companyInformation.ic,
           companyInformation.dic,
-          companyInformation.address
+          companyInformation.lei,
+          companyInformation.representatives,
+          companyInformation.name
         )
         test.assert.deepEqual(fromCreate, companyInformation)
     })
@@ -33,6 +35,10 @@ describe('CompanyInformation', () => {
         let plain = companyInformation.toPlainObject()
         test.assert(plain.hasOwnProperty('ic'))
         test.assert(plain.hasOwnProperty('dic'))
-        test.assert(plain.address.hasOwnProperty('street'))
+        test.assert(plain.hasOwnProperty('lei'))
+        test.assert(plain.hasOwnProperty('representatives'))
+        test.assert(plain.representatives[0].hasOwnProperty('personal'))
+        test.assert(plain.representatives[0].personal.hasOwnProperty('lastName'))
+        test.assert(plain.hasOwnProperty('name'))
     })
 })

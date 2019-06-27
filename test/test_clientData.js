@@ -115,4 +115,10 @@ describe('ClientData', () => {
     it('getter email should return same email as ContactInformation instance', () => {
         test.assert.equal(client.email, contact.email)
     })
+
+    it('getter fullName should return correct name for company and for person', () => {
+        test.assert.equal(client.fullName, personal.fullName)
+        client.client._type = 'company'
+        test.assert.equal(client.fullName, companyInfo.name)
+    })
 })
