@@ -25,8 +25,8 @@ describe('CompanyInformation', () => {
           companyInformation.ic,
           companyInformation.dic,
           companyInformation.lei,
-          companyInformation.representatives,
           companyInformation.taxDomicile,
+          companyInformation.representatives,
           companyInformation.name
         )
         test.assert.deepEqual(fromCreate, companyInformation)
