@@ -46,5 +46,26 @@ describe('AddressInformation', () => {
             address.useMailingAddress
         )
         test.assert.deepEqual(fromCreate, address)
+        test.assert.deepEqual(fromCreate.toJSON(), address.toJSON())
+    })
+
+    it('useMailingAddress is correctly translated in JSON', () => {
+        address._useMailingAddress = true
+        test.assert.equal(address.toJSON().useMailingAddress, true)
+        address._useMailingAddress = false
+        test.assert.equal(address.toJSON().useMailingAddress, false)
+        let fromCreate = AddressInformation.create(
+            address.address, 
+            address.mailingAddress, 
+            true
+        )
+        
+        test.assert.equal(fromCreate.toJSON().useMailingAddress, true)
+        fromCreate = AddressInformation.create(
+            address.address, 
+            address.mailingAddress, 
+            false
+        )
+        test.assert.equal(fromCreate.toJSON().useMailingAddress, false)
     })
 })
