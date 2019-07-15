@@ -4,7 +4,21 @@ module.exports = {
         dataOrigin: 'capitol',
         dataOriginId: '123456789',
         crmId: 'FooBaarBaZqaz',
-        capitolId: 'crapItAll'
+        capitolId: 'crapItAll',
+        investmentProfiles: [
+            {
+                version: 'foo-version',
+                uid: 'uid',
+                name: 'Foo super risky',
+                added: new Date('2019-02-14T12:00:00.000Z')
+            },
+            {
+                version: 'bar-version',
+                uid: 'baruid',
+                name: 'Bar extreme risky',
+                added: new Date('2019-02-14T12:00:00.000Z')
+            }
+        ]
     },
     personal: {
         prenominal: 'Ing.',
