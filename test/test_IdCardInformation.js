@@ -31,7 +31,8 @@ describe('IdCardInformation', () => {
             idInformation.issuedBy,
             idInformation.country,
             idInformation.validity,
-            idInformation.type
+            idInformation.type,
+            idInformation.scanNotAllowed
         )
         test.assert.deepEqual(fromCreate, idInformation)
     })

@@ -39,7 +39,8 @@ module.exports = {
         issuedBy: 'Městys Prdelní Lhota',
         country: 'CZE',
         validity: new Date('2021-02-14T12:00:00.000Z'),
-        type: 'OP'
+        type: 'OP',
+        scanNotAllowed: true
     },
     address: {
         address: {
@@ -107,7 +108,8 @@ module.exports = {
                     issuedBy: 'Městys Prdelní Lhota',
                     country: 'CZE',
                     validity: new Date('2021-02-14T12:00:00.000Z'),
-                    type: 'OP'
+                    type: 'OP',
+                    scanNotAllowed: false
                 }
             }
         ]
