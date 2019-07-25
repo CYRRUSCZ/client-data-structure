@@ -110,6 +110,11 @@ module.exports = {
                     validity: new Date('2021-02-14T12:00:00.000Z'),
                     type: 'OP',
                     scanNotAllowed: false
+                },
+                contact: {
+                    phoneNumber: '728796525',
+                    email: 'tomas@valiasek.cz',
+                    phonePassword: null
                 }
             }
         ]
