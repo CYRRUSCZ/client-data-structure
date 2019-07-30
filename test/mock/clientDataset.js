@@ -10,13 +10,23 @@ module.exports = {
                 version: 'foo-version',
                 uid: 'uid',
                 name: 'Foo super risky',
-                added: new Date('2019-02-14T12:00:00.000Z')
+                added: new Date('2019-02-14T12:00:00.000Z'),
+                groupUid: 'foo',
+                services: [
+                    {
+                        uid: 'fooService',
+                        name: 'Foo service',
+                        added: new Date('2019-02-14T12:00:00.000Z')
+                    }
+                ]
             },
             {
                 version: 'bar-version',
                 uid: 'baruid',
                 name: 'Bar extreme risky',
-                added: new Date('2019-02-14T12:00:00.000Z')
+                added: new Date('2019-02-14T12:00:00.000Z'),
+                groupUid: 'bar',
+                services: []
             }
         ]
     },
