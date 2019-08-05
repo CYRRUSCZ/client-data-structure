@@ -3,7 +3,6 @@
 const test = require('unit.js')
 const {
     Address,
-    BankingInformation,
     ContactInformation,
     ClientData,
     PersonalInformation,
@@ -15,7 +14,7 @@ const {
     PLAIN_OBJECT_KEY_PERSONAL,
     PLAIN_OBJECT_KEY_ID_CARD,
     PLAIN_OBJECT_KEY_CONTACT,
-    PLAIN_OBJECT_KEY_BANK_ACCOUNT,
+    PLAIN_OBJECT_KEY_BANK_ACCOUNTS,
     PLAIN_OBJECT_KEY_ADDRESS,
     ADDRESS_TYPE_REGULAR,
     ADDRESS_TYPE_MAILING,
@@ -32,7 +31,6 @@ const {
 
 describe('Default exports', () => {
     it('Address !== undefined', () => { test.assert.equal(true, (Address !== undefined)) })
-    it('BankingInformation !== undefined', () => { test.assert.equal(true, (BankingInformation !== undefined)) })
     it('ContactInformation !== undefined', () => { test.assert.equal(true, (ContactInformation !== undefined)) })
     it('ClientData !== undefined', () => { test.assert.equal(true, (ClientData !== undefined)) })
     it('PersonalInformation !== undefined', () => { test.assert.equal(true, (PersonalInformation !== undefined)) })
@@ -44,7 +42,7 @@ describe('Default exports', () => {
     it('PLAIN_OBJECT_KEY_PERSONAL !== undefined', () => { test.assert.equal(true, (PLAIN_OBJECT_KEY_PERSONAL !== undefined)) })
     it('PLAIN_OBJECT_KEY_ID_CARD !== undefined', () => { test.assert.equal(true, (PLAIN_OBJECT_KEY_ID_CARD !== undefined)) })
     it('PLAIN_OBJECT_KEY_CONTACT !== undefined', () => { test.assert.equal(true, (PLAIN_OBJECT_KEY_CONTACT !== undefined)) })
-    it('PLAIN_OBJECT_KEY_BANK_ACCOUNT !== undefined', () => { test.assert.equal(true, (PLAIN_OBJECT_KEY_BANK_ACCOUNT !== undefined)) })
+    it('PLAIN_OBJECT_KEY_BANK_ACCOUNTS !== undefined', () => { test.assert.equal(true, (PLAIN_OBJECT_KEY_BANK_ACCOUNTS !== undefined)) })
     it('PLAIN_OBJECT_KEY_ADDRESS !== undefined', () => { test.assert.equal(true, (PLAIN_OBJECT_KEY_ADDRESS !== undefined)) })
     it('ADDRESS_TYPE_REGULAR !== undefined', () => { test.assert.equal(true, (ADDRESS_TYPE_REGULAR !== undefined)) })
     it('ADDRESS_TYPE_MAILING !== undefined', () => { test.assert.equal(true, (ADDRESS_TYPE_MAILING !== undefined)) })

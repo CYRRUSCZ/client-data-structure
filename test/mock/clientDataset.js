@@ -74,13 +74,24 @@ module.exports = {
         phoneNumber: '+420123456789',
         phonePassword: 'Nasrat a rozmazat'
     },
-    bankAccount: {
-        prefix: '000000',
-        account: '123456789',
-        code: '0800',
-        currency: 'CZK',
-        foreign: false
-    },
+    bankAccounts: [
+        {
+            id: 'foo',
+            prefix: '000000',
+            account: '123456789',
+            code: '0800',
+            currency: 'CZK',
+            foreign: false
+        },
+        {
+            prefix: '000001',
+            account: '123456789',
+            code: '0800',
+            currency: 'EUR',
+            foreign: false,
+            _id: 'bar'
+        }
+    ],
     company: {
         ic: '49551655',
         dic: 'CZ49551655',

@@ -1,42 +1,26 @@
 /* global describe, it */
 
-const { BankingInformation, ClientData } = require('../dist/clientdatastructure')
+const { BankAccount, ClientData } = require('../dist/clientdatastructure')
 const test = require('unit.js')
 const clientDataset = require('./mock/clientDataset.js')
 
-const bankingInformation = new BankingInformation(
-    clientDataset[ClientData.PLAIN_OBJECT_KEY_BANK_ACCOUNT]
-)
+const bankingInformation = [...(new ClientData(
+    clientDataset
+).bankAccounts)]
 
 describe('BankingInformation', () => {
     it('instance -> plain object -> instance', () => {
-        let plain = bankingInformation.toPlainObject()
-        test.assert.deepEqual(bankingInformation, BankingInformation.fromPlainObject(plain))
+        let plain = bankingInformation.map((account) => account.toPlainObject())
+        test.assert.deepEqual(bankingInformation, [...plain].map((account) => BankAccount.fromPlainObject(account)))
     })
 
     it('instance -> plain object -> JSON.stringify -> JSON.parse -> instance', () => {
-        let string = JSON.stringify(bankingInformation.toPlainObject())
-        test.assert.deepEqual(bankingInformation, BankingInformation.fromPlainObject(JSON.parse(string)))
+        let string = JSON.stringify(bankingInformation)
+        test.assert.deepEqual(bankingInformation, (JSON.parse(string)).map((account) => BankAccount.fromPlainObject(account)))
     })
 
-    it('defaults to null values', () => {
-        let empty = new BankingInformation()
-        test.assert.equal(null, empty.iban)
-        test.assert.equal(null, empty.swift)
-    })
-
-    it('constructor vs create', () => {
-        let fromCreate = BankingInformation.create(
-            bankingInformation.prefix,
-            bankingInformation.account,
-            bankingInformation.code,
-            bankingInformation.currency,
-            bankingInformation.iban,
-            bankingInformation.swift,
-            bankingInformation.bankNameAddress,
-            bankingInformation.accountName,
-            bankingInformation.foreign
-        )
-        test.assert.deepEqual(fromCreate, bankingInformation)
+    it('id is substituted from _id', () => {
+        test.assert.equal(bankingInformation[0].id, clientDataset.bankAccounts[0].id)
+        test.assert.equal(bankingInformation[1].id, clientDataset.bankAccounts[1]._id)
     })
 })

@@ -1,6 +1,6 @@
 /* global describe, it */
 
-const { ClientData, AddressInformation, BankingInformation,
+const { ClientData, AddressInformation, BankAccount,
     ContactInformation, IdCardInformation, PersonalInformation, 
     ClientInformation, CompanyInformation } = require('../dist/clientdatastructure')
 const test = require('unit.js')
@@ -8,7 +8,7 @@ const clientDataset = require('./mock/clientDataset.js')
 
 const client = new ClientData(clientDataset)
 const address = new AddressInformation(clientDataset[ClientData.PLAIN_OBJECT_KEY_ADDRESS])
-const bank = new BankingInformation(clientDataset[ClientData.PLAIN_OBJECT_KEY_BANK_ACCOUNT])
+const bank = clientDataset[ClientData.PLAIN_OBJECT_KEY_BANK_ACCOUNTS].map((item) => { return new BankAccount(item) })
 const contact = new ContactInformation(clientDataset[ClientData.PLAIN_OBJECT_KEY_CONTACT])
 const idCard = new IdCardInformation(clientDataset[ClientData.PLAIN_OBJECT_KEY_ID_CARD])
 const personal = new PersonalInformation(clientDataset[ClientData.PLAIN_OBJECT_KEY_PERSONAL])
@@ -28,7 +28,7 @@ describe('ClientData', () => {
 
     it('all subclass instances are deep equal', () => {
         test.assert.deepEqual(client[ClientData.PLAIN_OBJECT_KEY_ADDRESS], address)
-        test.assert.deepEqual(client[ClientData.PLAIN_OBJECT_KEY_BANK_ACCOUNT], bank)
+        test.assert.deepEqual(client[ClientData.PLAIN_OBJECT_KEY_BANK_ACCOUNTS], bank)
         test.assert.deepEqual(client[ClientData.PLAIN_OBJECT_KEY_CONTACT], contact)
         test.assert.deepEqual(client[ClientData.PLAIN_OBJECT_KEY_ID_CARD], idCard)
         test.assert.deepEqual(client[ClientData.PLAIN_OBJECT_KEY_PERSONAL], personal)
@@ -38,7 +38,7 @@ describe('ClientData', () => {
     it('defaults to empty instances', () => {
         let empty = new ClientData()
         test.assert.deepEqual(empty[ClientData.PLAIN_OBJECT_KEY_ADDRESS], new AddressInformation())
-        test.assert.deepEqual(empty[ClientData.PLAIN_OBJECT_KEY_BANK_ACCOUNT], new BankingInformation())
+        test.assert.deepEqual(empty[ClientData.PLAIN_OBJECT_KEY_BANK_ACCOUNTS], [])
         test.assert.deepEqual(empty[ClientData.PLAIN_OBJECT_KEY_CONTACT], new ContactInformation())
         test.assert.deepEqual(empty[ClientData.PLAIN_OBJECT_KEY_ID_CARD], new IdCardInformation())
         test.assert.deepEqual(empty[ClientData.PLAIN_OBJECT_KEY_PERSONAL], new PersonalInformation())
@@ -53,7 +53,7 @@ describe('ClientData', () => {
             client.idCard,
             client.address,
             client.contact,
-            client.bankAccount,
+            client.bankAccounts,
             client.company
         )
         test.assert.deepEqual(fromCreate, client)
@@ -66,7 +66,7 @@ describe('ClientData', () => {
             client.idCard,
             client.address,
             client.contact,
-            client.bankAccount,
+            client.bankAccounts,
             client.companyInfo,
             client.address.mailingAddress
         )
