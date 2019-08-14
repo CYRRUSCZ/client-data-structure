@@ -77,6 +77,7 @@ module.exports = {
     bankAccounts: [
         {
             id: 'foo',
+            capitolId: 'crapitolId',
             prefix: '000000',
             account: '123456789',
             code: '0800',
@@ -101,6 +102,9 @@ module.exports = {
         representatives: [
             {
                 id: null,
+                isRepresentative: true,
+                isRealOwner: true,
+                realOwnerReason: '4',
                 personal: {
                     prenominal: 'Ing.',
                     firstName: 'Tomáš',
