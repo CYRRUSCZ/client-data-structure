@@ -21,6 +21,7 @@ describe('Address', () => {
         let fromCreate = Address.create(
             regularAddress.recipient,
             regularAddress.street,
+            regularAddress.streetNumber,
             regularAddress.city,
             regularAddress.country,
             regularAddress.postalCode
@@ -54,7 +55,7 @@ describe('Address', () => {
     })
 
     it('fullAddress getter returns correct address', () => {
-        let expectedAddress = `${regularAddress.recipient}, ${regularAddress.street}, ${regularAddress.city}, ${regularAddress.countryName}, ${regularAddress.postalCode}`
+        let expectedAddress = `${regularAddress.recipient}, ${regularAddress.street} ${regularAddress.streetNumber}, ${regularAddress.city}, ${regularAddress.countryName}, ${regularAddress.postalCode}`
         test.assert.equal(regularAddress.fullAddress, expectedAddress)
     })
 
@@ -62,6 +63,7 @@ describe('Address', () => {
         let expectedAddress = `${regularAddress.recipient}, ${regularAddress.city}, ${regularAddress.countryName}, ${regularAddress.postalCode}`
         test.assert.equal((Address.create(
             regularAddress.recipient,
+            null,
             null,
             regularAddress.city,
             regularAddress.country,

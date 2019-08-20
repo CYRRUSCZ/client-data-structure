@@ -28,7 +28,8 @@ module.exports = {
                 groupUid: 'bar',
                 services: []
             }
-        ]
+        ],
+        residency: false
     },
     personal: {
         prenominal: 'Ing.',
@@ -55,14 +56,16 @@ module.exports = {
     address: {
         address: {
             recipient: 'První kanální a.s.',
-            street: 'Zasmrádlá 554/6a',
+            street: 'Zasmrádlá',
+            streetNumber: '554/6a',
             city: 'Prdelní Lhota',
             postalCode: '66609',
             country: 'CZE'
         },
         mailingAddress: {
             recipient: 'Milada Hovnivá',
-            street: 'U hroudy 15',
+            street: 'U hroudy',
+            streetNumber: '15',
             city: 'Díra nad Řiťkou',
             postalCode: '668 02',
             country: 'CZE'
@@ -123,7 +126,8 @@ module.exports = {
                 politician: true,
                 address: {
                     recipient: 'První kanální a.s.',
-                    street: 'Zasmrádlá 554/6a',
+                    street: 'Zasmrádlá',
+                    streetNumber: '554/6a',
                     city: 'Prdelní Lhota',
                     postalCode: '66609',
                     country: 'CZE'
