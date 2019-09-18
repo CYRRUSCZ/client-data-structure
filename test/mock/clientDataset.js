@@ -5,6 +5,7 @@ module.exports = {
         dataOriginId: '123456789',
         crmId: 'FooBaarBaZqaz',
         capitolId: 'crapItAll',
+        economicalSectorCode: '2002212',
         investmentProfiles: [
             {
                 version: 'foo-version',
