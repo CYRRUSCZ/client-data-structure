@@ -30,7 +30,8 @@ module.exports = {
                 services: []
             }
         ],
-        residency: false
+        residency: false,
+        brokerId: 123
     },
     personal: {
         prenominal: 'Ing.',
