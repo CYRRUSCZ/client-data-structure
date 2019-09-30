@@ -39,7 +39,8 @@ describe('ClientInformation', () => {
             clientInformation.crmId,
             clientInformation.investmentProfiles,
             clientInformation.residency,
-            clientInformation.economicalSectorCode
+            clientInformation.economicalSectorCode,
+            clientInformation.brokerId
         )
         test.assert.deepEqual(fromCreate, clientInformation)
     })
