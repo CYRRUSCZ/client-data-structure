@@ -49,8 +49,8 @@ describe('PersonalInformation', () => {
         test.assert.equal(personal.taxDomicileCountryName, 'Česko')
     })
 
-    it('fullName should be same as lastName + " " + firstName', () => {
-        test.assert.equal(personal.fullName, (personal.lastName + ' ' + personal.firstName))
+    it('fullName should be same as prenominal + " " + firstNameName + " " + lastName + " " + postnominal', () => {
+        test.assert.equal(personal.fullName, (personal.prenominal + " " + personal.firstName + " " + personal.lastName + " " + personal.postnominal))
     })
 
     it('fullName without lastName should be same as firstName', () => {
