@@ -110,6 +110,8 @@ module.exports = {
                 isRepresentative: true,
                 isRealOwner: true,
                 realOwnerReason: '4',
+                capitolId: null,
+                capitolContactId: null,
                 personal: {
                     prenominal: 'Ing.',
                     firstName: 'Tomáš',
