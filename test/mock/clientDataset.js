@@ -109,7 +109,8 @@ module.exports = {
                 id: null,
                 isRepresentative: true,
                 isRealOwner: true,
-                realOwnerReason: '4',
+                realOwnerReasonChar: 'a',
+                realOwnerReasonNumber: '1',
                 capitolId: null,
                 capitolContactId: null,
                 personal: {
