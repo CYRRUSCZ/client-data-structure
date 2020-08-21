@@ -10,12 +10,12 @@ const bankingInformation = [...(new ClientData(
 
 describe('BankingInformation', () => {
     it('instance -> plain object -> instance', () => {
-        let plain = bankingInformation.map((account) => account.toPlainObject())
+        const plain = bankingInformation.map((account) => account.toPlainObject())
         test.assert.deepEqual(bankingInformation, [...plain].map((account) => BankAccount.fromPlainObject(account)))
     })
 
     it('instance -> plain object -> JSON.stringify -> JSON.parse -> instance', () => {
-        let string = JSON.stringify(bankingInformation)
+        const string = JSON.stringify(bankingInformation)
         test.assert.deepEqual(bankingInformation, (JSON.parse(string)).map((account) => BankAccount.fromPlainObject(account)))
     })
 

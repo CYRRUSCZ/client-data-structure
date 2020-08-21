@@ -10,23 +10,23 @@ const idInformation = new IdCardInformation(
 
 describe('IdCardInformation', () => {
     it('instance -> plain object -> instance', () => {
-        let plainObject = idInformation.toPlainObject()
+        const plainObject = idInformation.toPlainObject()
         test.assert.deepEqual(idInformation, IdCardInformation.fromPlainObject(plainObject))
     })
 
     it('instance -> plain object -> JSON.stringify -> JSON.parse -> instance', () => {
-        let string = JSON.stringify(idInformation.toPlainObject())
+        const string = JSON.stringify(idInformation.toPlainObject())
         test.assert.deepEqual(idInformation, IdCardInformation.fromPlainObject(JSON.parse(string)))
     })
 
     it('defaults to null values', () => {
-        let empty = new IdCardInformation()
+        const empty = new IdCardInformation()
         test.assert.equal(null, empty.issuedBy)
         test.assert.equal(true, (empty.validity instanceof Date))
     })
 
     it('constructor vs create', () => {
-        let fromCreate = IdCardInformation.create(
+        const fromCreate = IdCardInformation.create(
             idInformation.number,
             idInformation.issuedBy,
             idInformation.country,
@@ -38,6 +38,6 @@ describe('IdCardInformation', () => {
     })
 
     it('country code can be converted to correct country name', () => {
-        test.assert.equal(idInformation.countryName, 'Česko')
+        test.assert.equal(idInformation.countryName, 'Česká Republika')
     })
 })

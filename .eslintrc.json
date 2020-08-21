@@ -1,9 +1,0 @@
-{
-  "env": {
-    "browser": true
-  },
-  "extends": "standard",
-  "rules": {
-    "generator-star-spacing": "off"
-  }
-}

@@ -13,12 +13,12 @@ const mailingAddress = new Address(
 
 describe('Address', () => {
     it('regular address instance -> plain object -> instance', () => {
-        let plainObject = regularAddress.toPlainObject()
+        const plainObject = regularAddress.toPlainObject()
         test.assert.deepEqual(regularAddress, Address.fromPlainObject(plainObject))
     })
 
     it('constructor vs create', () => {
-        let fromCreate = Address.create(
+        const fromCreate = Address.create(
             regularAddress.recipient,
             regularAddress.street,
             regularAddress.streetNumber,
@@ -30,37 +30,37 @@ describe('Address', () => {
     })
 
     it('regular address instance -> JSON.stringify -> JSON.parse -> instance', () => {
-        let plainObject = JSON.parse(JSON.stringify(regularAddress))
+        const plainObject = JSON.parse(JSON.stringify(regularAddress))
         test.assert.deepEqual(regularAddress, Address.fromPlainObject(plainObject))
     })
 
     it('mailing address instance -> plain object -> instance', () => {
-        let plainObject = mailingAddress.toPlainObject()
+        const plainObject = mailingAddress.toPlainObject()
         test.assert.deepEqual(mailingAddress, Address.fromPlainObject(plainObject))
     })
 
     it('mailing address instance -> JSON.stringify -> JSON.parse -> instance', () => {
-        let plainObject = JSON.parse(JSON.stringify(mailingAddress))
+        const plainObject = JSON.parse(JSON.stringify(mailingAddress))
         test.assert.deepEqual(mailingAddress, Address.fromPlainObject(plainObject))
     })
 
     it('defaults to null values', () => {
-        let empty = new Address()
+        const empty = new Address()
         test.assert.equal(null, empty.city)
         test.assert.equal(null, empty.recipient)
     })
 
     it('country code can be converted to correct country name', () => {
-        test.assert.equal(regularAddress.countryName, 'Česko')
+        test.assert.equal(regularAddress.countryName, 'Česká Republika')
     })
 
     it('fullAddress getter returns correct address', () => {
-        let expectedAddress = `${regularAddress.recipient}, ${regularAddress.street} ${regularAddress.streetNumber}, ${regularAddress.city}, ${regularAddress.countryName}, ${regularAddress.postalCode}`
+        const expectedAddress = `${regularAddress.recipient}, ${regularAddress.street} ${regularAddress.streetNumber}, ${regularAddress.city}, ${regularAddress.countryName}, ${regularAddress.postalCode}`
         test.assert.equal(regularAddress.fullAddress, expectedAddress)
     })
 
     it('fullAddress getter returns correct address with missing parts', () => {
-        let expectedAddress = `${regularAddress.recipient}, ${regularAddress.city}, ${regularAddress.countryName}, ${regularAddress.postalCode}`
+        const expectedAddress = `${regularAddress.recipient}, ${regularAddress.city}, ${regularAddress.countryName}, ${regularAddress.postalCode}`
         test.assert.equal((Address.create(
             regularAddress.recipient,
             null,

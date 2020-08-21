@@ -8,12 +8,12 @@ const map = new ClientDataMap()
 
 describe('ClientDataMap', () => {
     it('Returns mapped data entry', () => {
-        let email = map.getMappedEntry('email', client)
+        const email = map.getMappedEntry('email', client)
         test.assert.equal(client.email, email)
     })
 
     it('throws an error when non existent entry is requested', () => {
-        test.assert.throws(function() {
+        test.assert.throws(function () {
             map.getMappedEntry('blah blah blah', client)
         }, Error)
     })

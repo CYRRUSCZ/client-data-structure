@@ -6,34 +6,34 @@ const companyInformation = new CompanyInformation(clientDataset.company)
 
 describe('CompanyInformation', () => {
     it('instance -> plain object -> instance', () => {
-        let plainObject = companyInformation.toPlainObject()
+        const plainObject = companyInformation.toPlainObject()
         test.assert.deepEqual(companyInformation, CompanyInformation.fromPlainObject(plainObject))
     })
 
     it('instance -> plain object -> JSON.stringify -> JSON.parse -> instance', () => {
-        let string = JSON.stringify(companyInformation.toPlainObject())
+        const string = JSON.stringify(companyInformation.toPlainObject())
         test.assert.deepEqual(companyInformation, CompanyInformation.fromPlainObject(JSON.parse(string)))
     })
 
     it('defaults to null values', () => {
-        let empty = new CompanyInformation()
+        const empty = new CompanyInformation()
         test.assert.equal(null, empty.dic)
     })
 
     it('constructor vs create', () => {
-        let fromCreate = CompanyInformation.create(
-          companyInformation.ic,
-          companyInformation.dic,
-          companyInformation.lei,
-          companyInformation.taxDomicile,
-          companyInformation.representatives,
-          companyInformation.name
+        const fromCreate = CompanyInformation.create(
+            companyInformation.ic,
+            companyInformation.dic,
+            companyInformation.lei,
+            companyInformation.taxDomicile,
+            companyInformation.representatives,
+            companyInformation.name
         )
         test.assert.deepEqual(fromCreate, companyInformation)
     })
 
     it('has correct fields', () => {
-        let plain = companyInformation.toPlainObject()
+        const plain = companyInformation.toPlainObject()
         test.assert(plain.hasOwnProperty('ic'))
         test.assert(plain.hasOwnProperty('dic'))
         test.assert(plain.hasOwnProperty('lei'))

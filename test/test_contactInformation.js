@@ -10,23 +10,23 @@ const contactInformation = new ContactInformation(
 
 describe('ContactInformation', () => {
     it('instance -> plain object -> instance', () => {
-        let plainObject = contactInformation.toPlainObject()
+        const plainObject = contactInformation.toPlainObject()
         test.assert.deepEqual(contactInformation, ContactInformation.fromPlainObject(plainObject))
     })
 
     it('instance -> plain object -> JSON.stringify -> JSON.parse -> instance', () => {
-        let string = JSON.stringify(contactInformation.toPlainObject())
+        const string = JSON.stringify(contactInformation.toPlainObject())
         test.assert.deepEqual(contactInformation, ContactInformation.fromPlainObject(JSON.parse(string)))
     })
 
     it('defaults to null values', () => {
-        let empty = new ContactInformation()
+        const empty = new ContactInformation()
         test.assert.equal(null, empty.phoneNumber)
     })
 
     it('constructor vs create', () => {
-        let fromCreate = ContactInformation.create(
-            contactInformation.email, 
+        const fromCreate = ContactInformation.create(
+            contactInformation.email,
             contactInformation.phoneNumber,
             contactInformation.phonePassword
         )

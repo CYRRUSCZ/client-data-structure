@@ -1,8 +1,10 @@
 /* global describe, it */
 
-const { ClientData, AddressInformation, BankAccount,
-    ContactInformation, IdCardInformation, PersonalInformation, 
-    ClientInformation, CompanyInformation } = require('../dist/clientdatastructure')
+const {
+    ClientData, AddressInformation, BankAccount,
+    ContactInformation, IdCardInformation, PersonalInformation,
+    ClientInformation, CompanyInformation
+} = require('../dist/clientdatastructure')
 const test = require('unit.js')
 const clientDataset = require('./mock/clientDataset.js')
 
@@ -17,12 +19,12 @@ const companyInfo = new CompanyInformation(clientDataset[ClientData.PLAIN_OBJECT
 
 describe('ClientData', () => {
     it('instance -> plain object -> instance', () => {
-        let plainObject = client.toPlainObject()
+        const plainObject = client.toPlainObject()
         test.assert.deepEqual(client, ClientData.fromPlainObject(plainObject))
     })
 
     it('instance -> plain object -> JSON.stringify -> JSON.parse -> instance', () => {
-        let string = JSON.stringify(client.toPlainObject())
+        const string = JSON.stringify(client.toPlainObject())
         test.assert.deepEqual(client, ClientData.fromPlainObject(JSON.parse(string)))
     })
 
@@ -36,7 +38,7 @@ describe('ClientData', () => {
     })
 
     it('defaults to empty instances', () => {
-        let empty = new ClientData()
+        const empty = new ClientData()
         test.assert.deepEqual(empty[ClientData.PLAIN_OBJECT_KEY_ADDRESS], new AddressInformation())
         test.assert.deepEqual(empty[ClientData.PLAIN_OBJECT_KEY_BANK_ACCOUNTS], [])
         test.assert.deepEqual(empty[ClientData.PLAIN_OBJECT_KEY_CONTACT], new ContactInformation())
@@ -47,7 +49,7 @@ describe('ClientData', () => {
     })
 
     it('constructor vs create', () => {
-        let fromCreate = ClientData.create(
+        const fromCreate = ClientData.create(
             client.client,
             client.personal,
             client.idCard,
@@ -60,7 +62,7 @@ describe('ClientData', () => {
     })
 
     it('regular address override', () => {
-        let fromCreate = ClientData.create(
+        const fromCreate = ClientData.create(
             client.client,
             client.personal,
             client.idCard,
@@ -74,7 +76,7 @@ describe('ClientData', () => {
     })
 
     it('regular address override undefined address information', () => {
-        let fromCreate = ClientData.create(
+        const fromCreate = ClientData.create(
             undefined,
             undefined,
             undefined,
@@ -90,11 +92,11 @@ describe('ClientData', () => {
     it('getter dataOrigin should return same value as ClientInformation instance', () => {
         test.assert.equal(client.dataOrigin, clientInfo.dataOrigin)
     })
-    
+
     it('getter dataOriginId should return same value as ClientInformation instance', () => {
         test.assert.equal(client.dataOriginId, clientInfo.dataOriginId)
     })
-    
+
     it('getter type should return same value as ClientInformation instance', () => {
         test.assert.equal(client.type, clientInfo.type)
     })

@@ -8,7 +8,7 @@ var clientInformation = new ClientInformation(
     clientDataset[ClientData.PLAIN_OBJECT_KEY_CLIENT]
 )
 
-function reinitClientInformation() {
+function reinitClientInformation () {
     clientInformation = new ClientInformation(
         clientDataset[ClientData.PLAIN_OBJECT_KEY_CLIENT]
     )
@@ -16,22 +16,22 @@ function reinitClientInformation() {
 
 describe('ClientInformation', () => {
     it('instance -> plain object -> instance', () => {
-        let plainObject = clientInformation.toPlainObject()
+        const plainObject = clientInformation.toPlainObject()
         test.assert.deepEqual(clientInformation, ClientInformation.fromPlainObject(plainObject))
     })
 
     it('instance -> plain object -> JSON.stringify -> JSON.parse -> instance', () => {
-        let string = JSON.stringify(clientInformation.toPlainObject())
+        const string = JSON.stringify(clientInformation.toPlainObject())
         test.assert.deepEqual(clientInformation, ClientInformation.fromPlainObject(JSON.parse(string)))
     })
 
     it('defaults to null values', () => {
-        let empty = new ClientInformation()
+        const empty = new ClientInformation()
         test.assert.equal(null, empty.dataOriginId)
     })
 
     it('constructor vs create', () => {
-        let fromCreate = ClientInformation.create(
+        const fromCreate = ClientInformation.create(
             clientInformation.type,
             clientInformation.dataOrigin,
             clientInformation.dataOriginId,
@@ -54,8 +54,8 @@ describe('ClientInformation', () => {
 
     it('method removeProfilesGroup', () => {
         reinitClientInformation()
-        let profile1 = new InvestmentProfile(clientInformation.investmentProfiles[0].toJSON())
-        let profile2 = new InvestmentProfile(clientInformation.investmentProfiles[1].toJSON())
+        const profile1 = new InvestmentProfile(clientInformation.investmentProfiles[0].toJSON())
+        const profile2 = new InvestmentProfile(clientInformation.investmentProfiles[1].toJSON())
         test.assert.deepEqual(clientInformation.removeProfilesGroup('asdf'), [])
         test.assert.deepEqual(clientInformation.removeProfilesGroup(''), [])
         test.assert.deepEqual(clientInformation.removeProfilesGroup(clientInformation._investmentProfiles[0].groupUid), [profile1])
@@ -70,28 +70,28 @@ describe('ClientInformation', () => {
 
     it('method replaceProfilesGroup', () => {
         reinitClientInformation()
-        let profile1 = new InvestmentProfile(clientInformation.investmentProfiles[0].toJSON())
-        let profile2 = new InvestmentProfile(clientInformation.investmentProfiles[1].toJSON())
-        let profile3 = new InvestmentProfile({ ...profile2.toJSON(), ...{ uid: 'baz', groupUid: profile1.groupUid } })
-        
+        const profile1 = new InvestmentProfile(clientInformation.investmentProfiles[0].toJSON())
+        const profile2 = new InvestmentProfile(clientInformation.investmentProfiles[1].toJSON())
+        const profile3 = new InvestmentProfile({ ...profile2.toJSON(), ...{ uid: 'baz', groupUid: profile1.groupUid } })
+
         clientInformation.replaceProfilesGroup(profile1.groupUid, [profile3])
         test.assert.deepEqual(clientInformation.investmentProfiles, [profile2, profile3])
     })
 
     it('method replaceProfilesGroup', () => {
         reinitClientInformation()
-        let profile1 = new InvestmentProfile(clientInformation.investmentProfiles[0].toJSON())
-        let profile2 = new InvestmentProfile(clientInformation.investmentProfiles[1].toJSON())
-        
+        const profile1 = new InvestmentProfile(clientInformation.investmentProfiles[0].toJSON())
+        const profile2 = new InvestmentProfile(clientInformation.investmentProfiles[1].toJSON())
+
         clientInformation.removeProfile(profile1)
         test.assert.deepEqual(clientInformation.investmentProfiles, [profile2])
     })
 
     it('method addProfile', () => {
         reinitClientInformation()
-        let profile1 = new InvestmentProfile(clientInformation.investmentProfiles[0].toJSON())
-        let profile2 = new InvestmentProfile(clientInformation.investmentProfiles[1].toJSON())
-        let profile3 = new InvestmentProfile({ ...profile1.toJSON(), ...{ uid: 'aaa', groupUid: 'bbb' } })
+        const profile1 = new InvestmentProfile(clientInformation.investmentProfiles[0].toJSON())
+        const profile2 = new InvestmentProfile(clientInformation.investmentProfiles[1].toJSON())
+        const profile3 = new InvestmentProfile({ ...profile1.toJSON(), ...{ uid: 'aaa', groupUid: 'bbb' } })
         clientInformation.addProfile(profile1)
         test.assert.deepEqual(clientInformation.investmentProfiles, [profile2, profile1])
         clientInformation.addProfile(profile3)
@@ -100,9 +100,9 @@ describe('ClientInformation', () => {
 
     it('method hasInvestmentService', () => {
         reinitClientInformation()
-        let profile1 = new InvestmentProfile(clientInformation.investmentProfiles[0].toJSON())
-        
+        const profile1 = new InvestmentProfile(clientInformation.investmentProfiles[0].toJSON())
+
         test.assert.equal(clientInformation.hasInvestmentService(profile1.services[0].uid), true)
         test.assert.equal(clientInformation.hasInvestmentService('asdf'), false)
-    })    
-  })
+    })
+})

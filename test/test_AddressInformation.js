@@ -15,12 +15,12 @@ const address = new AddressInformation(clientDataset[ClientData.PLAIN_OBJECT_KEY
 
 describe('AddressInformation', () => {
     it('address information -> plain object -> instance', () => {
-        let plainObject = address.toPlainObject()
+        const plainObject = address.toPlainObject()
         test.assert.deepEqual(address, AddressInformation.fromPlainObject(plainObject))
     })
 
     it('address information -> JSON.stringify -> JSON.parse -> instance', () => {
-        let plainObject = JSON.parse(JSON.stringify(regularAddress))
+        const plainObject = JSON.parse(JSON.stringify(regularAddress))
         test.assert.deepEqual(regularAddress, Address.fromPlainObject(plainObject))
     })
 
@@ -33,16 +33,16 @@ describe('AddressInformation', () => {
     })
 
     it('defaults to null and empty values', () => {
-        let empty = new AddressInformation()
+        const empty = new AddressInformation()
         test.assert.equal(false, empty.useMailingAddress)
         test.assert.deepEqual(new Address(), empty[ClientData.ADDRESS_TYPE_REGULAR])
         test.assert.deepEqual(new Address(), empty[ClientData.ADDRESS_TYPE_MAILING])
     })
 
     it('constructor vs create', () => {
-        let fromCreate = AddressInformation.create(
-            address.address, 
-            address.mailingAddress, 
+        const fromCreate = AddressInformation.create(
+            address.address,
+            address.mailingAddress,
             address.useMailingAddress
         )
         test.assert.deepEqual(fromCreate, address)
@@ -55,15 +55,15 @@ describe('AddressInformation', () => {
         address._useMailingAddress = false
         test.assert.equal(address.toJSON().useMailingAddress, false)
         let fromCreate = AddressInformation.create(
-            address.address, 
-            address.mailingAddress, 
+            address.address,
+            address.mailingAddress,
             true
         )
-        
+
         test.assert.equal(fromCreate.toJSON().useMailingAddress, true)
         fromCreate = AddressInformation.create(
-            address.address, 
-            address.mailingAddress, 
+            address.address,
+            address.mailingAddress,
             false
         )
         test.assert.equal(fromCreate.toJSON().useMailingAddress, false)

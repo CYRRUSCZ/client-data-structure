@@ -40,7 +40,7 @@ describe('helpers', () => {
                 expect: '2019-02-14T12:00:00.000Z'
             }
         ]
-        for (let testCase of testData) {
+        for (const testCase of testData) {
             test.assert.equal(helpers.getStringOrNull(testCase.input), testCase.expect)
         }
     })
@@ -56,11 +56,11 @@ describe('helpers', () => {
                 expect: new Date('2019-02-14T12:00:00.000Z')
             }
         ]
-        for (let testCase of testData) {
+        for (const testCase of testData) {
             test.assert.equal(helpers.getValidDate(testCase.input).toISOString(), testCase.expect.toISOString())
         }
 
-        let invalidDate = helpers.getValidDate('1+ěšřěšfascsd')
+        const invalidDate = helpers.getValidDate('1+ěšřěšfascsd')
         test.assert.deepEqual({
             day: invalidDate.getDay(),
             year: invalidDate.getFullYear(),
