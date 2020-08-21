@@ -30,6 +30,7 @@
     "unit.js": "^2.1.0"
   },
   "scripts": {
+    "lint": "cross-env eslint ./lib/*.js --fix",
     "build": "cross-env eslint ./lib/*.js --fix && rollup -c",
     "test": "cross-env mocha test/test_*.js",
     "buildTest": "cross-env npm run build && npm run test"
