@@ -126,10 +126,10 @@ module.exports = {
                     taxDomicile: 'CZE',
                     placeOfBirth: 'Řiťka',
                     citizenship: 'CZE',
-                    gender: 'male'
+                    gender: 'male',
+                    politician: true
                 },
                 position: 'jednatel',
-                politician: true,
                 address: {
                     recipient: 'První kanální a.s.',
                     street: 'Zasmrádlá',

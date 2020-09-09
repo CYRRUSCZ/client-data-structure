@@ -38,7 +38,8 @@ describe('PersonalInformation', () => {
             personal.taxDomicile,
             personal.placeOfBirth,
             personal.citizenship,
-            personal.gender
+            personal.gender,
+            personal.politician
         )
         test.assert.deepEqual(fromCreate, personal)
     })
