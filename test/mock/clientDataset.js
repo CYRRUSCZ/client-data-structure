@@ -19,7 +19,8 @@ module.exports = {
                         name: 'Foo service',
                         added: new Date('2019-02-14T12:00:00.000Z')
                     }
-                ]
+                ],
+                weight: 1
             },
             {
                 version: 'bar-version',
@@ -27,7 +28,8 @@ module.exports = {
                 name: 'Bar extreme risky',
                 added: new Date('2019-02-14T12:00:00.000Z'),
                 groupUid: 'bar',
-                services: []
+                services: [],
+                weight: 2
             }
         ],
         residency: false,
