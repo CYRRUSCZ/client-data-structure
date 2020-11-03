@@ -33,7 +33,9 @@ module.exports = {
             }
         ],
         residency: false,
-        brokerId: 123
+        brokerId: 123,
+        externalBrokerCapitolId: 11,
+        externalBrokerAgentCapitolId: 22
     },
     personal: {
         prenominal: 'Ing.',
