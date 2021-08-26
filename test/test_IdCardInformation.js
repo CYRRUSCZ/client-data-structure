@@ -38,6 +38,6 @@ describe('IdCardInformation', () => {
     })
 
     it('country code can be converted to correct country name', () => {
-        test.assert.equal(idInformation.countryName, 'Česká Republika')
+        test.assert.equal(idInformation.countryName, 'Česká republika')
     })
 })

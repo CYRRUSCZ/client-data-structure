@@ -6,6 +6,7 @@ module.exports = {
         crmId: 'FooBaarBaZqaz',
         capitolId: 'crapItAll',
         economicalSectorCode: '2002212',
+        legislation: 'cs_CZ',
         investmentProfiles: [
             {
                 version: 'foo-version',

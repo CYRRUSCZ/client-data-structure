@@ -51,7 +51,7 @@ describe('Address', () => {
     })
 
     it('country code can be converted to correct country name', () => {
-        test.assert.equal(regularAddress.countryName, 'Česká Republika')
+        test.assert.equal(regularAddress.countryName, 'Česká republika')
     })
 
     it('fullAddress getter returns correct address', () => {

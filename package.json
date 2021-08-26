@@ -1,7 +1,7 @@
 {
   "name": "@cyrrus/clientdatastructure",
-  "version": "6.2.0",
-  "repository": "https://github.com/CYRRUSMarketing/clientdatastructure",
+  "version": "6.3.0",
+  "repository": "https://github.com/CYRRUSCZ/clientdatastructure",
   "description": "A common structure for Client data",
   "directories": {
     "lib": "lib",
@@ -9,19 +9,19 @@
   },
   "main": "dist/clientdatastructure",
   "dependencies": {
-    "@cyrrus/locale-utils": "^1.0.1"
+    "@cyrrus/locale-utils": "^1.0.3"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.3",
-    "@babel/preset-env": "^7.12.1",
+    "@babel/core": "^7.15.0",
+    "@babel/preset-env": "^7.15.0",
     "babel-eslint": "^10.1.0",
-    "cross-env": "^7.0.2",
-    "eslint": "^7.12.1",
+    "cross-env": "^7.0.3",
+    "eslint": "^7.32.0",
     "eslint-config-standard": "^14.1.1",
-    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-import": "^2.24.2",
     "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-standard": "^4.0.2",
+    "eslint-plugin-promise": "^4.3.1",
+    "eslint-plugin-standard": "^4.1.0",
     "mocha": "8.1.1",
     "rollup": "2.26.4",
     "rollup-plugin-babel": "^4.4.0",

@@ -45,9 +45,9 @@ describe('PersonalInformation', () => {
     })
 
     it('country code can be converted to correct country name', () => {
-        test.assert.equal(personal.birthNumberCountryName, 'Česká Republika')
-        test.assert.equal(personal.citizenshipCountryName, 'Česká Republika')
-        test.assert.equal(personal.taxDomicileCountryName, 'Česká Republika')
+        test.assert.equal(personal.birthNumberCountryName, 'Česká republika')
+        test.assert.equal(personal.citizenshipCountryName, 'Česká republika')
+        test.assert.equal(personal.taxDomicileCountryName, 'Česká republika')
     })
 
     it('fullName should be same as prenominal + " " + firstNameName + " " + lastName + " " + postnominal', () => {
