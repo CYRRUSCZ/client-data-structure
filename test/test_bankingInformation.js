@@ -23,4 +23,8 @@ describe('BankingInformation', () => {
         test.assert.equal(bankingInformation[0].id, clientDataset.bankAccounts[0].id)
         test.assert.equal(bankingInformation[1].id, clientDataset.bankAccounts[1]._id)
     })
+
+    it('foreign account is created', () => {
+        test.assert.equal(bankingInformation[2].bankNameAddress, clientDataset.bankAccounts[2].bankNameAddress)
+    })
 })

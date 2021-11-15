@@ -102,6 +102,19 @@ module.exports = {
             currency: 'EUR',
             foreign: false,
             _id: 'bar'
+        },
+        {
+            id: null,
+            prefix: '000000',
+            account: null,
+            code: null,
+            currency: 'CZK',
+            iban: 'CZ65 0800 0000 1920 0014 5399',
+            swift: 'AGBACZPP',
+            bankNameAddress: 'test banka',
+            accountName: 'test jmeno',
+            foreign: true,
+            capitolId: null
         }
     ],
     company: {
