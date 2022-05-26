@@ -15,8 +15,8 @@ export declare class AddressInformation {
     )
 
     static create (
-        address: any,
-        mailingAddress: any,
+        address: Address|Record<string,any>|null,
+        mailingAddress: Address|Record<string,any>|null,
         useMailingAddress: boolean
     ): AddressInformation
 

@@ -16,16 +16,16 @@ export declare class Address {
     private _streetNumber: string|null
 
     constructor (
-        input?: AddressInterface|null|Record<string, any>
+        input?: AddressInterface|Record<string, any>|null
     )
 
     static create (
-        recipient: any,
-        street: any,
-        streetNumber: any,
-        city: any,
-        country: any,
-        postalCode: any
+        recipient: string|null,
+        street: string|null,
+        streetNumber: string|null,
+        city: string|null,
+        country: string|null,
+        postalCode: string|null
     ): Address
 
     get fullAddress (): string
