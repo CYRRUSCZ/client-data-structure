@@ -1,4 +1,4 @@
-import { getStringOrNull, getValidDate } from './helpers.js'
+import { getStringOrNull, getValidDate } from '../helpers.js'
 
 interface InvestmentServiceInterface {
     uid: string|null,
@@ -7,6 +7,10 @@ interface InvestmentServiceInterface {
 }
 
 export declare class InvestmentService {
+    private _uid: string|null
+    private _name: string|null
+    private _added: string|null
+
     constructor (
         input?: InvestmentServiceInterface|Record<string, any>|null
     )

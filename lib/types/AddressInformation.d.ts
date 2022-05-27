@@ -1,6 +1,14 @@
-import { Address } from './Address'
+import Address from '../Address'
 
-interface AddressInformationInterface {
+export type AddressRegularType = 'address'
+export type AddressMailingType = 'mailingAddress'
+
+export type PlainObjectAddressTypes = [
+    AddressRegularType,
+    AddressMailingType
+]
+
+export interface AddressInformationInterface {
     address: Address,
     mailingAddress: Address,
     useMailingAddress: boolean
@@ -32,9 +40,9 @@ export declare class AddressInformation {
 
     static fromPlainObject (plainObject: AddressInformationInterface): AddressInformation
 
-    static get ADDRESS_TYPE_REGULAR (): string
+    static get ADDRESS_TYPE_REGULAR (): AddressRegularType
 
-    static get ADDRESS_TYPE_MAILING (): string
+    static get ADDRESS_TYPE_MAILING (): AddressMailingType
 
-    static get PLAIN_OBJECT_ADDRESS_TYPES (): string[]
+    static get PLAIN_OBJECT_ADDRESS_TYPES (): PlainObjectAddressTypes
 }

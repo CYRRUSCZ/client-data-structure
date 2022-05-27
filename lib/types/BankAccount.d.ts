@@ -1,4 +1,4 @@
-import { getStringOrNull } from './helpers.js'
+import { getStringOrNull } from '../helpers.js'
 import { bankCodes } from '@cyrrus/locale-utils'
 
 interface BankAccountInterface {
