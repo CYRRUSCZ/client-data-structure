@@ -1,7 +1,4 @@
-import { getValidDate, getStringOrNull } from '../helpers.js'
-import { countries } from '@cyrrus/locale-utils'
-
-interface BasePersonalInformationInterface {
+export interface BasePersonalInformationInterface {
     prenominal: string|null,
     firstName: string|null,
     lastName: string|null,
@@ -16,11 +13,11 @@ interface BasePersonalInformationInterface {
     politician: boolean
 }
 
-interface PersonalInformationInterfaceInput extends BasePersonalInformationInterface {
+export interface PersonalInformationInterfaceInput extends BasePersonalInformationInterface {
     dateOfBirth: Date|string|null,
 }
 
-interface PersonalInformationInterfaceOutput extends BasePersonalInformationInterface {
+export interface PersonalInformationInterfaceOutput extends BasePersonalInformationInterface {
     dateOfBirth: Date,
 }
 

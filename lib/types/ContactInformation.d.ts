@@ -1,5 +1,3 @@
-import { getStringOrNull } from '../helpers.js'
-
 export interface ContactInformationInterface {
     email: string|null,
     phoneNumber: string|null,

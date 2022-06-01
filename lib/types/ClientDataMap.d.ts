@@ -1,4 +1,4 @@
-interface ClientDataMapInterface {
+export interface ClientDataMapInterface {
     prenominal: string,
     firstName: string,
     lastName: string,
