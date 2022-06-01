@@ -1,4 +1,4 @@
-interface BaseIdCardInformationInterface {
+export interface BaseIdCardInformationInterface {
     number: string|null,
     issuedBy: string|null,
     country: string|null,
@@ -6,11 +6,11 @@ interface BaseIdCardInformationInterface {
     scanNotAllowed: boolean
 }
 
-interface IdCardInformationInterfaceInput extends BaseIdCardInformationInterface {
+export interface IdCardInformationInterfaceInput extends BaseIdCardInformationInterface {
     validity: Date|string
 }
 
-interface IdCardInformationInterfaceOutput extends BaseIdCardInformationInterface {
+export interface IdCardInformationInterfaceOutput extends BaseIdCardInformationInterface {
     validity: Date
 }
 

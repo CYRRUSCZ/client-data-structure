@@ -1,11 +1,11 @@
-import AddressInformation from '../AddressInformation'
-import ContactInformation from '../ContactInformation.js'
-import PersonalInformation from '../PersonalInformation.js'
-import ClientInformation from '../ClientInformation.js'
-import IdCardInformation from '../IdCardInformation.js'
-import CompanyInformation from '../CompanyInformation.js'
+import { AddressInformation } from './AddressInformation'
+import { ContactInformation } from './ContactInformation'
+import { PersonalInformation } from './PersonalInformation'
+import { IdCardInformation } from './IdCardInformation'
+import { CompanyInformation } from './CompanyInformation'
 import { AddressMailingType, AddressRegularType } from './AddressInformation'
 import {
+    ClientInformation,
     ClientCompanyType,
     ClientOriginCapitolType,
     ClientOriginCrmType,
@@ -15,17 +15,16 @@ import {
     ClientPersonType,
     ClientSelfEmployedType
 } from './ClientInformation'
-import { getInstanceOfClass } from '../helpers.js'
-import BankAccount from '../BankAccount.js'
+import { BankAccount } from './BankAccount'
 
-type PlainObjectKeyClientType = 'client'
-type PlainObjectKeyPersonalType = 'personal'
-type PlainObjectKeyIdCardType = 'idCard'
-type PlainObjectKeyContactType = 'contact'
-type PlainObjectKeyBankAccountsType = 'bankAccounts'
-type PlainObjectKeyAddressType = 'address'
-type PlainObjectKeyCompanyType = 'company'
-type PlainObjectKeyRepresentativesType = 'representatives'
+export type PlainObjectKeyClientType = 'client'
+export type PlainObjectKeyPersonalType = 'personal'
+export type PlainObjectKeyIdCardType = 'idCard'
+export type PlainObjectKeyContactType = 'contact'
+export type PlainObjectKeyBankAccountsType = 'bankAccounts'
+export type PlainObjectKeyAddressType = 'address'
+export type PlainObjectKeyCompanyType = 'company'
+export type PlainObjectKeyRepresentativesType = 'representatives'
 
 declare const PLAIN_OBJECT_KEY_CLIENT: PlainObjectKeyClientType
 declare const PLAIN_OBJECT_KEY_PERSONAL: PlainObjectKeyPersonalType
@@ -36,7 +35,7 @@ declare const PLAIN_OBJECT_KEY_ADDRESS: PlainObjectKeyAddressType
 declare const PLAIN_OBJECT_KEY_COMPANY: PlainObjectKeyCompanyType
 declare const PLAIN_OBJECT_KEY_REPRESENTATIVES: PlainObjectKeyRepresentativesType
 
-type PlainObjectKeysType = [
+export type PlainObjectKeysType = [
     PlainObjectKeyClientType,
     PlainObjectKeyPersonalType,
     PlainObjectKeyIdCardType,
@@ -61,7 +60,7 @@ declare const CLIENT_ORIGIN_WEB: ClientOriginWebType
 declare const CLIENT_TYPES: ClientTypes
 declare const CLIENT_ORIGINS: ClientOriginsType
 
-interface ClientDataInterfaceInput {
+export interface ClientDataInterfaceInput {
     client: ClientInformation|Record<string, any>|null,
     personal: PersonalInformation|Record<string, any>|null,
     idCard: IdCardInformation|Record<string, any>|null,
@@ -71,7 +70,7 @@ interface ClientDataInterfaceInput {
     company: CompanyInformation|Record<string, any>|null
 }
 
-interface ClientDataInterfaceOutput {
+export interface ClientDataInterfaceOutput {
     client: ClientInformation,
     personal: PersonalInformation,
     idCard: IdCardInformation,

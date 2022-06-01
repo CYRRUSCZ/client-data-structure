@@ -1,11 +1,10 @@
-import Address from '../Address.js'
-import { getInstanceOfClass, getStringOrNull } from '../helpers.js'
-import Representative from '../Representative.js'
+import { Address } from './Address'
+import { Representative } from './Representative'
 
 export type PlainObjectKeyIcType = 'ic'
 export type PlainObjectKeyDicType = 'dic'
 export type PlainObjectKeyLei = 'lei'
-export type PlainObjectKeyRepresentativesType = 'representatives'
+type PlainObjectKeyRepresentativesType = 'representatives'
 export type PlainObjectKeyNameType = 'name'
 export type PlainObjectKeyTaxDomicileType = 'taxDomicile'
 

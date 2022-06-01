@@ -1,7 +1,4 @@
-import { getStringOrNull } from '../helpers.js'
-import { bankCodes } from '@cyrrus/locale-utils'
-
-interface BankAccountInterface {
+export interface BankAccountInterface {
     id: string|null,
     prefix: string|null,
     account: string|null,

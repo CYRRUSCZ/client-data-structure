@@ -1,6 +1,4 @@
-import { getStringOrNull, getValidDate } from '../helpers.js'
-
-interface InvestmentServiceInterface {
+export interface InvestmentServiceInterface {
     uid: string|null,
     name: string|null,
     added: string|null

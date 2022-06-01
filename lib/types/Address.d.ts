@@ -1,4 +1,4 @@
-interface AddressInterface {
+export interface AddressInterface {
     recipient: string|null,
     street: string|null,
     streetNumber: string|null,

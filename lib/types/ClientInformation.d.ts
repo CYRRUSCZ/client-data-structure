@@ -1,7 +1,8 @@
-import { getStringOrNull, getInstanceOfClass } from '../helpers.js'
-import InvestmentProfile from '../InvestmentProfile.js'
+import { InvestmentCategoryInterfaceInput } from './InvestmentCategory.d'
+import { InvestmentProfile } from './InvestmentProfile'
 import { InvestmentProfileInterfaceInput } from './InvestmentProfile'
-import InvestmentService from '../InvestmentService.js'
+import { InvestmentService } from './InvestmentService'
+import { InvestmentCategory } from './InvestmentCategory'
 
 export type ClientPersonType = 'person'
 export type ClientCompanyType = 'company'
@@ -20,7 +21,7 @@ declare const CLIENT_ORIGIN_CAPITOL: ClientOriginCapitolType
 declare const CLIENT_ORIGIN_CRM: ClientOriginCrmType
 declare const CLIENT_ORIGIN_WEB: ClientOriginWebType
 
-export enum ClientOriginNames {
+export declare enum ClientOriginNames {
     internal = 'Interní DB',
     capitol = 'Capitol',
     crm = 'CRM',
@@ -29,7 +30,7 @@ export enum ClientOriginNames {
 
 declare const CLIENT_ORIGIN_NAMES: ClientOriginNames
 
-export enum ClientTypeNames {
+export declare enum ClientTypeNames {
     person = 'Fyzická osoba',
     company = 'Právnická osoba',
     osvc = 'OSVČ'
@@ -66,9 +67,11 @@ export interface BaseClientInformationInterface {
 
 export interface ClientInformationInterfaceInput extends BaseClientInformationInterface {
     investmentProfiles: InvestmentProfile[]|Array<Record<string, any>>,
+    investmentCategory: InvestmentCategory[]|Array<Record<string, any>>
 }
 export interface ClientInformationInterfaceOutput extends BaseClientInformationInterface {
     investmentProfiles: InvestmentProfile[],
+    investmentCategory: InvestmentCategory[]
 }
 
 export declare class ClientInformation {
@@ -84,6 +87,8 @@ export declare class ClientInformation {
     private _externalBrokerCapitolId: string|null
     private _externalBrokerAgentCapitolId: string|null
     private _legislation: string|null
+    private _investmentCategory: InvestmentCategory[]
+
 
     constructor (
         input?: ClientInformationInterfaceInput|Record<string, any>|null
@@ -95,13 +100,14 @@ export declare class ClientInformation {
         dataOriginId: string|null,
         capitolId: string|null,
         crmId: string|null,
-        investmentProfiles: InvestmentProfile[],
+        investmentProfiles: InvestmentProfile[]|Array<Record<string, any>>,
         residency: boolean,
         economicalSectorCode: string|null,
         brokerId: string|null,
         externalBrokerCapitolId: string|null,
         externalBrokerAgentCapitolId: string|null,
-        legislation: string|null
+        legislation: string|null,
+        _investmentCategory: InvestmentCategory[]|Array<Record<string, any>>
     ): ClientInformation
 
     get legislation (): string|null
@@ -128,6 +134,8 @@ export declare class ClientInformation {
 
     get investmentProfiles (): InvestmentProfile[]
 
+    get investmentCategories (): InvestmentCategory[]
+
     get residency (): boolean
 
     get brokerId (): string|null
@@ -147,6 +155,12 @@ export declare class ClientInformation {
     addProfile (profile: InvestmentProfile|InvestmentProfileInterfaceInput|Record<string, any>): void
 
     containsProfile (profile: InvestmentProfile|InvestmentProfileInterfaceInput|Record<string, any>): boolean
+
+    removeCategory (category: InvestmentCategory|InvestmentCategoryInterfaceInput|Record<string, any>): void
+
+    addCategory (category: InvestmentCategory|InvestmentCategoryInterfaceInput|Record<string, any>): void
+
+    containsCategory (category: InvestmentCategory|InvestmentCategoryInterfaceInput|Record<string, any>): boolean
 
     hasInvestmentService (serviceUid: string|null): boolean
 

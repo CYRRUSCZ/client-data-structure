@@ -1,5 +1,4 @@
-import { getStringOrNull, getValidDate, getInstanceOfClass } from '../helpers.js'
-import InvestmentService from '../InvestmentService.js'
+import { InvestmentService } from './InvestmentService'
 
 export interface BaseInvestmentProfileInterface {
     version: string|null,
@@ -23,9 +22,9 @@ export declare class InvestmentProfile {
     private _version: string|null
     private _uid: string|null
     private _name: string|null
-    private _added: string|null
+    private _added: Date
     private _groupUid: string|null
-    private _services: InvestmentService[]|Array<Record<string, any>>
+    private _services: InvestmentService[]
     private _weight: string|null
 
     constructor (

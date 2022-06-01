@@ -1,15 +1,14 @@
-import { getInstanceOfClass, getStringOrNull } from '../helpers.js'
-import { Address } from './Address.js'
-import { IdCardInformation } from './IdCardInformation.js'
-import { PersonalInformation } from './PersonalInformation.js'
-import { ContactInformation } from './ContactInformation.js'
+import { Address } from './Address'
+import { IdCardInformation } from './IdCardInformation'
+import { PersonalInformation } from './PersonalInformation'
+import { ContactInformation } from './ContactInformation'
 
 type PlainObjectKeyPersonalType = 'personal'
-type PlainObjectKeyPositionType = 'position'
+export type PlainObjectKeyPositionType = 'position'
 type PlainObjectKeyAddressType = 'address'
 type PlainObjectKeyIdCardType = 'idCard'
 type PlainObjectKeyContactType = 'contact'
-type PlainObjectKeyIdType = 'id'
+export type PlainObjectKeyIdType = 'id'
 
 declare const PLAIN_OBJECT_KEY_PERSONAL: PlainObjectKeyPersonalType
 declare const PLAIN_OBJECT_KEY_POSITION: PlainObjectKeyPositionType
@@ -18,7 +17,7 @@ declare const PLAIN_OBJECT_KEY_ID_CARD: PlainObjectKeyIdCardType
 declare const PLAIN_OBJECT_KEY_CONTACT: PlainObjectKeyContactType
 declare const PLAIN_OBJECT_KEY_ID: PlainObjectKeyIdType
 
-interface BaseRepresentativeInterface {
+export interface BaseRepresentativeInterface {
     position: string|null,
     id: string|null,
     _id: string|null,
@@ -30,14 +29,14 @@ interface BaseRepresentativeInterface {
     capitolContactId: string|null
 }
 
-interface RepresentativeInterfaceInput extends BaseRepresentativeInterface {
+export interface RepresentativeInterfaceInput extends BaseRepresentativeInterface {
     address: Address|Record<string, any>|null,
     personal: PersonalInformation|Record<string, any>|null,
     idCard: IdCardInformation|Record<string, any>|null,
     contact: ContactInformation|Record<string, any>|null,
 }
 
-interface RepresentativeInterfaceOutput extends BaseRepresentativeInterface {
+export interface RepresentativeInterfaceOutput extends BaseRepresentativeInterface {
     address: Address,
     personal: PersonalInformation,
     idCard: IdCardInformation,
@@ -53,7 +52,7 @@ export declare class Representative {
     private _isRealOwner: boolean
     private _realOwnerReasonChar: string|null
     private _realOwnerReasonNumber: string|null
-    private _capitolId: string
+    private _capitolId: string|null
     private _isRepresentative: boolean
     private _capitolContactId: string|null
 
@@ -62,12 +61,12 @@ export declare class Representative {
     )
 
     static create (
-        personal: PersonalInformation|Record<string, any>|null,
+        personal: PersonalInformation,
         position: string|null,
-        address: Address|Record<string, any>|null,
-        idCard: IdCardInformation|Record<string, any>|null,
+        address: Address,
+        idCard: IdCardInformation,
         id: string|null,
-        contact: ContactInformation|Record<string, any>|null,
+        contact: ContactInformation,
         isRepresentative: boolean,
         isRealOwner: boolean,
         realOwnerReasonChar: string,
@@ -90,11 +89,11 @@ export declare class Representative {
 
     get isRealOwner (): boolean
 
-    get realOwnerReasonChar (): string
+    get realOwnerReasonChar (): string|null
 
-    get realOwnerReasonNumber (): string
+    get realOwnerReasonNumber (): string|null
 
-    get capitolId (): string
+    get capitolId (): string|null
 
     get capitolContactId (): string|null
 
