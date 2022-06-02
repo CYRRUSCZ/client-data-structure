@@ -67,11 +67,11 @@ export interface BaseClientInformationInterface {
 
 export interface ClientInformationInterfaceInput extends BaseClientInformationInterface {
     investmentProfiles: InvestmentProfile[]|Array<Record<string, any>>,
-    investmentCategory: InvestmentCategory[]|Array<Record<string, any>>
+    investmentCategories: InvestmentCategory[]|Array<Record<string, any>>
 }
 export interface ClientInformationInterfaceOutput extends BaseClientInformationInterface {
     investmentProfiles: InvestmentProfile[],
-    investmentCategory: InvestmentCategory[]
+    investmentCategories: InvestmentCategory[]
 }
 
 export declare class ClientInformation {
@@ -87,7 +87,7 @@ export declare class ClientInformation {
     private _externalBrokerCapitolId: string|null
     private _externalBrokerAgentCapitolId: string|null
     private _legislation: string|null
-    private _investmentCategory: InvestmentCategory[]
+    private _investmentCategories: InvestmentCategory[]
 
 
     constructor (
@@ -107,7 +107,7 @@ export declare class ClientInformation {
         externalBrokerCapitolId: string|null,
         externalBrokerAgentCapitolId: string|null,
         legislation: string|null,
-        _investmentCategory: InvestmentCategory[]|Array<Record<string, any>>
+        investmentCategories: InvestmentCategory[]|Array<Record<string, any>>
     ): ClientInformation
 
     get legislation (): string|null
