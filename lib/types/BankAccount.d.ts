@@ -31,17 +31,17 @@ export declare class BankAccount {
     )
 
     static create (
-        id: any,
-        prefix: any,
-        account: any,
-        code: any,
-        currency: any,
-        iban: any,
-        swift: any,
-        bankNameAddress: any,
-        accountName: any,
+        id: string|null,
+        prefix: string|null,
+        account: string|null,
+        code: string|null,
+        currency: string|null,
+        iban: string|null,
+        swift: string|null,
+        bankNameAddress: string|null,
+        accountName: string|null,
         foreign: boolean,
-        capitolId: any
+        capitolId: string|null
     ): BankAccount
 
     get id (): string|null

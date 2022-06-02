@@ -44,7 +44,7 @@ export declare class Address {
 
     get postalCode (): string|null
 
-    localizedCountryName (locale: string): string
+    localizedCountryName (locale: string): string|null
 
     localizedFullAddress (locale: string): string
 

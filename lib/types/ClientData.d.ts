@@ -13,7 +13,8 @@ import {
     ClientOriginsType,
     ClientOriginWebType,
     ClientPersonType,
-    ClientSelfEmployedType
+    ClientSelfEmployedType,
+    ClientTypes
 } from './ClientInformation'
 import { BankAccount } from './BankAccount'
 

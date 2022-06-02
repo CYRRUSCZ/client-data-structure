@@ -23,9 +23,9 @@ export interface BaseRepresentativeInterface {
     _id: string|null,
     isRepresentative: boolean,
     isRealOwner: boolean,
-    realOwnerReasonChar: string,
-    realOwnerReasonNumber: string,
-    capitolId: string,
+    realOwnerReasonChar: string|null,
+    realOwnerReasonNumber: string|null,
+    capitolId: string|null,
     capitolContactId: string|null
 }
 
@@ -69,9 +69,9 @@ export declare class Representative {
         contact: ContactInformation,
         isRepresentative: boolean,
         isRealOwner: boolean,
-        realOwnerReasonChar: string,
-        realOwnerReasonNumber: string,
-        capitolId: string,
+        realOwnerReasonChar: string|null,
+        realOwnerReasonNumber: string|null,
+        capitolId: string|null,
         capitolContactId: string|null
     ): Representative
 
