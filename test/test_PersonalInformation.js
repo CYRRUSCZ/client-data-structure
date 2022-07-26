@@ -61,4 +61,9 @@ describe('PersonalInformation', () => {
         })
         test.assert.equal(tmp.fullName, personal.firstName)
     })
+
+    it('should have same date in birthDate', () => {
+        const tmp = new PersonalInformation({ dateOfBirth: new Date('2020-01-01T12:00:00.000Z') })
+        test.assert.equal(tmp.dateOfBirth.toISOString(), new Date('2020-01-01T12:00:00.000Z').toISOString())
+    })
 })

@@ -123,4 +123,24 @@ describe('ClientData', () => {
         client.client._type = 'company'
         test.assert.equal(client.fullName, companyInfo.name)
     })
+
+    it('should have same date in birthDate', () => {
+        const tmp = new ClientData({ personal: { dateOfBirth: new Date('2020-01-01T12:00:00.000Z') } })
+        test.assert.equal(tmp.personal.dateOfBirth.toISOString(), new Date('2020-01-01T12:00:00.000Z').toISOString())
+    })
+
+    it('should have same date in birthDate 2', () => {
+        const tmp = new ClientData({ personal: { dateOfBirth: '2020-01-01T11:00:00.000Z' } })
+        test.assert.equal(tmp.personal.dateOfBirth.toISOString(), new Date('2020-01-01T12:00:00.000Z').toISOString())
+    })
+
+    it('should have same date in birthDate 3', () => {
+        const tmp = new ClientData({ personal: { dateOfBirth: '2020-01-01' } })
+        test.assert.equal(tmp.personal.dateOfBirth.toISOString(), new Date('2020-01-01T12:00:00.000Z').toISOString())
+    })
+
+    it('should have same date in birthDate in representative', () => {
+        const tmp = new ClientData({ company: { representatives: [{ personal: { dateOfBirth: new Date('2020-01-01T12:00:00.000Z') } }] } })
+        test.assert.equal(tmp.company.representatives[0].personal.dateOfBirth.toISOString(), new Date('2020-01-01T12:00:00.000Z').toISOString())
+    })
 })
