@@ -1,6 +1,6 @@
 {
   "name": "@cyrrus/clientdatastructure",
-  "version": "7.0.6",
+  "version": "7.0.7",
   "repository": "https://github.com/CYRRUSCZ/clientdatastructure",
   "description": "A common structure for Client data",
   "directories": {
