@@ -1,6 +1,6 @@
 /* global describe, it */
 
-const { helpers, ClientData } = require('../dist/clientdatastructure')
+const { helpers, ClientData } = require('../dist/clientdatastructure.js')
 const clientDataset = require('./mock/clientDataset.js')
 const test = require('unit.js')
 
