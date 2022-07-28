@@ -1,8 +1,8 @@
-import { InvestmentCategoryInterfaceInput } from './InvestmentCategory.d'
+import { InvestmentParameterInterfaceInput } from './InvestmentParameter.d'
 import { InvestmentProfile } from './InvestmentProfile'
 import { InvestmentProfileInterfaceInput } from './InvestmentProfile'
 import { InvestmentService } from './InvestmentService'
-import { InvestmentCategory } from './InvestmentCategory'
+import { InvestmentParameter } from './InvestmentParameter'
 
 export type ClientPersonType = 'person'
 export type ClientCompanyType = 'company'
@@ -67,11 +67,11 @@ export interface BaseClientInformationInterface {
 
 export interface ClientInformationInterfaceInput extends BaseClientInformationInterface {
     investmentProfiles: InvestmentProfile[]|Array<Record<string, any>>,
-    investmentCategories: InvestmentCategory[]|Array<Record<string, any>>
+    investmentParameters: InvestmentParameter[]|Array<Record<string, any>>
 }
 export interface ClientInformationInterfaceOutput extends BaseClientInformationInterface {
     investmentProfiles: InvestmentProfile[],
-    investmentCategories: InvestmentCategory[]
+    investmentParameters: InvestmentParameter[]
 }
 
 export declare class ClientInformation {
@@ -87,7 +87,7 @@ export declare class ClientInformation {
     private _externalBrokerCapitolId: string|null
     private _externalBrokerAgentCapitolId: string|null
     private _legislation: string|null
-    private _investmentCategories: InvestmentCategory[]
+    private _investmentParameters: InvestmentParameter[]
 
 
     constructor (
@@ -107,7 +107,7 @@ export declare class ClientInformation {
         externalBrokerCapitolId: string|null,
         externalBrokerAgentCapitolId: string|null,
         legislation: string|null,
-        investmentCategories: InvestmentCategory[]|Array<Record<string, any>>
+        investmentParameters: InvestmentParameter[]|Array<Record<string, any>>
     ): ClientInformation
 
     get legislation (): string|null
@@ -134,7 +134,7 @@ export declare class ClientInformation {
 
     get investmentProfiles (): InvestmentProfile[]
 
-    get investmentCategories (): InvestmentCategory[]
+    get investmentParameters (): InvestmentParameter[]
 
     get residency (): boolean
 
@@ -156,11 +156,11 @@ export declare class ClientInformation {
 
     containsProfile (profile: InvestmentProfile|InvestmentProfileInterfaceInput|Record<string, any>): boolean
 
-    removeCategory (category: InvestmentCategory|InvestmentCategoryInterfaceInput|Record<string, any>): void
+    removeParameter (parameter: InvestmentParameter|InvestmentParameterInterfaceInput|Record<string, any>): void
 
-    addCategory (category: InvestmentCategory|InvestmentCategoryInterfaceInput|Record<string, any>): void
+    addParameter (parameter: InvestmentParameter|InvestmentParameterInterfaceInput|Record<string, any>): void
 
-    containsCategory (category: InvestmentCategory|InvestmentCategoryInterfaceInput|Record<string, any>): boolean
+    containsParameter (parameter: InvestmentParameter|InvestmentParameterInterfaceInput|Record<string, any>): boolean
 
     hasInvestmentService (serviceUid: string|null): boolean
 
