@@ -134,6 +134,8 @@ export declare class ClientInformation {
 
     get investmentProfiles (): InvestmentProfile[]
 
+    get investmentCategories (): InvestmentParameter[]
+
     get investmentParameters (): InvestmentParameter[]
 
     get residency (): boolean
