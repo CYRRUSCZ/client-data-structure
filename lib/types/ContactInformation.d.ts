@@ -1,6 +1,6 @@
 export interface ContactInformationInterface {
-    email: string|null,
-    phoneNumber: string|null,
+    email: string|null
+    phoneNumber: string|null
     phonePassword: string|null
 }
 
@@ -10,7 +10,7 @@ export declare class ContactInformation {
     private _phonePassword: string|null
 
     constructor (
-        input?: ContactInformationInterface|Record<string, any>|null
+        input?: Partial<ContactInformationInterface>
     )
 
     static create (
@@ -30,6 +30,6 @@ export declare class ContactInformation {
     toPlainObject (): ContactInformationInterface
 
     static fromPlainObject (
-        plainObject: ContactInformationInterface|Record<string, any>|null
+        plainObject?: Partial<ContactInformationInterface>
     ): ContactInformation
 }

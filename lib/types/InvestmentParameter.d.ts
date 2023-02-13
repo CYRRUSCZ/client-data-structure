@@ -1,7 +1,7 @@
 export interface BaseInvestmentParameterInterface {
-    version: string|null,
-    uid: string|null,
-    name: string|null,
+    version: string|null
+    uid: string|null
+    name: string|null
     value: string|number|null
     isInvestmentCategory: boolean
 }
@@ -23,7 +23,7 @@ export declare class InvestmentParameter {
     private _isInvestmentCategory: boolean
 
     constructor (
-        input?: InvestmentParameterInterfaceInput|Record<string, any>|null
+        input?: Partial<InvestmentParameterInterfaceInput>
     )
 
     static create (
@@ -52,6 +52,6 @@ export declare class InvestmentParameter {
     toPlainObject (): InvestmentParameterInterfaceOutput
 
     static fromPlainObject (
-        plainObject: InvestmentParameterInterfaceInput
+        plainObject: Partial<InvestmentParameterInterfaceInput>
     ): InvestmentParameter
 }

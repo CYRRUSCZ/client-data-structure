@@ -1,21 +1,22 @@
-import { InvestmentService } from './InvestmentService'
+import { InvestmentService, InvestmentServiceInterface } from './InvestmentService'
 
 export interface BaseInvestmentProfileInterface {
-    version: string|null,
-    uid: string|null,
-    name: string|null,
-    groupUid: string|null,
-    weight: number
+    version: string|null
+    uid: string|null
+    name: string|null
+    groupUid: string|null
 }
 
 export interface InvestmentProfileInterfaceInput extends BaseInvestmentProfileInterface {
-    services: InvestmentService[]|Array<Record<string, any>>,
-    added: Date|string,
+    added: Date|string
+    services?: Partial<InvestmentServiceInterface>[]
+    weight?: number
 }
 
 export interface InvestmentProfileInterfaceOutput extends BaseInvestmentProfileInterface {
-    services: InvestmentService[]
-    added: Date,
+    added: Date
+    services: InvestmentServiceInterface[]
+    weight: number
 }
 
 export declare class InvestmentProfile {
@@ -28,7 +29,7 @@ export declare class InvestmentProfile {
     private _weight: string|null
 
     constructor (
-        input?: InvestmentProfileInterfaceInput|Record<string, any>|null
+        input?: Partial<InvestmentProfileInterfaceInput>
     )
 
     static create (
@@ -37,8 +38,8 @@ export declare class InvestmentProfile {
         name: string|null,
         added: Date|string,
         groupUid: string|null,
-        services: InvestmentService[],
-        weight: number
+        services?: Partial<InvestmentServiceInterface>[],
+        weight?: number
     ): InvestmentProfile
 
     get weight (): number
@@ -59,13 +60,13 @@ export declare class InvestmentProfile {
 
     toPlainObject (): InvestmentProfileInterfaceOutput
 
-    removeService (service: InvestmentService|Record<string, any>|null): void
+    removeService (service: Partial<InvestmentServiceInterface>): void
 
-    addService (service: InvestmentService|Record<string, any>|null): void
+    addService (service: Partial<InvestmentServiceInterface>): void
 
-    containsService (service: InvestmentService|Record<string, any>|null): boolean
+    containsService (service: Partial<InvestmentServiceInterface>): boolean
 
     static fromPlainObject (
-        plainObject: InvestmentProfileInterfaceInput|Record<string, any>|null
+        plainObject?: Partial<InvestmentProfileInterfaceInput>
     ): InvestmentProfile
 }

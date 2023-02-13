@@ -1,24 +1,24 @@
 export interface BasePersonalInformationInterface {
-    prenominal: string|null,
-    firstName: string|null,
-    lastName: string|null,
-    postnominal: string|null,
-    birthNumber: string|null,
-    noBirthNumber: boolean,
-    birthNumberCountry: string|null,
-    taxDomicile: string|null,
-    placeOfBirth: string|null,
-    citizenship: string|null,
-    gender: string|null,
+    prenominal: string|null
+    firstName: string|null
+    lastName: string|null
+    postnominal: string|null
+    birthNumber: string|null
+    noBirthNumber: boolean
+    birthNumberCountry: string|null
+    taxDomicile: string|null
+    placeOfBirth: string|null
+    citizenship: string|null
+    gender: string|null
     politician: boolean
 }
 
 export interface PersonalInformationInterfaceInput extends BasePersonalInformationInterface {
-    dateOfBirth: Date|string|null,
+    dateOfBirth: Date|string|null
 }
 
 export interface PersonalInformationInterfaceOutput extends BasePersonalInformationInterface {
-    dateOfBirth: Date,
+    dateOfBirth: Date
 }
 
 export declare class PersonalInformation {
@@ -38,7 +38,7 @@ export declare class PersonalInformation {
     private _politician: boolean
 
     constructor (
-        input?: PersonalInformationInterfaceInput|Record<string, any>|null
+        input?: Partial<PersonalInformationInterfaceInput>
     )
 
     static create (
@@ -96,6 +96,6 @@ export declare class PersonalInformation {
     toPlainObject (): PersonalInformationInterfaceOutput
 
     static fromPlainObject (
-        plainObject: PersonalInformationInterfaceInput|Record<string, any>|null
+        plainObject?: Partial<PersonalInformationInterfaceInput>
     ): PersonalInformation
 }

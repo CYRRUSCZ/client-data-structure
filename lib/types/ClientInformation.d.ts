@@ -1,7 +1,6 @@
 import { InvestmentParameterInterfaceInput } from './InvestmentParameter.d'
 import { InvestmentProfile } from './InvestmentProfile'
 import { InvestmentProfileInterfaceInput } from './InvestmentProfile'
-import { InvestmentService } from './InvestmentService'
 import { InvestmentParameter } from './InvestmentParameter'
 
 export type ClientPersonType = 'person'
@@ -52,26 +51,27 @@ export type ClientOriginsType = [
 declare const CLIENT_ORIGINS: ClientOriginsType
 
 export interface BaseClientInformationInterface {
-    type: string|null,
-    dataOrigin: string|null,
-    dataOriginId: string|null,
-    capitolId: string|null,
-    crmId: string|null,
-    residency: boolean,
-    economicalSectorCode: string|null,
-    brokerId: string|null,
-    externalBrokerCapitolId: string|null,
-    externalBrokerAgentCapitolId: string|null,
+    type: string|null
+    dataOrigin: string|null
+    dataOriginId: string|null
+    capitolId: string|null
+    crmId: string|null
+    economicalSectorCode: string|null
+    brokerId: string|null
+    externalBrokerCapitolId: string|null
+    externalBrokerAgentCapitolId: string|null
     legislation: string|null
 }
 
 export interface ClientInformationInterfaceInput extends BaseClientInformationInterface {
-    investmentProfiles: InvestmentProfile[]|Array<Record<string, any>>,
-    investmentParameters: InvestmentParameter[]|Array<Record<string, any>>
+    investmentProfiles?: Partial<InvestmentProfileInterfaceInput>[]
+    residency?: boolean
+    investmentParameters?: Partial<InvestmentParameterInterfaceInput>[]
 }
 export interface ClientInformationInterfaceOutput extends BaseClientInformationInterface {
-    investmentProfiles: InvestmentProfile[],
-    investmentParameters: InvestmentParameter[]
+    investmentProfiles: InvestmentProfileInterfaceInput[]
+    residency: boolean
+    investmentParameters: InvestmentParameterInterfaceInput[]
 }
 
 export declare class ClientInformation {
@@ -91,7 +91,7 @@ export declare class ClientInformation {
 
 
     constructor (
-        input?: ClientInformationInterfaceInput|Record<string, any>|null
+        input?: Partial<ClientInformationInterfaceInput>
     )
 
     static create (
@@ -100,14 +100,14 @@ export declare class ClientInformation {
         dataOriginId: string|null,
         capitolId: string|null,
         crmId: string|null,
-        investmentProfiles: InvestmentProfile[]|Array<Record<string, any>>,
+        investmentProfiles: Partial<InvestmentProfileInterfaceInput>[],
         residency: boolean,
         economicalSectorCode: string|null,
         brokerId: string|null,
         externalBrokerCapitolId: string|null,
         externalBrokerAgentCapitolId: string|null,
         legislation: string|null,
-        investmentParameters: InvestmentParameter[]|Array<Record<string, any>>
+        investmentParameters?: Partial<InvestmentParameterInterfaceInput>[]
     ): ClientInformation
 
     get legislation (): string|null
@@ -150,24 +150,24 @@ export declare class ClientInformation {
 
     removeProfilesGroup (groupUid: string|null): InvestmentProfile[]
 
-    replaceProfilesGroup (groupUid: string|null, profilesArray: InvestmentProfile[]): void
+    replaceProfilesGroup (groupUid: string|null, profilesArray: Partial<InvestmentProfileInterfaceInput>[]): void
 
-    removeProfile (profile: InvestmentProfile|InvestmentProfileInterfaceInput|Record<string, any>): void
+    removeProfile (profile: Partial<InvestmentProfileInterfaceInput>): void
 
-    addProfile (profile: InvestmentProfile|InvestmentProfileInterfaceInput|Record<string, any>): void
+    addProfile (profile: Partial<InvestmentProfileInterfaceInput>): void
 
-    containsProfile (profile: InvestmentProfile|InvestmentProfileInterfaceInput|Record<string, any>): boolean
+    containsProfile (profile: Partial<InvestmentProfileInterfaceInput>): boolean
 
-    removeParameter (parameter: InvestmentParameter|InvestmentParameterInterfaceInput|Record<string, any>): void
+    removeParameter (parameter: Partial<InvestmentParameterInterfaceInput>): void
 
-    addParameter (parameter: InvestmentParameter|InvestmentParameterInterfaceInput|Record<string, any>): void
+    addParameter (parameter: Partial<InvestmentParameterInterfaceInput>): void
 
-    containsParameter (parameter: InvestmentParameter|InvestmentParameterInterfaceInput|Record<string, any>): boolean
+    containsParameter (parameter: Partial<InvestmentParameterInterfaceInput>): boolean
 
     hasInvestmentService (serviceUid: string|null): boolean
 
     static fromPlainObject (
-        plainObject: ClientInformationInterfaceInput|Record<string, any>|null
+        plainObject?: Partial<ClientInformationInterfaceInput>
     ): ClientInformation
 
     static get CLIENT_TYPE_PERSON (): ClientPersonType

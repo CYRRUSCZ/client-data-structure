@@ -1,16 +1,23 @@
-export interface BankAccountInterface {
-    id: string|null,
-    prefix: string|null,
-    account: string|null,
-    code: string|null,
-    currency: string|null,
-    iban: string|null,
-    swift: string|null,
-    bankNameAddress: string|null,
-    accountName: string|null,
-    foreign: boolean,
-    _id: string|null,
+interface BankAccountInterface {
+    id: string|null
+    prefix: string|null
+    account: string|null
+    code: string|null
+    currency: string|null
+    iban: string|null
+    swift: string|null
+    bankNameAddress: string|null
+    accountName: string|null
+}
+export interface BankAccountInterfaceOutput extends BankAccountInterface {
+    foreign: boolean
     capitolId: string|null
+}
+
+export interface BankAccountInterfaceInput extends BankAccountInterface {
+    _id?: string|null
+    capitolId?: string|null
+    foreign?: boolean
 }
 
 export declare class BankAccount {
@@ -27,7 +34,7 @@ export declare class BankAccount {
     private _capitolId: string|null
 
     constructor (
-        input?: BankAccountInterface|null|Record<string, any>
+        input?: Partial<BankAccountInterfaceInput>
     )
 
     static create (
@@ -40,8 +47,8 @@ export declare class BankAccount {
         swift: string|null,
         bankNameAddress: string|null,
         accountName: string|null,
-        foreign: boolean,
-        capitolId: string|null
+        foreign?: boolean,
+        capitolId?: string|null
     ): BankAccount
 
     get id (): string|null
@@ -68,9 +75,11 @@ export declare class BankAccount {
 
     get capitolId (): string|null
 
-    toJSON (): BankAccountInterface
+    toJSON (): BankAccountInterfaceOutput
 
-    toPlainObject (): BankAccountInterface
+    toPlainObject (): BankAccountInterfaceOutput
 
-    static fromPlainObject (plainObject): BankAccount
+    static fromPlainObject (
+        plainObject: Partial<BankAccountInterfaceOutput>
+    ): BankAccount
 }

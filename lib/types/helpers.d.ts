@@ -1,7 +1,9 @@
 declare function getValidDate (inputDate: Date|string, throwInvalid?: boolean): Date
 
-declare function getStringOrNull (input: any): string|null
+declare function getNormalizedDate (inputDate: Date|string, throwInvalid?: boolean): Date
 
-declare function isESClass (input: any): boolean
+declare function getStringOrNull (input: unknown): string|null
 
-declare function getInstanceOfClass<T> (input: any, ClassInstancePrototype: T): T
+declare function isESClass (input: unknown): boolean
+
+declare function getInstanceOfClass<T> (input: unknown, ClassInstancePrototype: T): T

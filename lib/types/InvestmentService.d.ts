@@ -1,6 +1,6 @@
 export interface InvestmentServiceInterface {
-    uid: string|null,
-    name: string|null,
+    uid: string|null
+    name: string|null
     added: string|null
 }
 
@@ -10,7 +10,7 @@ export declare class InvestmentService {
     private _added: string|null
 
     constructor (
-        input?: InvestmentServiceInterface|Record<string, any>|null
+        input?: Partial<InvestmentServiceInterface>
     )
 
     static create (
@@ -30,6 +30,6 @@ export declare class InvestmentService {
     toPlainObject (): InvestmentServiceInterface
 
     static fromPlainObject (
-        plainObject: InvestmentServiceInterface|Record<string, any>|null
+        plainObject?: Partial<InvestmentServiceInterface>
     ): InvestmentService
 }

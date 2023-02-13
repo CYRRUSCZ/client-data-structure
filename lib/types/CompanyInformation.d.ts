@@ -1,5 +1,5 @@
 import { Address } from './Address'
-import { Representative } from './Representative'
+import { Representative, RepresentativeInterfaceInput, RepresentativeInterfaceOutput } from './Representative'
 
 export type PlainObjectKeyIcType = 'ic'
 export type PlainObjectKeyDicType = 'dic'
@@ -15,20 +15,20 @@ declare const PLAIN_OBJECT_KEY_REPRESENTATIVES: PlainObjectKeyRepresentativesTyp
 declare const PLAIN_OBJECT_KEY_NAME: PlainObjectKeyNameType
 declare const PLAIN_OBJECT_KEY_TAX_DOMICILE: PlainObjectKeyTaxDomicileType
 
-export interface BaseCompanyInformationInterface {
-    ic: string|null,
-    dic: string|null,
-    lei: string|null,
-    taxDomicile: string|null,
+export interface CompanyInformationInterfaceBase {
+    ic: string|null
+    dic: string|null
+    lei: string|null
+    taxDomicile: string|null
     name: string|null
 }
 
-export interface CompanyInterfaceInterfaceInput extends BaseCompanyInformationInterface {
-    representatives: Representative[]|Array<Record<string, any>>
+export interface CompanyInformationInterfaceInput extends CompanyInformationInterfaceBase {
+    representatives: Partial<RepresentativeInterfaceInput>[]
 }
 
-export interface CompanyInterfaceInterfaceOutput extends BaseCompanyInformationInterface {
-    representatives: Representative[]
+export interface CompanyInformationInterfaceOutput extends CompanyInformationInterfaceBase {
+    representatives: RepresentativeInterfaceOutput[]
 }
 
 export declare class CompanyInformation {
@@ -40,7 +40,7 @@ export declare class CompanyInformation {
     private _representatives: Representative[]
 
     constructor (
-        input?: CompanyInterfaceInterfaceInput|Record<string, any>|null
+        input?: Partial<CompanyInformationInterfaceInput>
     )
 
     static create (
@@ -48,7 +48,7 @@ export declare class CompanyInformation {
         dic: string|null,
         lei: string|null,
         taxDomicile: string|null,
-        representatives: Representative[]|Array<Record<string, any>>,
+        representatives: Partial<RepresentativeInterfaceInput>[],
         name: string|null
     ): CompanyInformation
 
@@ -66,11 +66,11 @@ export declare class CompanyInformation {
 
     get name (): string|null
 
-    toJSON (): CompanyInterfaceInterfaceOutput
+    toJSON (): CompanyInformationInterfaceOutput
 
-    toPlainObject (): CompanyInterfaceInterfaceOutput
+    toPlainObject (): CompanyInformationInterfaceOutput
 
     static fromPlainObject (
-        object: CompanyInterfaceInterfaceInput|Record<string, any>|null
+        object?: Partial<CompanyInformationInterfaceInput>
     ): CompanyInformation
 }

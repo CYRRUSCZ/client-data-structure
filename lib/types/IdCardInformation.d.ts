@@ -1,17 +1,18 @@
 export interface BaseIdCardInformationInterface {
-    number: string|null,
-    issuedBy: string|null,
-    country: string|null,
-    type: string|null,
-    scanNotAllowed: boolean
+    number: string|null
+    issuedBy: string|null
+    country: string|null
+    type: string|null
 }
 
 export interface IdCardInformationInterfaceInput extends BaseIdCardInformationInterface {
     validity: Date|string
+    scanNotAllowed?: boolean
 }
 
 export interface IdCardInformationInterfaceOutput extends BaseIdCardInformationInterface {
     validity: Date
+    scanNotAllowed: boolean
 }
 
 export declare class IdCardInformation {
@@ -23,7 +24,7 @@ export declare class IdCardInformation {
     private _scanNotAllowed: boolean
 
     constructor (
-        input?: IdCardInformationInterfaceInput|Record<string, any>|null
+        input?: Partial<IdCardInformationInterfaceInput>
     )
 
     static create (
@@ -32,7 +33,7 @@ export declare class IdCardInformation {
         country: string|null,
         validity: Date|string,
         type: string|null,
-        scanNotAllowed: boolean
+        scanNotAllowed?: boolean
     ): IdCardInformation
 
     get number (): string|null
@@ -54,6 +55,6 @@ export declare class IdCardInformation {
     toPlainObject (): IdCardInformationInterfaceOutput
 
     static fromPlainObject (
-        plainObject: IdCardInformationInterfaceInput|Record<string, any>|null
+        plainObject?: Partial<IdCardInformationInterfaceInput>
     ): IdCardInformation
 }

@@ -1,4 +1,4 @@
-import { Address } from './Address'
+import { Address, AddressInterface } from './Address'
 
 export type AddressRegularType = 'address'
 export type AddressMailingType = 'mailingAddress'
@@ -8,24 +8,31 @@ export type PlainObjectAddressTypes = [
     AddressMailingType
 ]
 
-export interface AddressInformationInterface {
-    address: Address,
-    mailingAddress: Address,
+export interface AddressInformationInterfaceInput {
+    address: Partial<AddressInterface>
+    mailingAddress: Partial<AddressInterface>
+    useMailingAddress?: boolean
+}
+
+export interface AddressInformationInterfaceOutput {
+    address: AddressInterface
+    mailingAddress: AddressInterface
     useMailingAddress: boolean
 }
+
 export declare class AddressInformation {
     private _address: Address
     private _mailingAddress: Address
     private _useMailingAddress: boolean
 
     constructor (
-        input?: AddressInformationInterface|null|Record<string, any>
+        input?: Partial<AddressInformationInterfaceInput>
     )
 
     static create (
-        address: Address|Record<string,any>|null,
-        mailingAddress: Address|Record<string,any>|null,
-        useMailingAddress: boolean
+        address: Partial<AddressInterface>,
+        mailingAddress: Partial<AddressInterface>,
+        useMailingAddress?: boolean
     ): AddressInformation
 
     get address (): Address
@@ -34,11 +41,13 @@ export declare class AddressInformation {
 
     get useMailingAddress (): boolean
 
-    toJSON (): AddressInformationInterface
+    toJSON (): AddressInformationInterfaceOutput
 
-    toPlainObject (): AddressInformationInterface
+    toPlainObject (): AddressInformationInterfaceOutput
 
-    static fromPlainObject (plainObject: AddressInformationInterface): AddressInformation
+    static fromPlainObject (
+        plainObject?: Partial<AddressInformationInterfaceInput>
+    ): AddressInformation
 
     static get ADDRESS_TYPE_REGULAR (): AddressRegularType
 

@@ -1,9 +1,9 @@
 export interface AddressInterface {
-    recipient: string|null,
-    street: string|null,
-    streetNumber: string|null,
-    city: string|null,
-    country: string|null,
+    recipient: string|null
+    street: string|null
+    streetNumber: string|null
+    city: string|null
+    country: string|null
     postalCode: string|null
 }
 
@@ -16,7 +16,7 @@ export declare class Address {
     private _streetNumber: string|null
 
     constructor (
-        input?: AddressInterface|Record<string, any>|null
+        input?: Partial<AddressInterface>
     )
 
     static create (
@@ -52,6 +52,8 @@ export declare class Address {
 
     toPlainObject (): AddressInterface
 
-    static fromPlainObject (plainObject: AddressInterface): Address
+    static fromPlainObject (
+        plainObject?: Partial<AddressInterface>
+    ): Address
 
 }

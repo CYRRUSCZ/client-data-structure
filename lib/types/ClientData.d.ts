@@ -1,8 +1,8 @@
-import { AddressInformation } from './AddressInformation'
-import { ContactInformation } from './ContactInformation'
-import { PersonalInformation } from './PersonalInformation'
-import { IdCardInformation } from './IdCardInformation'
-import { CompanyInformation } from './CompanyInformation'
+import { AddressInformation, AddressInformationInterfaceInput, AddressInformationInterfaceOutput } from './AddressInformation'
+import { ContactInformation, ContactInformationInterface } from './ContactInformation'
+import { PersonalInformation, PersonalInformationInterfaceInput, PersonalInformationInterfaceOutput } from './PersonalInformation'
+import { IdCardInformation, IdCardInformationInterfaceInput, IdCardInformationInterfaceOutput } from './IdCardInformation'
+import { CompanyInformation, CompanyInformationInterfaceInput, CompanyInformationInterfaceOutput } from './CompanyInformation'
 import { AddressMailingType, AddressRegularType } from './AddressInformation'
 import {
     ClientInformation,
@@ -14,9 +14,11 @@ import {
     ClientOriginWebType,
     ClientPersonType,
     ClientSelfEmployedType,
-    ClientTypes
+    ClientTypes,
+    ClientInformationInterfaceOutput,
+    ClientInformationInterfaceInput
 } from './ClientInformation'
-import { BankAccount } from './BankAccount'
+import { BankAccount, BankAccountInterfaceInput, BankAccountInterfaceOutput } from './BankAccount'
 
 export type PlainObjectKeyClientType = 'client'
 export type PlainObjectKeyPersonalType = 'personal'
@@ -62,23 +64,23 @@ declare const CLIENT_TYPES: ClientTypes
 declare const CLIENT_ORIGINS: ClientOriginsType
 
 export interface ClientDataInterfaceInput {
-    client: ClientInformation|Record<string, any>|null,
-    personal: PersonalInformation|Record<string, any>|null,
-    idCard: IdCardInformation|Record<string, any>|null,
-    address: AddressInformation|Record<string, any>|null,
-    contact: ContactInformation|Record<string, any>|null,
-    bankAccounts: BankAccount[]|Array<Record<string,any >>,
-    company: CompanyInformation|Record<string, any>|null
+    client: Partial<ClientInformationInterfaceInput>
+    personal: Partial<PersonalInformationInterfaceInput>
+    idCard: Partial<IdCardInformationInterfaceInput>
+    address: Partial<AddressInformationInterfaceInput>
+    contact: Partial<ContactInformationInterface>
+    bankAccounts: Partial<BankAccountInterfaceInput>[]
+    company: Partial<CompanyInformationInterfaceInput>
 }
 
 export interface ClientDataInterfaceOutput {
-    client: ClientInformation,
-    personal: PersonalInformation,
-    idCard: IdCardInformation,
-    address: AddressInformation,
-    contact: ContactInformation,
-    bankAccounts: BankAccount[],
-    company: CompanyInformation
+    client: ClientInformationInterfaceOutput
+    personal: PersonalInformationInterfaceOutput
+    idCard: IdCardInformationInterfaceOutput
+    address: AddressInformationInterfaceOutput
+    contact: ContactInformationInterface
+    bankAccounts: BankAccountInterfaceOutput[]
+    company: CompanyInformationInterfaceOutput
 }
 
 export declare class ClientData {
@@ -91,17 +93,17 @@ export declare class ClientData {
     private _company: CompanyInformation
 
     constructor (
-        input?: ClientDataInterfaceInput|Record<string, any>|null
+        input?: Partial<ClientDataInterfaceInput>
     )
 
     static create (
-        client: ClientInformation|Record<string, any>|null,
-        personal: PersonalInformation|Record<string, any>|null,
-        idCard: IdCardInformation|Record<string, any>|null,
-        address: AddressInformation|Record<string, any>|null,
-        contact: ContactInformation|Record<string, any>|null,
-        bankAccounts: BankAccount[]|Array<Record<string,any >>,
-        company: CompanyInformation|Record<string, any>|null
+        client: Partial<ClientInformationInterfaceInput>,
+        personal: Partial<PersonalInformationInterfaceInput>,
+        idCard: Partial<IdCardInformationInterfaceInput>,
+        address: Partial<AddressInformationInterfaceInput>,
+        contact: Partial<ContactInformationInterface>,
+        bankAccounts: Partial<BankAccountInterfaceInput>[],
+        company: Partial<CompanyInformationInterfaceInput>
     ): ClientData
 
     get client (): ClientInformation
@@ -147,7 +149,7 @@ export declare class ClientData {
     toPlainObject (): ClientDataInterfaceOutput
 
     static fromPlainObject (
-        plainObject: ClientDataInterfaceInput|Record<string, any>|null
+        plainObject?: Partial<ClientDataInterfaceInput>
     ): ClientData
 
     static get PLAIN_OBJECT_KEY_CLIENT (): PlainObjectKeyClientType
