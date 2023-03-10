@@ -67,11 +67,13 @@ export interface ClientInformationInterfaceInput extends BaseClientInformationIn
     investmentProfiles?: Partial<InvestmentProfileInterfaceInput>[]
     residency?: boolean
     investmentParameters?: Partial<InvestmentParameterInterfaceInput>[]
+    bankAccountsConfirmedByAffidavit?: boolean
 }
 export interface ClientInformationInterfaceOutput extends BaseClientInformationInterface {
     investmentProfiles: InvestmentProfileInterfaceInput[]
     residency: boolean
     investmentParameters: InvestmentParameterInterfaceInput[]
+    bankAccountsConfirmedByAffidavit: boolean
 }
 
 export declare class ClientInformation {
@@ -88,6 +90,7 @@ export declare class ClientInformation {
     private _externalBrokerAgentCapitolId: string|null
     private _legislation: string|null
     private _investmentParameters: InvestmentParameter[]
+    private _bankAccountsConfirmedByAffidavit: boolean
 
 
     constructor (
@@ -107,7 +110,8 @@ export declare class ClientInformation {
         externalBrokerCapitolId: string|null,
         externalBrokerAgentCapitolId: string|null,
         legislation: string|null,
-        investmentParameters?: Partial<InvestmentParameterInterfaceInput>[]
+        investmentParameters?: Partial<InvestmentParameterInterfaceInput>[],
+        bankAccountsConfirmedByAffidavit?: boolean
     ): ClientInformation
 
     get legislation (): string|null
@@ -141,6 +145,8 @@ export declare class ClientInformation {
     get residency (): boolean
 
     get brokerId (): string|null
+
+    get bankAccountsConfirmedByAffidavit (): boolean
 
     toJSON (): ClientInformationInterfaceOutput
 
