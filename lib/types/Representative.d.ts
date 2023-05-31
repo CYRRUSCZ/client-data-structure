@@ -27,6 +27,7 @@ export interface RepresentativeInterfaceInput {
     _id?: string|null
     isRepresentative?: boolean
     isRealOwner?: boolean
+    hasPowerOfAttorney?: boolean
     realOwnerReasonChar?: string|null
     realOwnerReasonNumber?: string|null
     capitolId?: string|null
@@ -36,12 +37,13 @@ export interface RepresentativeInterfaceInput {
 export interface RepresentativeInterfaceOutput {
     position: string|null
     id: string|null
-    address: AddressInformationInterfaceOutput
+    address: AddressInterface
     personal: PersonalInformationInterfaceOutput
     idCard: IdCardInformationInterfaceOutput
     contact: ContactInformationInterface
     isRepresentative: boolean
     isRealOwner: boolean
+    hasPowerOfAttorney: boolean
     realOwnerReasonChar: string|null
     realOwnerReasonNumber: string|null
     capitolId: string|null
@@ -50,7 +52,7 @@ export interface RepresentativeInterfaceOutput {
 export declare class Representative {
     private _personal: PersonalInformation
     private _position: string|null
-    private _address: Address
+    private _address: AddressInterface
     private _idCard: IdCardInformation
     private _contact: ContactInformation
     private _id: string|null
@@ -60,6 +62,7 @@ export declare class Representative {
     private _capitolId: string|null
     private _isRepresentative: boolean
     private _capitolContactId: string|null
+    private _hasPowerOfAttorney: boolean
 
     constructor (
         input?: Partial<RepresentativeInterfaceInput>
@@ -68,7 +71,7 @@ export declare class Representative {
     static create (
         personal: Partial<PersonalInformationInterfaceInput>,
         position: string|null,
-        address: Partial<AddressInformationInterfaceInput>,
+        address: Partial<AddressInterface>,
         idCard: Partial<IdCardInformationInterfaceInput>,
         id: string|null,
         contact: Partial<ContactInformationInterface>,
@@ -77,7 +80,8 @@ export declare class Representative {
         realOwnerReasonChar?: string|null,
         realOwnerReasonNumber?: string|null,
         capitolId?: string|null,
-        capitolContactId?: string|null
+        capitolContactId?: string|null,
+        hasPowerOfAttorney?: boolean
     ): Representative
 
     get personal (): PersonalInformation
@@ -103,6 +107,8 @@ export declare class Representative {
     get capitolContactId (): string|null
 
     get isRepresentative (): boolean
+
+    get hasPowerOfAttorney (): boolean
 
     toJSON (): RepresentativeInterfaceOutput
 
