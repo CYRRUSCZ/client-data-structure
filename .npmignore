@@ -1,0 +1,5 @@
+tests
+.*
+*.config.js
+*.md
+tsconfig.*

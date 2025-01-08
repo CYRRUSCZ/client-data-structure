@@ -1,6 +1,6 @@
-.idea
+.history
 node_modules
 dist
+_old
 .npmrc
-test.*
-tsconfig.json
+docs
