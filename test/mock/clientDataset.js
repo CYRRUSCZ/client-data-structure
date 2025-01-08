@@ -41,21 +41,21 @@ module.exports = {
     personal: {
         prenominal: 'Ing.',
         firstName: 'Tomáš',
-        lastName: 'Hovnivý',
+        lastName: 'Marný',
         postnominal: 'Csc. MBA',
         birthNumber: '987654321',
         dateOfBirth: new Date('2019-02-14T12:00:00.000Z'),
         noBirthNumber: false,
         birthNumberCountry: 'CZE',
         taxDomicile: 'CZE',
-        placeOfBirth: 'Řiťka',
+        placeOfBirth: 'Brno',
         citizenship: 'CZE',
         gender: 'male',
         politician: true
     },
     idCard: {
         number: '123456789',
-        issuedBy: 'Městys Prdelní Lhota',
+        issuedBy: 'Brno',
         country: 'CZE',
         validity: new Date('2021-02-14T12:00:00.000Z'),
         type: 'OP',
@@ -63,27 +63,27 @@ module.exports = {
     },
     address: {
         address: {
-            recipient: 'První kanální a.s.',
-            street: 'Zasmrádlá',
+            recipient: 'První firma a.s.',
+            street: 'Příčná',
             streetNumber: '554/6a',
-            city: 'Prdelní Lhota',
+            city: 'Brno',
             postalCode: '66609',
             country: 'CZE'
         },
         mailingAddress: {
-            recipient: 'Milada Hovnivá',
+            recipient: 'Milada Rudá',
             street: 'U hroudy',
             streetNumber: '15',
-            city: 'Díra nad Řiťkou',
+            city: 'Brno',
             postalCode: '668 02',
             country: 'CZE'
         },
         useMailingAddress: true
     },
     contact: {
-        email: 'i.luv.shit@intestines.com',
+        email: 'email@somewhere.com',
         phoneNumber: '+420123456789',
-        phonePassword: 'Nasrat a rozmazat'
+        phonePassword: 'FooBarBaz'
     },
     bankAccounts: [
         {
@@ -121,7 +121,7 @@ module.exports = {
         ic: '49551655',
         dic: 'CZ49551655',
         lei: 'someleiid',
-        name: 'TOI TOI, sanitární systémy, s r.o.',
+        name: 'Sanitární systémy, s.r.o.',
         taxDomicile: 'CZE',
         representatives: [
             {
@@ -135,30 +135,30 @@ module.exports = {
                 personal: {
                     prenominal: 'Ing.',
                     firstName: 'Tomáš',
-                    lastName: 'Hovnivý',
+                    lastName: 'Marný',
                     postnominal: 'Csc. MBA',
                     birthNumber: '987654321',
                     dateOfBirth: new Date('2019-02-14T12:00:00.000Z'),
                     noBirthNumber: false,
                     birthNumberCountry: 'CZE',
                     taxDomicile: 'CZE',
-                    placeOfBirth: 'Řiťka',
+                    placeOfBirth: 'Brno',
                     citizenship: 'CZE',
                     gender: 'male',
                     politician: true
                 },
                 position: 'jednatel',
                 address: {
-                    recipient: 'První kanální a.s.',
-                    street: 'Zasmrádlá',
+                    recipient: 'První firma a.s.',
+                    street: 'Příčná',
                     streetNumber: '554/6a',
-                    city: 'Prdelní Lhota',
+                    city: 'Brno',
                     postalCode: '66609',
                     country: 'CZE'
                 },
                 idCard: {
                     number: '123456789',
-                    issuedBy: 'Městys Prdelní Lhota',
+                    issuedBy: 'Brno',
                     country: 'CZE',
                     validity: new Date('2021-02-14T12:00:00.000Z'),
                     type: 'OP',

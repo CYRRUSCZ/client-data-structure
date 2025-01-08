@@ -1,0 +1,225 @@
+{
+    "client" : {
+        "type" : "person",
+        "dataOrigin" : "capitol",
+        "dataOriginId" : "677e6e8bd0ef6cdccf37c7d5",
+        "capitolId" : "4405184170",
+        "crmId" : null,
+        "investmentProfiles" : [
+
+        ],
+        "residency" : true,
+        "economicalSectorCode" : "1442000",
+        "brokerId" : "54",
+        "externalBrokerCapitolId" : null,
+        "externalBrokerAgentCapitolId" : null,
+        "legislation" : null,
+        "investmentParameters" : [
+            {
+                "version" : "20220609",
+                "uid" : "parAMLProfile",
+                "name" : "AML Profil",
+                "added" : "2022-11-10T23:00:00.000Z",
+                "value" : "1",
+                "isInvestmentCategory" : false
+            },
+            {
+                "version" : "20220609",
+                "uid" : "parInvCatBonds",
+                "name" : "bonds",
+                "added" : "2022-11-10T23:00:00.000Z",
+                "value" : "1",
+                "isInvestmentCategory" : true
+            },
+            {
+                "version" : "20220609",
+                "uid" : "parInvCatCurrencyForwards",
+                "name" : "currencyForwards",
+                "added" : "2022-11-10T23:00:00.000Z",
+                "value" : "0",
+                "isInvestmentCategory" : true
+            },
+            {
+                "version" : "20220609",
+                "uid" : "parInvCatDerivates",
+                "name" : "derivates",
+                "added" : "2022-11-10T23:00:00.000Z",
+                "value" : "1",
+                "isInvestmentCategory" : true
+            },
+            {
+                "version" : "20220609",
+                "uid" : "parInvCatETF",
+                "name" : "etf",
+                "added" : "2022-11-10T23:00:00.000Z",
+                "value" : "0",
+                "isInvestmentCategory" : true
+            },
+            {
+                "version" : "20220609",
+                "uid" : "parInvCatFki",
+                "name" : "fki",
+                "added" : "2022-11-10T23:00:00.000Z",
+                "value" : "1",
+                "isInvestmentCategory" : true
+            },
+            {
+                "version" : "20220609",
+                "uid" : "parInvCatFunds",
+                "name" : "funds",
+                "added" : "2022-11-10T23:00:00.000Z",
+                "value" : "1",
+                "isInvestmentCategory" : true
+            },
+            {
+                "version" : "20220609",
+                "uid" : "parInvestmentAmount",
+                "name" : "Plánovaná výše investice",
+                "added" : "2022-11-10T23:00:00.000Z",
+                "value" : null,
+                "isInvestmentCategory" : false
+            },
+            {
+                "version" : "20220609",
+                "uid" : "parInvestmentKnowledge",
+                "name" : "Investiční znalosti",
+                "added" : "2022-11-10T23:00:00.000Z",
+                "value" : "3",
+                "isInvestmentCategory" : false
+            },
+            {
+                "version" : "20220609",
+                "uid" : "parInvestmentTarget",
+                "name" : "Investiční cíl",
+                "added" : "2022-11-10T23:00:00.000Z",
+                "value" : "4",
+                "isInvestmentCategory" : false
+            },
+            {
+                "version" : "20220609",
+                "uid" : "parInvCatLeveragedProducts",
+                "name" : "leveragedProducts",
+                "added" : "2022-11-10T23:00:00.000Z",
+                "value" : "0",
+                "isInvestmentCategory" : true
+            },
+            {
+                "version" : "20220609",
+                "uid" : "parLossAcceptance",
+                "name" : "Akceptace ztráty",
+                "added" : "2022-11-10T23:00:00.000Z",
+                "value" : "3",
+                "isInvestmentCategory" : false
+            },
+            {
+                "version" : "20220609",
+                "uid" : "parPolitician",
+                "name" : "Politická exponence",
+                "added" : "2022-11-10T23:00:00.000Z",
+                "value" : "0",
+                "isInvestmentCategory" : false
+            },
+            {
+                "version" : "20220609",
+                "uid" : "parInvCatStocks",
+                "name" : "stocks",
+                "added" : "2022-11-10T23:00:00.000Z",
+                "value" : "1",
+                "isInvestmentCategory" : true
+            },
+            {
+                "version" : "20220609",
+                "uid" : "parSri",
+                "name" : "Rizikovost",
+                "added" : "2022-11-10T23:00:00.000+0000",
+                "value" : "6",
+                "isInvestmentCategory" : false
+            }
+        ],
+        "bankAccountsConfirmedByAffidavit" : true
+    },
+    "personal" : {
+        "prenominal" : "Ing.",
+        "firstName" : "Richard",
+        "lastName" : "Foo",
+        "postnominal" : null,
+        "birthNumber" : "440518416",
+        "dateOfBirth" : "1944-05-18T12:00:00.000Z",
+        "noBirthNumber" : false,
+        "birthNumberCountry" : "CZE",
+        "taxDomicile" : "CZE",
+        "placeOfBirth" : "Most",
+        "citizenship" : "CZE",
+        "gender" : "male",
+        "politician" : false
+    },
+    "idCard" : {
+        "number" : "216258253",
+        "issuedBy" : "MěÚ Moravská Třebová",
+        "country" : "CZE",
+        "validity" : "2058-10-09T12:00:00.000Z",
+        "type" : "OP",
+        "scanNotAllowed" : true
+    },
+    "address" : {
+        "useMailingAddress" : false,
+        "address" : {
+            "recipient" : "Ing. Richard Foo",
+            "street" : "Bar",
+            "streetNumber" : "985/38",
+            "city" : "Brno",
+            "country" : "CZE",
+            "postalCode" : "57101"
+        },
+        "mailingAddress" : {
+            "recipient" : "Foo Richard",
+            "street" : null,
+            "streetNumber" : null,
+            "city" : null,
+            "country" : null,
+            "postalCode" : null
+        }
+    },
+    "contact" : {
+        "email" : "foo.bar@seznam.cz",
+        "phoneNumber" : "+420 731 792 557",
+        "phonePassword" : "Foo"
+    },
+    "bankAccounts" : [
+        {
+            "id" : "677e6e8bd0ef6cdccf37c7d6",
+            "iban" : null,
+            "swift" : null,
+            "bankNameAddress" : null,
+            "accountName" : null,
+            "prefix" : "000000",
+            "account" : "5899780227",
+            "code" : "0100",
+            "currency" : "CZK",
+            "foreign" : false,
+            "capitolId" : null
+        },
+        {
+            "id" : "677e6e8bd0ef6cdccf37c7d7",
+            "iban" : null,
+            "swift" : null,
+            "bankNameAddress" : null,
+            "accountName" : null,
+            "prefix" : "034298",
+            "account" : "0740351591",
+            "code" : "0100",
+            "currency" : "CZK",
+            "foreign" : false,
+            "capitolId" : null
+        }
+    ],
+    "company" : {
+        "ic" : null,
+        "dic" : null,
+        "lei" : null,
+        "name" : null,
+        "taxDomicile" : null,
+        "representatives" : [
+        ]
+    }
+}

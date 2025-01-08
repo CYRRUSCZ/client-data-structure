@@ -1,0 +1,315 @@
+import { getNormalizedDate, getStringOrNull } from './helpers'
+import { countries } from '@cyrrus/locale-utils'
+
+/**
+ * Input of the PersonalInformation class that is used to create the object
+ */
+export interface PersonalInformationInput {
+    prenominal: string | null
+    firstName: string | null
+    lastName: string | null
+    postnominal: string | null
+    birthNumber: string | null
+    dateOfBirth: Date | string | null
+    noBirthNumber: boolean
+    birthNumberCountry: string | null
+    taxDomicile: string | null
+    placeOfBirth: string | null
+    citizenship: string | null
+    gender: string | null
+    politician: boolean | undefined
+}
+
+/**
+ * Output of the PersonalInformation class that is used to serialize the object to JSON
+ */
+export interface PersonalInformationOutput {
+    prenominal: string | null
+    firstName: string | null
+    lastName: string | null
+    postnominal: string | null
+    birthNumber: string | null
+    dateOfBirth: Date | null
+    noBirthNumber: boolean
+    birthNumberCountry: string | null
+    taxDomicile: string | null
+    placeOfBirth: string | null
+    citizenship: string | null
+    gender: string | null
+    politician: boolean
+}
+
+/**
+ * Class that represents personal information of a person
+ */
+export class PersonalInformation {
+    readonly #prenominal: string | null = null
+    readonly #firstName: string | null = null
+    readonly #lastName: string | null = null
+    readonly #postnominal: string | null = null
+    readonly #birthNumber: string | null = null
+    readonly #dateOfBirth: Date | null = null
+    readonly #noBirthNumber: boolean = false
+    readonly #birthNumberCountry: string | null = null
+    readonly #taxDomicile: string | null = null
+    readonly #placeOfBirth: string | null = null
+    readonly #citizenship: string | null = null
+    readonly #gender: string | null = null
+    readonly #politician: boolean = false
+
+    constructor (
+        input: Partial<PersonalInformationInput> = {}
+    ) {
+        const {
+            prenominal,
+            firstName,
+            lastName,
+            postnominal,
+            birthNumber,
+            dateOfBirth,
+            noBirthNumber,
+            birthNumberCountry,
+            taxDomicile,
+            placeOfBirth,
+            citizenship,
+            gender,
+            politician
+        } = input
+        this.#prenominal = getStringOrNull(prenominal)
+        this.#firstName = getStringOrNull(firstName)
+        this.#lastName = getStringOrNull(lastName)
+        this.#postnominal = getStringOrNull(postnominal)
+        this.#birthNumber = getStringOrNull(birthNumber)
+        this.#dateOfBirth = getNormalizedDate(dateOfBirth)
+        this.#noBirthNumber = (noBirthNumber === true)
+        this.#birthNumberCountry = getStringOrNull(birthNumberCountry)
+        this.#taxDomicile = getStringOrNull(taxDomicile)
+        this.#placeOfBirth = getStringOrNull(placeOfBirth)
+        this.#citizenship = getStringOrNull(citizenship)
+        this.#gender = getStringOrNull(gender)
+        this.#politician = politician === true
+    }
+
+    /**
+     * Creates a new instance of the PersonalInformation class using positional arguments
+     *
+     * @param prenominal prenominal title of the person
+     * @param firstName first name of the person
+     * @param lastName last name of the person
+     * @param postnominal postnominal title of the person
+     * @param birthNumber birth number of the person
+     * @param dateOfBirth date of birth of the person
+     * @param noBirthNumber flag that indicates if the birth number is not available
+     * @param birthNumberCountry country of the birth number
+     * @param taxDomicile country of the tax domicile
+     * @param placeOfBirth place of birth of the person
+     * @param citizenship country of the citizenship
+     */
+    static create (
+        prenominal: string | null | undefined,
+        firstName: string | null | undefined,
+        lastName: string | null | undefined,
+        postnominal: string | null | undefined,
+        birthNumber: string | null | undefined,
+        dateOfBirth: Date | string | null | undefined,
+        noBirthNumber: boolean | undefined,
+        birthNumberCountry: string | null | undefined,
+        taxDomicile: string | null | undefined,
+        placeOfBirth: string | null | undefined,
+        citizenship: string | null | undefined,
+        gender: string | null | undefined,
+        politician: boolean | undefined
+    ): PersonalInformation {
+        const plain: Partial<PersonalInformationInput> = {
+            prenominal,
+            firstName,
+            lastName,
+            postnominal,
+            birthNumber,
+            dateOfBirth,
+            noBirthNumber,
+            birthNumberCountry,
+            taxDomicile,
+            placeOfBirth,
+            citizenship,
+            gender,
+            politician
+        }
+        return new PersonalInformation(plain)
+    }
+
+    /**
+     * Full name of the person
+     */
+    get fullName (): string {
+        const parts = [
+            this.prenominal,
+            this.firstName,
+            this.lastName,
+            this.postnominal
+        ]
+        return parts.map(item => typeof item === 'string' ? item.trim() : item).filter(item => item).join(' ')
+    }
+
+    /**
+     * Prenominal title of the person
+     */
+    get prenominal (): string | null {
+        return this.#prenominal
+    }
+
+    /**
+     * First name of the person
+     */
+    get firstName (): string | null {
+        return this.#firstName
+    }
+
+    /**
+     * Last name of the person
+     */
+    get lastName (): string | null {
+        return this.#lastName
+    }
+
+    /**
+     * Postnominal title of the person
+     */
+    get gender (): string | null {
+        return this.#gender
+    }
+
+    /**
+     * Postnominal title of the person
+     */
+    get postnominal (): string | null {
+        return this.#postnominal
+    }
+
+    /**
+     * Birth number of the person
+     */
+    get birthNumber (): string | null {
+        return this.#birthNumber
+    }
+
+    /**
+     * Date of birth of the person
+     */
+    get dateOfBirth (): Date | null {
+        return this.#dateOfBirth
+    }
+
+    /**
+     * Flag that indicates if the birth number is not available
+     */
+    get noBirthNumber (): boolean {
+        return this.#noBirthNumber
+    }
+
+    /**
+     * Flag that indicates if the person is a politician
+     */
+    get politician (): boolean {
+        return this.#politician
+    }
+
+    /**
+     * Country of the birth number
+     */
+    get birthNumberCountry (): string | null {
+        return this.#birthNumberCountry
+    }
+
+    /**
+     * Country of the birth number
+     */
+    get birthNumberCountryName (): string | null {
+        if (this.#birthNumberCountry === null) {
+            return null
+        }
+        return countries[this.#birthNumberCountry] ?? this.#birthNumberCountry
+    }
+
+    /**
+     * Country of the tax domicile
+     */
+    get taxDomicile (): string | null {
+        return this.#taxDomicile
+    }
+
+    /**
+     * Country of the tax domicile
+     */
+    get taxDomicileCountryName (): string | null {
+        if (this.#taxDomicile === null) {
+            return null
+        }
+        return countries[this.#taxDomicile] ?? this.#taxDomicile
+    }
+
+    /**
+     * Place of birth of the person
+     */
+    get placeOfBirth (): string | null {
+        return this.#placeOfBirth
+    }
+
+    /**
+     * Country of the citizenship
+     */
+    get citizenship (): string | null {
+        return this.#citizenship
+    }
+
+    /**
+     * Country of the citizenship
+     */
+    get citizenshipCountryName (): string | null {
+        if (this.#citizenship === null) {
+            return null
+        }
+        return countries[this.#citizenship] ?? this.#citizenship
+    }
+
+    /**
+     * Returns the personal information as a JSON object
+     */
+    toJSON (): PersonalInformationOutput {
+        return {
+            prenominal: this.#prenominal,
+            firstName: this.#firstName,
+            lastName: this.#lastName,
+            postnominal: this.#postnominal,
+            birthNumber: this.#birthNumber,
+            dateOfBirth: this.#dateOfBirth,
+            noBirthNumber: this.#noBirthNumber,
+            birthNumberCountry: this.#birthNumberCountry,
+            taxDomicile: this.#taxDomicile,
+            placeOfBirth: this.#placeOfBirth,
+            citizenship: this.#citizenship,
+            gender: this.#gender,
+            politician: this.#politician
+        }
+    }
+
+    /**
+     * Converts the personal information to a plain object
+     */
+    toPlainObject (): PersonalInformationOutput {
+        return this.toJSON()
+    }
+
+    /**
+     * Converts a plain object to a PersonalInformation instance
+     */
+    static fromPlainObject (plainObject: Partial<PersonalInformationInput> = {}): PersonalInformation {
+        return new PersonalInformation(plainObject)
+    }
+}
+
+export const genderOptions = {
+    male: 'Muž',
+    female: 'Žena',
+    other: 'Neuvádět'
+}
