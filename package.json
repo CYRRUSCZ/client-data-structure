@@ -1,22 +1,22 @@
 {
     "name": "@cyrrus/clientdatastructure",
-    "version": "8.0.0",
+    "version": "8.0.1",
     "description": "A common structure for CYRRUS client data as used in DocHub and other integrations",
     "type": "module",
     "types": "dist/types/index.d.ts",
     "exports": {
         ".": {
-            "import": "./dist/client-data-structure.cjs.js",
-            "require": "./dist/client-data-structure.cjs.js"
+            "import": "./dist/client-data-structure.esm.js",
+            "require": "./dist/client-data-structure.cjs"
         },
         "./dist/client-data-structure": {
-            "import": "./dist/client-data-structure.cjs.js",
-            "require": "./dist/client-data-structure.cjs.js"
+            "import": "./dist/client-data-structure.esm.js",
+            "require": "./dist/client-data-structure.cjs"
         },
         "./package.json": "./package.json"
     },
     "module": "dist/client-data-structure.esm.js",
-    "main": "dist/client-data-structure.cjs.js",
+    "main": "dist/client-data-structure.cjs",
     "scripts": {
         "build": "node ./build.mjs",
         "lint": "eslint ./src",

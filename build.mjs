@@ -13,5 +13,5 @@ await esbuild.build({
     bundle: true,
     platform: 'node',
     format: 'cjs',
-    outfile: 'dist/client-data-structure.cjs.js',
+    outfile: 'dist/client-data-structure.cjs',
 })
