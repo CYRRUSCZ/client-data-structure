@@ -1,3 +1,6 @@
+export type * from './Interfaces/ValidationAware'
+export type * from './Interfaces/WithJsonSchema'
+export * from './AbstractValidationAware'
 export * from './AddressInformation'
 export * from './ContactInformation'
 export * from './PersonalInformation'

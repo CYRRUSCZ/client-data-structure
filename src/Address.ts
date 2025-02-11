@@ -1,5 +1,7 @@
 import { type AvailableLanguages, getStringOrNull } from './helpers'
 import { countriesLocalized } from '@cyrrus/locale-utils'
+import { AbstractValidationAware } from './AbstractValidationAware'
+import { StringOrNull } from './CustomValidators/StringOrNull'
 
 /**
  * Input of the Address class that is used to create the object
@@ -39,7 +41,7 @@ export interface AddressOutput extends AddressInput {
 /**
  * Address class that represents a postal or residency address
  */
-export class Address {
+export class Address extends AbstractValidationAware {
     readonly #recipient: string | null = null
     readonly #street: string | null = null
     readonly #streetNumber: string | null = null
@@ -53,6 +55,7 @@ export class Address {
      * @param input object that is used to create the Address object
      */
     constructor (input: Partial<AddressInput> = {}) {
+        super()
         const {
             recipient,
             street,
@@ -219,4 +222,19 @@ export class Address {
     static fromPlainObject (plainObject: Partial<AddressInput>): Address {
         return new Address(plainObject)
     }
+}
+
+export class AddressValidation {
+    @StringOrNull()
+    recipient: string | null = null
+    @StringOrNull()
+    street: string | null = null
+    @StringOrNull()
+    streetNumber: string | null = null
+    @StringOrNull()
+    city: string | null = null
+    @StringOrNull()
+    country: string | null = null
+    @StringOrNull()
+    postalCode: string | null = null
 }

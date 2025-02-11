@@ -1,4 +1,7 @@
+import { IsBoolean, IsOptional } from 'class-validator'
+import type { SchemaObject } from 'ajv'
 import { Address, type AddressInput, type AddressOutput } from './Address'
+import { AbstractValidationAware } from './AbstractValidationAware'
 
 /**
  * Input of the AddressInformation class that is used to create the object
@@ -43,12 +46,13 @@ export const ADDRESS_TYPE_MAILING = 'mailingAddress'
 /**
  * Class that represents an postal and residency address information
  */
-export class AddressInformation {
+export class AddressInformation extends AbstractValidationAware {
     readonly #address: Address
     readonly #mailingAddress: Address
     readonly #useMailingAddress: boolean
 
     constructor (input: Partial<AddressInformationInput> = {}) {
+        super()
         const {
             address,
             mailingAddress,
@@ -77,6 +81,20 @@ export class AddressInformation {
         plain[ADDRESS_TYPE_REGULAR] = address ?? {}
         plain[ADDRESS_TYPE_MAILING] = mailingAddress ?? {}
         return new AddressInformation(plain)
+    }
+
+    /**
+     * Returns the JSON schema of the object
+     */
+    toJSONSchema (): SchemaObject {
+        const jsonSchema = super.toJSONSchema()
+        const properties = {
+            ...(jsonSchema.properties ?? {}) as Record<string, any>,
+            [ADDRESS_TYPE_REGULAR]: this.#address.toJSONSchema(),
+            [ADDRESS_TYPE_MAILING]: this.#useMailingAddress ? this.#mailingAddress.toStrictJSONSchema() : {}
+        }
+
+        return { ...jsonSchema, properties }
     }
 
     /**
@@ -142,4 +160,12 @@ export class AddressInformation {
             AddressInformation.ADDRESS_TYPE_MAILING
         ]
     }
+}
+
+export class AddressInformationValidation {
+    address: Address | Partial<AddressInput> = {}
+    mailingAddress: Address | Partial<AddressInput> = {}
+    @IsBoolean()
+    @IsOptional()
+    useMailingAddress?: boolean = false
 }
