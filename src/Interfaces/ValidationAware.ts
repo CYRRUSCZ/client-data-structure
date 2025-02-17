@@ -4,10 +4,5 @@ export interface ValidationAware {
      *
      * @throws {Error} if instance is not valid
      */
-    validate: (data?: Record<string, any>) => void
-
-    /**
-     * Returns the JSON schema of the instance with nullable fields set to false
-     */
-    toStrictJSONSchema: () => Record<string, any>
+    validate: (options: { strictMode?: boolean, data?: Record<string, any> }) => void
 }

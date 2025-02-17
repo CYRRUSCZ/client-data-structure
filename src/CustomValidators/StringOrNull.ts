@@ -1,5 +1,4 @@
-import {ValidatorConstraint, ValidatorConstraintInterface, ValidationArguments, registerDecorator, ValidationOptions} from "class-validator"
-
+import { ValidatorConstraint, ValidatorConstraintInterface, ValidationArguments, registerDecorator, ValidationOptions } from "class-validator"
 
 @ValidatorConstraint({ name: "stringOrNull", async: false })
 export class CustomStringOrNull implements ValidatorConstraintInterface {

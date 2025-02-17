@@ -1,7 +1,7 @@
 import { IsBoolean, IsOptional } from 'class-validator'
-import type { SchemaObject } from 'ajv'
 import { Address, type AddressInput, type AddressOutput } from './Address'
 import { AbstractValidationAware } from './AbstractValidationAware'
+import type { SchemaObjectWithProperties } from './Interfaces/SchemaObject'
 
 /**
  * Input of the AddressInformation class that is used to create the object
@@ -86,10 +86,10 @@ export class AddressInformation extends AbstractValidationAware {
     /**
      * Returns the JSON schema of the object
      */
-    toJSONSchema (): SchemaObject {
+    toJSONSchema (): SchemaObjectWithProperties {
         const jsonSchema = super.toJSONSchema()
         const properties = {
-            ...(jsonSchema.properties ?? {}) as Record<string, any>,
+            ...jsonSchema.properties,
             [ADDRESS_TYPE_REGULAR]: this.#address.toJSONSchema(),
             [ADDRESS_TYPE_MAILING]: this.#useMailingAddress ? this.#mailingAddress.toStrictJSONSchema() : {}
         }

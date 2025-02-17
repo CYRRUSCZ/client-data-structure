@@ -1,5 +1,11 @@
+import { IsBoolean } from 'class-validator'
+import { AbstractValidationAware } from './AbstractValidationAware'
+import { StringOrNull } from './CustomValidators/StringOrNull'
 import { getNormalizedDate, getStringOrNull } from './helpers'
 import { countries } from '@cyrrus/locale-utils'
+import { DateOrStringOrNull } from './CustomValidators/DateOrStringOrNull'
+import type { SchemaObjectWithProperties } from './Interfaces/SchemaObject'
+import { IsOlderThan } from './CustomValidators/IsOlderThan'
 
 /**
  * Input of the PersonalInformation class that is used to create the object
@@ -42,7 +48,7 @@ export interface PersonalInformationOutput {
 /**
  * Class that represents personal information of a person
  */
-export class PersonalInformation {
+export class PersonalInformation extends AbstractValidationAware {
     readonly #prenominal: string | null = null
     readonly #firstName: string | null = null
     readonly #lastName: string | null = null
@@ -60,6 +66,7 @@ export class PersonalInformation {
     constructor (
         input: Partial<PersonalInformationInput> = {}
     ) {
+        super()
         const {
             prenominal,
             firstName,
@@ -136,6 +143,23 @@ export class PersonalInformation {
             politician
         }
         return new PersonalInformation(plain)
+    }
+
+    toJSONSchema(): SchemaObjectWithProperties {
+        const jsonSchema = super.toJSONSchema()
+        const { properties, required } = jsonSchema
+        const { birthNumber, ...originalProperties } = properties
+        const requiredFieds = required as string[]
+        const optionalFields: string[] = []
+        if (this.#noBirthNumber) {
+            optionalFields.push('birthNumber')
+        }
+        const customProperties = {
+            ...originalProperties,
+            birthNumber: (!this.#noBirthNumber ? birthNumber : {}) as Record<string, any>
+        }
+
+        return { ...jsonSchema, properties: customProperties, required: requiredFieds.filter((name) => !optionalFields.includes(name)) }
     }
 
     /**
@@ -312,4 +336,34 @@ export const genderOptions = {
     male: 'Muž',
     female: 'Žena',
     other: 'Neuvádět'
+}
+
+export class PersonalInformationValidation {
+    @StringOrNull()
+    prenominal: string | null = null
+    @StringOrNull()
+    firstName: string | null = null
+    @StringOrNull()
+    lastName: string | null = null
+    @StringOrNull()
+    postnominal: string | null = null
+    @StringOrNull()
+    birthNumber: string | null = null
+    @DateOrStringOrNull({ groups: ['mergeToAllOf'] })
+    @IsOlderThan(18, { groups: ['mergeToAllOf'] })
+    dateOfBirth: Date | string | null = null
+    @IsBoolean()
+    noBirthNumber = false
+    @StringOrNull()
+    birthNumberCountry: string | null = null
+    @StringOrNull()
+    taxDomicile: string | null = null
+    @StringOrNull()
+    placeOfBirth: string | null = null
+    @StringOrNull()
+    citizenship: string | null = null
+    @StringOrNull()
+    gender: string | null = null
+    @IsBoolean()
+    politician = false
 }
