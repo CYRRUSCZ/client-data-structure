@@ -1,4 +1,6 @@
+import { AbstractBase, type JSONSchema, type JSONSchemaObject } from './AbstractBase'
 import { getNormalizedDate, getStringOrNull } from './helpers'
+import { mod11_10 as mod1110 } from 'cdigit'
 import { countries } from '@cyrrus/locale-utils'
 
 /**
@@ -39,10 +41,31 @@ export interface PersonalInformationOutput {
     politician: boolean
 }
 
+export interface PersonalInformationJSONSchema extends JSONSchemaObject {
+    type: 'object',
+    properties: {
+        prenominal: JSONSchema,
+        firstName: JSONSchema,
+        lastName: JSONSchema,
+        postnominal: JSONSchema,
+        birthNumber?: JSONSchema,
+        dateOfBirth: JSONSchema,
+        noBirthNumber: JSONSchema,
+        birthNumberCountry: JSONSchema,
+        taxDomicile: JSONSchema,
+        placeOfBirth: JSONSchema,
+        citizenship: JSONSchema,
+        gender: JSONSchema,
+        politician: JSONSchema
+    }
+
+    required: string[]
+}
+
 /**
  * Class that represents personal information of a person
  */
-export class PersonalInformation {
+export class PersonalInformation extends AbstractBase {
     readonly #prenominal: string | null = null
     readonly #firstName: string | null = null
     readonly #lastName: string | null = null
@@ -60,6 +83,7 @@ export class PersonalInformation {
     constructor (
         input: Partial<PersonalInformationInput> = {}
     ) {
+        super()
         const {
             prenominal,
             firstName,
@@ -291,6 +315,179 @@ export class PersonalInformation {
             gender: this.#gender,
             politician: this.#politician
         }
+    }
+
+    toJSONSchema(): PersonalInformationJSONSchema {
+        const required = [
+            'firstName',
+            'lastName',
+            'dateOfBirth',
+            'birthNumberCountry',
+            'taxDomicile',
+            'citizenship',
+            'placeOfBirth',
+            'gender'
+        ]
+
+        if (!this.#noBirthNumber) {
+            required.push('birthNumber')
+        }
+
+        return {
+            type: 'object',
+            properties: {
+                prenominal: {
+                    type: ['string', 'null']
+                },
+                firstName: {
+                    type: 'string'
+                },
+                lastName: {
+                    type: 'string'
+                },
+                postnominal: {
+                    type: ['string', 'null']
+                },
+                ...(!this.#noBirthNumber ? this.generateBirthNumberJSONSchema() : {}),
+                dateOfBirth: {
+                    allOf: [
+                        {
+                            type: 'string',
+                            format: 'date-time'
+                        },
+                        {
+                            type: 'string',
+                            format: 'date-time',
+                            formatMaximum: (() => {
+                                const d = new Date()
+
+                                return new Date(d.getFullYear() - 18, d.getMonth(), d.getDate()).toISOString()
+                            })()
+                        }
+                    ]
+                },
+                noBirthNumber: {
+                    type: 'boolean'
+                },
+                birthNumberCountry: {
+                    type: 'string'
+                },
+                taxDomicile: {
+                    type: 'string'
+                },
+                placeOfBirth: {
+                    type: 'string'
+                },
+                citizenship: {
+                    type: 'string'
+                },
+                gender: {
+                    type: 'string',
+                    enum: Object.keys(genderOptions)
+                },
+                politician: {
+                    type: 'boolean'
+                }
+            },
+            required
+        }
+    }
+
+    generateBirthNumberJSONSchema (): JSONSchema {
+        const schema: JSONSchema & { birthNumber: { anyOf: JSONSchema[] } } = {
+            birthNumber: {
+                anyOf: []
+            }
+        }
+
+        const randomString = Math.random().toString(36).substring(7)
+        if (this.#birthNumberCountry === 'HRV') {
+            const invalidSchema: JSONSchema = {
+                type: 'string',
+                description: 'Invalid HRV birth number guard',
+                pattern: `^Internally validated, invalid HRV birth number guard (${randomString})$`
+            }
+
+            const numericValue = `${this.#birthNumber}`.replace(/\D/ig, '')
+            const isOIBValid = mod1110.validate(numericValue)
+            if (numericValue.length === 11 && !isOIBValid) {
+                schema.birthNumber.anyOf.push(invalidSchema)
+
+                return schema
+            }
+
+            schema.birthNumber.anyOf.push({
+                type: 'string',
+                description: 'Birth number HRV',
+                pattern: '^\\d{11}$'
+            })
+
+            return schema
+        }
+
+        if (this.#birthNumberCountry === 'CZE' || this.#birthNumberCountry === 'SVK') {
+            const invalidSchema: JSONSchema = {
+                type: 'string',
+                description: 'Invalid CZE/SVK birth number guard',
+                pattern: `^Internally validated, invalid CZE/SVK birth number guard (${randomString})$`
+            }
+
+            if (this.#birthNumber === null) {
+                schema.birthNumber.anyOf.push(invalidSchema)
+
+                return schema
+            }
+
+            const numericValue = this.#birthNumber.replace(/\D/ig, '')
+            if (numericValue.length < 9) {
+                schema.birthNumber.anyOf.push(invalidSchema)
+
+                return schema
+            }
+            let year = parseInt(numericValue.substring(0, 2))
+            let month = parseInt(numericValue.substring(2, 4))
+            const day = parseInt(numericValue.substring(4, 6))
+            const c = (numericValue.length === 9) ? null : parseInt(numericValue.substring(numericValue.length - 1))
+
+            if (c === null) {
+                year += year < 54 ? 1900 : 1800
+            } else {
+                let mod = parseInt(numericValue.substring(0, 9)) % 11
+                if (mod === 10) {
+                    mod = 0
+                }
+                if (mod !== c) {
+                    return invalidSchema
+                }
+
+                year += year < 54 ? 2000 : 1900
+            }
+
+            if (month > 70 && year > 2003) {
+                month -= 70
+            } else if (month > 50) {
+                month -= 50
+            } else if (month > 20 && year > 2003) {
+                month -= 20
+            }
+
+            const date = new Date(year, month - 1, day)
+            if (date.getFullYear() !== year || date.getMonth() + 1 !== month || date.getDate() !== day) {
+                schema.birthNumber.anyOf.push(invalidSchema)
+
+                return schema
+            }
+
+            schema.birthNumber.anyOf.push({
+                type: 'string',
+                description: 'Internally validated birth number CZE/SVK, in schema liberally validated, https://phpfashion.com/cs/jak-overit-platne-ic-a-rodne-cislo',
+                pattern: '^\\s*\\d{6}[ /]*\\d{3,4}\\s*$'
+            })
+
+            return schema
+        }
+
+        return schema
     }
 
     /**
