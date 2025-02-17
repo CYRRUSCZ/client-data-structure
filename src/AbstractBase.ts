@@ -1,11 +1,13 @@
 import { Ajv } from 'ajv'
+import addFormats from 'ajv-formats'
 import type { ValidationAware } from './Interfaces/ValidationAware'
 import type { JSONSchemaAware } from './Interfaces/JsonSchemaAware'
 
+export type JSONSchemaType = 'object' | 'array' | 'string' | 'number' | 'integer' | 'boolean' | 'null'
 export interface JSONSchema {
-    type: 'object' | 'array' | 'string' | 'number' | 'integer' | 'boolean' | 'null'
-    [x: string]: any
+    type?: JSONSchemaType | JSONSchemaType[]
     required?: string[]
+    [x: string]: any
 }
 
 export interface JSONSchemaObject extends JSONSchema {
@@ -15,9 +17,19 @@ export interface JSONSchemaObject extends JSONSchema {
 
 export abstract class AbstractBase implements ValidationAware, JSONSchemaAware {
     validate (input?: Record<string, unknown>): void {
-        const dataToBeValidated = input ?? this.toJSON()
-        const schema = this.toJSONSchema()
         const ajv = new Ajv({ allErrors: true, strict: true })
+        addFormats(ajv, { formats: ['date', 'date-time', 'time'], keywords: true })
+
+        const dataToBeValidated = Object
+            .entries(input ?? this.toJSON())
+            .reduce<Record<string, unknown>>((acc, [key, value]: [string, unknown]) => {
+                if (value instanceof Date) {
+                    value = value.toISOString()
+                }
+
+                return Object.assign(acc, { [key]: value })
+            }, {})
+        const schema = this.toJSONSchema()
         const validate = ajv.compile(schema)
         const isValid = validate(dataToBeValidated)
         if (!isValid) {
