@@ -19,6 +19,7 @@
     "main": "dist/client-data-structure.cjs",
     "scripts": {
         "build": "node ./build.mjs",
+        "run:example:validations": "node ./examples.mjs && node ./dist/exampleValidations.esm.js",
         "lint": "eslint ./src",
         "postbuild": "tsc --emitDeclarationOnly --declaration",
         "test": "jest",
@@ -54,6 +55,7 @@
         "registry": "https://vrdc.cyrrus.cz"
     },
     "dependencies": {
-        "@cyrrus/locale-utils": "^1.1.0"
+        "@cyrrus/locale-utils": "^1.1.0",
+        "ajv": "^8.17.1"
     }
 }
