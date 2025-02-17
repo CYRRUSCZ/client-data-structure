@@ -1,4 +1,5 @@
-import { Address, type AddressInput, type AddressOutput } from './Address'
+import { AbstractBase, type JSONSchema, type JSONSchemaObject } from './AbstractBase'
+import { Address, type AddressJSONSchema, type AddressInput, type AddressOutput } from './Address'
 
 /**
  * Input of the AddressInformation class that is used to create the object
@@ -37,18 +38,29 @@ export interface AddressInformationOutput {
     useMailingAddress: boolean
 }
 
+export interface AddressInformationJSONSchema extends JSONSchemaObject {
+    type: 'object',
+    properties: {
+        address: AddressJSONSchema,
+        mailingAddress?: AddressJSONSchema,
+        useMailingAddress: JSONSchema,
+    }
+    required: string[]
+}
+
 export const ADDRESS_TYPE_REGULAR = 'address'
 export const ADDRESS_TYPE_MAILING = 'mailingAddress'
 
 /**
  * Class that represents an postal and residency address information
  */
-export class AddressInformation {
+export class AddressInformation extends AbstractBase {
     readonly #address: Address
     readonly #mailingAddress: Address
     readonly #useMailingAddress: boolean
 
     constructor (input: Partial<AddressInformationInput> = {}) {
+        super()
         const {
             address,
             mailingAddress,
@@ -110,6 +122,20 @@ export class AddressInformation {
             useMailingAddress: this.useMailingAddress
         }
         return plainObject
+    }
+
+    toJSONSchema(): AddressInformationJSONSchema {
+        return {
+            type: 'object',
+            properties: {
+                address: this.address.toJSONSchema(),
+                ...(this.#useMailingAddress ? { mailingAddress: this.mailingAddress.toJSONSchema() } : {}),
+                useMailingAddress: {
+                    type: 'boolean'
+                }
+            },
+            required: [ADDRESS_TYPE_REGULAR, ...(this.#useMailingAddress ? [ADDRESS_TYPE_MAILING] : [])]
+        }
     }
 
     /**
