@@ -1,4 +1,4 @@
-import { Address, AddressInformation, ContactInformation, PersonalInformation } from './src'
+import { Address, AddressInformation, BankAccount, ContactInformation, PersonalInformation } from './src'
 
 const args = process.argv.slice(2)
 
@@ -54,6 +54,19 @@ function contactInformation (): void {
     }
 }
 
+function bankAccount (): void {
+    // const bankAccount = BankAccount.create('123456789', '123456', '1234567890', '5500', 'CZK', '', '', '', '', false, '123456789')
+    const bankAccount = BankAccount.create('123456789', '123456', '1234567890', '5500', 'CZK', 'IT60 X054 2811 1010 0000 0123 456', 'UNCRITMM', 'Moving street 911, Outer space', 'My account', true, '123456789')
+    console.log(bankAccount.toJSON())
+    console.dir(bankAccount.toJSONSchema(), { depth: null })
+
+    try {
+        bankAccount.validate()
+    } catch (error) {
+        console.error(error)
+    }
+}
+
 switch (args[0]) {
     case 'address':
         address()
@@ -66,5 +79,8 @@ switch (args[0]) {
         break
     case 'contactInformation':
         contactInformation()
+        break
+    case 'bankAccount':
+        bankAccount()
         break
 }
