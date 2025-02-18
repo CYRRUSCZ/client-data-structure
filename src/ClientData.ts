@@ -7,6 +7,7 @@ import { CompanyInformation, type CompanyInformationInput, type CompanyInformati
 import { BankAccount, type BankAccountInput, type BankAccountOutput } from './BankAccount'
 import { getInstanceOfClass } from './helpers'
 import { Address, type AddressInput } from '.'
+import { AbstractBase, type JSONSchema, type JSONSchemaObject } from './AbstractBase'
 
 export const PLAIN_OBJECT_KEY_CLIENT = 'client'
 export const PLAIN_OBJECT_KEY_PERSONAL = 'personal'
@@ -52,10 +53,24 @@ export interface ClientDataOutput {
     company: CompanyInformationOutput
 }
 
+export interface ClientDataJSONSchema extends JSONSchemaObject {
+    type: 'object'
+    properties: {
+        client: JSONSchema
+        personal: JSONSchema
+        idCard: JSONSchema
+        address: JSONSchema
+        contact: JSONSchema
+        bankAccounts: JSONSchema
+        company?: JSONSchema
+    }
+    required: string[]
+}
+
 /**
  * Class that represents the client data
  */
-export class ClientData {
+export class ClientData extends AbstractBase {
     readonly #client: ClientInformation = new ClientInformation()
     readonly #personal: PersonalInformation = new PersonalInformation()
     readonly #idCard: IdCardInformation = new IdCardInformation()
@@ -67,6 +82,7 @@ export class ClientData {
     constructor (
         input: Partial<ClientDataInput> = {}
     ) {
+        super()
         const {
             client,
             personal,
@@ -286,6 +302,35 @@ export class ClientData {
             company: this.company.toPlainObject()
         }
         return plainObject
+    }
+
+    toJSONSchema (): ClientDataJSONSchema {
+        return {
+            type: 'object',
+            properties: {
+                client: this.client.toJSONSchema(),
+                personal: this.personal.toJSONSchema(),
+                idCard: this.idCard.toJSONSchema(),
+                address: this.address.toJSONSchema(),
+                contact: this.contact.toJSONSchema(),
+                bankAccounts: {
+                    type: 'array',
+                    items: {
+                        allOf: this.#bankAccounts.map((account) => account.toJSONSchema())
+                    }
+                },
+                ...(this.#company.toJSON().ic ? { company: this.company.toJSONSchema() } : {})
+            },
+            required: [
+                PLAIN_OBJECT_KEY_CLIENT,
+                PLAIN_OBJECT_KEY_PERSONAL,
+                PLAIN_OBJECT_KEY_ID_CARD,
+                PLAIN_OBJECT_KEY_ADDRESS,
+                PLAIN_OBJECT_KEY_CONTACT,
+                PLAIN_OBJECT_KEY_BANK_ACCOUNTS,
+                ...(this.#company.toJSON().ic ? [PLAIN_OBJECT_KEY_COMPANY] : [])
+            ]
+        }
     }
 
     /**

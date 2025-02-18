@@ -5,7 +5,8 @@ import {
     PersonalInformation, Representative,
     ClientInformation,
     CLIENT_TYPE_PERSON,
-    CLIENT_ORIGIN_WEB
+    CLIENT_ORIGIN_WEB,
+    ClientData
 } from './src'
 
 const args = process.argv.slice(2)
@@ -179,6 +180,27 @@ function clientInformation (): void {
     }
 }
 
+function clientData (): void {
+    const investmentService = InvestmentService.create('svcAml', 'AML Profile Service', new Date('2024-01-01'))
+    const investmentProfile = InvestmentProfile.create('1.0.0', 'profileAml', 'AML Profile', new Date('2021-01-01'), '1', [investmentService], 100)
+    const clientInformation = ClientInformation.create(CLIENT_TYPE_PERSON, CLIENT_ORIGIN_WEB, '123', '123456789', '987654321', [investmentProfile], false, 'richAF', '123FF', 'BC123', 'BC123KID', 'ČR', [], false)
+    const personalInformation = PersonalInformation.create('', 'Zadar', 'Doe', '', '24076340234', new Date('2006-01-01'), false, 'HRV', 'CZ', 'CZ', 'Brno', 'male', false)
+    const idCardInformation = IdCardInformation.create('24076340234', 'Ministry of Interior', 'HRV', new Date('2035-01-01'), 'OP', false)
+    const address = Address.create('John Doe', 'Main Street', 123, 'Springfield', 'USA', 12345)
+    const addressInformation = AddressInformation.create(address, {}, false)
+    const contactInformation = ContactInformation.create('test@test.com', '+385 91 124 4567', 'password')
+    const bankAccount = BankAccount.create('123456789', '123456', '1234567890', '5500', 'CZK', 'IT60 X054 2811 1010 0000 0123 456', 'UNCRITMM', 'Moving street 911, Outer space', 'My account', true, '123456789')
+    const clientData = ClientData.create(clientInformation, personalInformation, idCardInformation, addressInformation, contactInformation, [bankAccount], {})
+    console.log(clientData.toJSON())
+    console.dir(clientData.toJSONSchema(), { depth: null })
+
+    try {
+        clientData.validate()
+    } catch (error) {
+        console.error(error)
+    }
+}
+
 switch (args[0]) {
     case 'address':
         address()
@@ -216,4 +238,9 @@ switch (args[0]) {
     case 'clientInformation':
         clientInformation()
         break
+    case 'clientData':
+        clientData()
+        break
+    default:
+        clientData()
 }
