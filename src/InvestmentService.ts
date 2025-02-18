@@ -1,3 +1,4 @@
+import { AbstractBase, type JSONSchema, type JSONSchemaObject } from './AbstractBase'
 import { getStringOrNull, getValidDate } from './helpers'
 
 /**
@@ -20,16 +21,27 @@ export interface InvestmentServiceOutput {
     added: Date | null
 }
 
+export interface InvestmentServiceJSONSchema extends JSONSchemaObject {
+    type: 'object'
+    properties: {
+        uid: JSONSchema
+        name: JSONSchema
+        added: JSONSchema
+    }
+    required: string[]
+}
+
 /**
  * Class that represents an investment profile service
  * @deprecated investment profiles are not used anymore
  */
-export class InvestmentService {
+export class InvestmentService extends AbstractBase {
     readonly #uid: string | null = null
     readonly #name: string | null = null
     readonly #added: Date = new Date()
 
     constructor (input: Partial<InvestmentServiceInput> = {}) {
+        super()
         const {
             uid,
             name,
@@ -96,6 +108,30 @@ export class InvestmentService {
             added: this.added
         }
         return plainObject
+    }
+
+    // eslint-disable-next-line @typescript-eslint/class-methods-use-this -- This method is required by the AbstractBase class
+    toJSONSchema(): InvestmentServiceJSONSchema {
+        return {
+            type: 'object',
+            properties: {
+                uid: {
+                    type: 'string'
+                },
+                name: {
+                    type: 'string'
+                },
+                added: {
+                    type: 'string',
+                    format: 'date-time'
+                }
+            },
+            required: [
+                'uid',
+                'name',
+                'added'
+            ]
+        }
     }
 
     /**
