@@ -2,7 +2,10 @@ import {
     Address, AddressInformation, BankAccount, CompanyInformation,
     ContactInformation, IdCardInformation, InvestmentParameter,
     InvestmentService, InvestmentProfile,
-    PersonalInformation, Representative
+    PersonalInformation, Representative,
+    ClientInformation,
+    CLIENT_TYPE_PERSON,
+    CLIENT_ORIGIN_WEB
 } from './src'
 
 const args = process.argv.slice(2)
@@ -162,6 +165,20 @@ function investmentProfile (): void {
     }
 }
 
+function clientInformation (): void {
+    const investmentService = InvestmentService.create('svcAml', 'AML Profile Service', new Date('2024-01-01'))
+    const investmentProfile = InvestmentProfile.create('1.0.0', 'profileAml', 'AML Profile', new Date('2021-01-01'), '1', [investmentService], 100)
+    const clientInformation = ClientInformation.create(CLIENT_TYPE_PERSON, CLIENT_ORIGIN_WEB, '123', '123456789', '987654321', [investmentProfile], false, 'richAF', '123FF', 'BC123', 'BC123KID', 'ČR', [], false)
+    console.log(clientInformation.toJSON())
+    console.dir(clientInformation.toJSONSchema(), { depth: null })
+
+    try {
+        clientInformation.validate()
+    } catch (error) {
+        console.error(error)
+    }
+}
+
 switch (args[0]) {
     case 'address':
         address()
@@ -195,5 +212,8 @@ switch (args[0]) {
         break
     case 'investmentProfile':
         investmentProfile()
+        break
+    case 'clientInformation':
+        clientInformation()
         break
 }
