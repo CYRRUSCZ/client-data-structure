@@ -24,6 +24,20 @@ export abstract class AbstractBase implements ValidationAware, JSONSchemaAware {
             return Object
                 .entries(data)
                 .reduce<Record<string, unknown>>((acc, [key, value]: [string, unknown]) => {
+                    if (value && Array.isArray(value)) {
+                        value = value.map((item) => {
+                            if (item && typeof item === 'object' && !Array.isArray(item) && !(item instanceof Date)) {
+                                return transformData(item as Record<string, unknown>)
+                            }
+
+                            if (item instanceof Date) {
+                                return item.toISOString()
+                            }
+
+                            return item
+                        })
+                    }
+
                     if (value && typeof value === 'object' && !Array.isArray(value) && !(value instanceof Date)) {
                         value = transformData(value)
                     }

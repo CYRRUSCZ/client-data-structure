@@ -1,4 +1,4 @@
-import { Address, AddressInformation, BankAccount, ContactInformation, IdCardInformation, PersonalInformation, Representative } from './src'
+import { Address, AddressInformation, BankAccount, CompanyInformation, ContactInformation, IdCardInformation, PersonalInformation, Representative } from './src'
 
 const args = process.argv.slice(2)
 
@@ -97,6 +97,29 @@ function representative (): void {
     }
 }
 
+function companyInformation (): void {
+    const personalInformation = PersonalInformation.create('', 'Zadar', 'Doe', '', '24076340234', new Date('2006-01-01'), false, 'HRV', 'CZ', 'CZ', 'Brno', 'male', false)
+    const personalInformation2 = PersonalInformation.create('', 'Jolanda', 'Doe', '', '24076340234', new Date('2006-01-01'), false, 'HRV', 'CZ', 'CZ', 'Brno', 'male', false)
+    const ceoAddress = Address.create('Zadar Doe', 'Main Street', 123, 'Springfield', 'USA', 12345)
+    const ctoAddress = Address.create('Jolanda Doe', 'Main Street', 123, 'Springfield', 'USA', 12345)
+    const ceoIdCardInformation = IdCardInformation.create('24076340234', 'Ministry of Interior', 'HRV', new Date('2035-01-01'), 'OP', false)
+    const ctoIdCardInformation = IdCardInformation.create('24076340234', 'Ministry of Interior', 'HRV', new Date('2045-01-01'), 'Pas', false)
+    const ceoContactInformation = ContactInformation.create('test@test.com', '+385 91 124 4567', 'password')
+    // const ctoContactInformation = ContactInformation.create('jolanda-test@test.com', '+385 48 122 4587', 'hodnebudesnekde')
+    const ctoContactInformation = ContactInformation.create('jolanda-test@test.com', '+385 48 1222 4587', 'hodnebudesnekdesdfsdfsfsdfsdf')
+    const representative = Representative.create(personalInformation, 'CEO', ceoAddress, ceoIdCardInformation, null, ceoContactInformation, true, true, 'a', '1', '123456789', '123456789', true)
+    const representative2 = Representative.create(personalInformation2, 'CTO', ctoAddress, ctoIdCardInformation, null, ctoContactInformation, true, true, 'a', '1', '123456789', '123456789', true)
+    const companyInformation = CompanyInformation.create('123456789', 'CZ123456789', 'XYZ123456789', 'HRV', [representative, representative2], 'Turn My Turtle s.p.')
+    console.dir(companyInformation.toJSON(), { depth: null })
+    console.dir(companyInformation.toJSONSchema(), { depth: null })
+
+    try {
+        companyInformation.validate()
+    } catch (error) {
+        console.error(error)
+    }
+}
+
 switch (args[0]) {
     case 'address':
         address()
@@ -118,5 +141,8 @@ switch (args[0]) {
         break
     case 'representative':
         representative()
+        break
+    case 'companyInformation':
+        companyInformation()
         break
 }
