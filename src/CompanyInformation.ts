@@ -192,13 +192,15 @@ export class CompanyInformation extends AbstractBase {
                     type: 'string'
                 },
                 [PLAIN_OBJECT_KEY_REPRESENTATIVES]: {
-                    type: 'array',
                     // Problematic hack to make the JSON schema work because representative have a dynamic schema
                     // and we don't want the validation to pass if not all items are valid
                     // Causing the validation to throw error telling all items are invalid even it is not true
-                    items: {
-                        allOf: this.#representatives.map((entry) => entry.toJSONSchema())
-                    }
+                    ...(this.#representatives.length > 0 ? {
+                        type: 'array',
+                        items: {
+                            allOf: this.#representatives.map((entry) => entry.toJSONSchema())
+                        }
+                    } : {})
                 }
             },
             required: [
