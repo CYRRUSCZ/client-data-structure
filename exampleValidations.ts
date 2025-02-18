@@ -1,4 +1,4 @@
-import { Address, AddressInformation, BankAccount, ContactInformation, PersonalInformation } from './src'
+import { Address, AddressInformation, BankAccount, ContactInformation, IdCardInformation, PersonalInformation } from './src'
 
 const args = process.argv.slice(2)
 
@@ -67,6 +67,19 @@ function bankAccount (): void {
     }
 }
 
+function idCardInformation (): void {
+    const idCardInformation = IdCardInformation.create('24076340234', 'Ministry of Interior', 'HRV', new Date('2035-01-01'), 'OP', false)
+    // const idCardInformation = IdCardInformation.create('1234567890', 'Ministry of Interior', 'HRV', new Date('2024-01-01'), 'OP', false)
+    console.log(idCardInformation.toJSON())
+    console.dir(idCardInformation.toJSONSchema(), { depth: null })
+
+    try {
+        idCardInformation.validate()
+    } catch (error) {
+        console.error(error)
+    }
+}
+
 switch (args[0]) {
     case 'address':
         address()
@@ -82,5 +95,8 @@ switch (args[0]) {
         break
     case 'bankAccount':
         bankAccount()
+        break
+    case 'idCardInformation':
+        idCardInformation()
         break
 }
