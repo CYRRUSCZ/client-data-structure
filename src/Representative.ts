@@ -1,9 +1,10 @@
 import { getInstanceOfClass, getStringOrNull } from './helpers'
-import { Address, type AddressInput, type AddressOutput } from './Address'
-import { IdCardInformation, type IdCardInformationInput, type IdCardInformationOutput } from './IdCardInformation'
-import { PersonalInformation, type PersonalInformationInput, type PersonalInformationOutput } from './PersonalInformation'
-import { ContactInformation, type ContactInformationInput, type ContactInformationOutput } from './ContactInformation'
+import { Address, type AddressJSONSchema, type AddressInput, type AddressOutput } from './Address'
+import { IdCardInformation, type IdCardInformationJSONSchema, type IdCardInformationInput, type IdCardInformationOutput } from './IdCardInformation'
+import { PersonalInformation, type PersonalInformationJSONSchema, type PersonalInformationInput, type PersonalInformationOutput } from './PersonalInformation'
+import { ContactInformation, type ContactInformationJSONSchema, type ContactInformationInput, type ContactInformationOutput } from './ContactInformation'
 import { ClientData } from './ClientData'
+import { AbstractBase, type JSONSchema, type JSONSchemaObject } from './AbstractBase'
 
 export const PLAIN_OBJECT_KEY_POSITION = 'position'
 export const PLAIN_OBJECT_KEY_ID = 'id'
@@ -47,10 +48,31 @@ export interface RepresentativeOutput {
     hasPowerOfAttorney: boolean
 }
 
+export interface RepresentativeJSONSchema extends JSONSchemaObject {
+    type: 'object',
+    properties: {
+        personal: PersonalInformationJSONSchema,
+        position: JSONSchema,
+        address: AddressJSONSchema,
+        idCard: IdCardInformationJSONSchema,
+        id: JSONSchema,
+        contact: ContactInformationJSONSchema,
+        isRepresentative: JSONSchema,
+        isRealOwner: JSONSchema,
+        realOwnerReasonChar?: JSONSchema,
+        realOwnerReasonNumber?: JSONSchema,
+        capitolId: JSONSchema,
+        capitolContactId: JSONSchema,
+        hasPowerOfAttorney: JSONSchema
+    }
+
+    required: string[]
+}
+
 /**
  * Class that represents a representative of a company
  */
-export class Representative {
+export class Representative extends AbstractBase {
 
     readonly #personal: PersonalInformation = new PersonalInformation()
     readonly #position: string | null = null
@@ -69,6 +91,7 @@ export class Representative {
     constructor (
         input: Partial<RepresentativeInput> = {}
     ) {
+        super()
         const {
             personal,
             position,
@@ -262,6 +285,45 @@ export class Representative {
             [ClientData.PLAIN_OBJECT_KEY_CONTACT]: this.contact.toJSON()
         }
         return plain
+    }
+
+    toJSONSchema(): RepresentativeJSONSchema {
+        return {
+            type: 'object',
+            properties: {
+                personal: this.personal.toJSONSchema(),
+                position: { type: 'string' },
+                address: this.address.toJSONSchema(),
+                idCard: this.idCard.toJSONSchema(),
+                id: { type: 'string', nullable: true },
+                contact: this.contact.toJSONSchema(),
+                isRepresentative: { type: 'boolean' },
+                isRealOwner: { type: 'boolean' },
+                ...(this.#isRealOwner
+                    ? {
+                        realOwnerReasonChar: { type: 'string' },
+                        realOwnerReasonNumber: { type: 'string' }
+                    }
+                    : {}
+                ),
+                capitolId: { type: 'string' },
+                capitolContactId: { type: 'string' },
+                hasPowerOfAttorney: { type: 'boolean' }
+            },
+            required: [
+                'id',
+                'personal',
+                'address',
+                'idCard',
+                'contact',
+                'isRepresentative',
+                'isRealOwner',
+                ...(this.#isRealOwner ? ['realOwnerReasonChar', 'realOwnerReasonNumber'] : []),
+                'capitolId',
+                'capitolContactId',
+                'hasPowerOfAttorney'
+            ]
+        }
     }
 
     /**

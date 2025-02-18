@@ -1,4 +1,4 @@
-import { Address, AddressInformation, BankAccount, ContactInformation, IdCardInformation, PersonalInformation } from './src'
+import { Address, AddressInformation, BankAccount, ContactInformation, IdCardInformation, PersonalInformation, Representative } from './src'
 
 const args = process.argv.slice(2)
 
@@ -80,6 +80,23 @@ function idCardInformation (): void {
     }
 }
 
+function representative (): void {
+    const personalInformation = PersonalInformation.create('', 'Zadar', 'Doe', '', '24076340234', new Date('2006-01-01'), false, 'HRV', 'CZ', 'CZ', 'Brno', 'male', false)
+    const address = Address.create('John Doe', 'Main Street', 123, 'Springfield', 'USA', 12345)
+    const idCardInformation = IdCardInformation.create('24076340234', 'Ministry of Interior', 'HRV', new Date('2035-01-01'), 'OP', false)
+    const contactInformation = ContactInformation.create('test@test.com', '+385 91 124 4567', 'password')
+    const representative = Representative.create(personalInformation, 'CEO', address, idCardInformation, null, contactInformation, true, true, 'a', '1', '123456789', '123456789', true)
+    // const representative = Representative.create(personalInformation, 'CTO', address, null, null, null)
+    console.log(representative.toJSON())
+    console.dir(representative.toJSONSchema(), { depth: null })
+
+    try {
+        representative.validate()
+    } catch (error) {
+        console.error(error)
+    }
+}
+
 switch (args[0]) {
     case 'address':
         address()
@@ -98,5 +115,8 @@ switch (args[0]) {
         break
     case 'idCardInformation':
         idCardInformation()
+        break
+    case 'representative':
+        representative()
         break
 }
