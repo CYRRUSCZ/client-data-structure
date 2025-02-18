@@ -1,4 +1,8 @@
-import { Address, AddressInformation, BankAccount, CompanyInformation, ContactInformation, IdCardInformation, PersonalInformation, Representative } from './src'
+import {
+    Address, AddressInformation, BankAccount, CompanyInformation,
+    ContactInformation, IdCardInformation, InvestmentParameter,
+    PersonalInformation, Representative
+} from './src'
 
 const args = process.argv.slice(2)
 
@@ -120,6 +124,18 @@ function companyInformation (): void {
     }
 }
 
+function investmentParameter (): void {
+    const investmentParameter = InvestmentParameter.create('1.0.0', 'parAmlProfile', 'AML Profile', new Date('2021-01-01'), '1', true)
+    console.log(investmentParameter.toJSON())
+    console.dir(investmentParameter.toJSONSchema(), { depth: null })
+
+    try {
+        investmentParameter.validate()
+    } catch (error) {
+        console.error(error)
+    }
+}
+
 switch (args[0]) {
     case 'address':
         address()
@@ -144,5 +160,8 @@ switch (args[0]) {
         break
     case 'companyInformation':
         companyInformation()
+        break
+    case 'investmentParameter':
+        investmentParameter()
         break
 }
