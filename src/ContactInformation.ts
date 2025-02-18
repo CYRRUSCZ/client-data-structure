@@ -1,4 +1,6 @@
+import { AbstractBase, type JSONSchema, type JSONSchemaObject } from './AbstractBase'
 import { getStringOrNull } from './helpers'
+import { parsePhoneNumberFromString } from 'libphonenumber-js'
 
 /**
  * Input of the ContactInformation class that is used to create the object
@@ -18,10 +20,21 @@ export interface ContactInformationOutput {
     phonePassword: string | null
 }
 
+export interface ContactInformationJSONSchema extends JSONSchemaObject {
+    type: 'object',
+    properties: {
+        email: JSONSchema,
+        phoneNumber: JSONSchema,
+        phonePassword: JSONSchema
+    }
+
+    required: string[]
+}
+
 /**
  * Class that represents a contact information
  */
-export class ContactInformation {
+export class ContactInformation extends AbstractBase {
     readonly #email: string | null = null
     readonly #phoneNumber: string | null = null
     readonly #phonePassword: string | null = null
@@ -29,6 +42,7 @@ export class ContactInformation {
     constructor (
         input: Partial<ContactInformationInput> = {}
     ) {
+        super()
         const {
             email,
             phoneNumber,
@@ -88,6 +102,49 @@ export class ContactInformation {
             email: this.#email,
             phoneNumber: this.#phoneNumber,
             phonePassword: this.#phonePassword
+        }
+    }
+
+    toJSONSchema (): ContactInformationJSONSchema {
+        return {
+            type: 'object',
+            properties: {
+                email: {
+                    allOf: [
+                        { type: 'string', format: 'email' }
+                        // @TODO: backend email resolving, resolveMX and so on
+                    ]
+                },
+                phoneNumber: {
+                    allOf: [
+                        (() => {
+                            const randomString = Math.random().toString(36).substring(7)
+                            const invalidSchema = {
+                                type: 'string',
+                                description: 'Invalid phone number guard',
+                                pattern: `^Invalid phone number guard, (${randomString})$`
+                            }
+                            if (this.#phoneNumber === null || this.#phoneNumber === '') {
+                                return invalidSchema
+                            }
+                            const number = parsePhoneNumberFromString(this.#phoneNumber)
+                            if (number?.isValid()) {
+                                return {
+                                    type: 'string',
+                                    description: 'Internally validated'
+                                }
+                            }
+
+                            return invalidSchema
+                        })()
+                    ]
+                },
+                phonePassword: {
+                    type: 'string',
+                    maxLength: 20
+                }
+            },
+            required: ['email', 'phoneNumber', 'phonePassword']
         }
     }
 

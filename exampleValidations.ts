@@ -1,4 +1,4 @@
-import { Address, AddressInformation, PersonalInformation } from './src'
+import { Address, AddressInformation, ContactInformation, PersonalInformation } from './src'
 
 const args = process.argv.slice(2)
 
@@ -41,6 +41,19 @@ function personalInformation (): void {
     }
 }
 
+function contactInformation (): void {
+    const contactInformation = ContactInformation.create('test@test.com', '+385 91 124 4567', 'password')
+    // const contactInformation = ContactInformation.create('test@test.com', '+385 91 124563 4567', 'password')
+    console.log(contactInformation.toJSON())
+    console.dir(contactInformation.toJSONSchema(), { depth: null })
+
+    try {
+        contactInformation.validate()
+    } catch (error) {
+        console.error(error)
+    }
+}
+
 switch (args[0]) {
     case 'address':
         address()
@@ -50,5 +63,8 @@ switch (args[0]) {
         break
     case 'personalInformation':
         personalInformation()
+        break
+    case 'contactInformation':
+        contactInformation()
         break
 }

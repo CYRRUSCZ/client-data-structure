@@ -58,6 +58,7 @@
         "@cyrrus/locale-utils": "^1.1.0",
         "ajv": "^8.17.1",
         "ajv-formats": "^3.0.1",
-        "cdigit": "^4.0.2"
+        "cdigit": "^4.0.2",
+        "libphonenumber-js": "^1.11.20"
     }
 }
