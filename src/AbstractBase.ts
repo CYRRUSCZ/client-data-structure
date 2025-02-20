@@ -16,7 +16,7 @@ export interface JSONSchemaObject extends JSONSchema {
 }
 
 export abstract class AbstractBase implements ValidationAware, JSONSchemaAware {
-    validate (input?: Record<string, unknown>): void {
+    validate (input?: Record<string, unknown>): boolean {
         const ajv = new Ajv({ allErrors: true, strict: true })
         addFormats(ajv, { formats: ['date', 'date-time', 'time', 'email'], keywords: true })
 
@@ -58,6 +58,8 @@ export abstract class AbstractBase implements ValidationAware, JSONSchemaAware {
             const errorsAsString = validate.errors?.map((error) => `${error.instancePath} ${error.message}`).join('\n')
             throw new Error(errorsAsString)
         }
+
+        return isValid
     }
 
     abstract toJSON (): Record<string, any>

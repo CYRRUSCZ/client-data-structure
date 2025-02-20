@@ -1,8 +1,8 @@
 export interface JSONSchemaAware {
     /**
-     * Return JSON schema representation of the object
+     * Return JSON schema representation of the instance
      *
-     * @returns {Record<string, any>} the JSON schema
+     * @returns {Record<string, any>} the instance JSON schema
      */
     toJSONSchema: () => Record<string, any>
 }

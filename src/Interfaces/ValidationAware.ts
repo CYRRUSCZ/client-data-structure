@@ -1,9 +1,9 @@
 export interface ValidationAware {
     /**
-     * Validate the object or input object
+     * Validate the instance or input object
      *
      * @throws {Error} Throws a validation error if the object is not valid
-     * @returns {void}
+     * @returns {boolean} true if the object is valid
      */
-    validate: (input: Record<string, any>) => void
+    validate: (input?: Record<string, any>) => boolean
 }
