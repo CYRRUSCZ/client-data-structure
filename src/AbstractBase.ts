@@ -1,5 +1,7 @@
 import { Ajv } from 'ajv'
 import addFormats from 'ajv-formats'
+
+import { transformDataBeforeValidation } from './helpers'
 import type { ValidationAware } from './Interfaces/ValidationAware'
 import type { JSONSchemaAware } from './Interfaces/JsonSchemaAware'
 
@@ -19,36 +21,6 @@ export abstract class AbstractBase implements ValidationAware, JSONSchemaAware {
     validate (input?: Record<string, unknown>): boolean {
         const ajv = new Ajv({ allErrors: true, strict: true })
         addFormats(ajv, { formats: ['date', 'date-time', 'time', 'email'], keywords: true })
-
-        function transformDataBeforeValidation (data: Record<string, any>): Record<string, any> {
-            return Object
-                .entries(data)
-                .reduce<Record<string, unknown>>((acc, [key, value]: [string, unknown]) => {
-                    if (value && Array.isArray(value)) {
-                        value = value.map((item) => {
-                            if (item && typeof item === 'object' && !Array.isArray(item) && !(item instanceof Date)) {
-                                return transformDataBeforeValidation(item as Record<string, unknown>)
-                            }
-
-                            if (item instanceof Date) {
-                                return item.toISOString()
-                            }
-
-                            return item
-                        })
-                    }
-
-                    if (value && typeof value === 'object' && !Array.isArray(value) && !(value instanceof Date)) {
-                        value = transformDataBeforeValidation(value)
-                    }
-
-                    if (value instanceof Date) {
-                        value = value.toISOString()
-                    }
-
-                    return Object.assign(acc, { [key]: value })
-                }, {})
-        }
 
         const dataToBeValidated = transformDataBeforeValidation(input ?? this.toJSON())
         const schema = this.toJSONSchema()

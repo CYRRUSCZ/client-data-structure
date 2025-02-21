@@ -176,6 +176,36 @@ export function generateBirthNumberJSONSchema (birthNumber: string, birthNumberC
     return schema
 }
 
+export function transformDataBeforeValidation (data: Record<string, any>): Record<string, any> {
+    return Object
+        .entries(data)
+        .reduce<Record<string, unknown>>((acc, [key, value]: [string, unknown]) => {
+            if (value && Array.isArray(value)) {
+                value = value.map((item) => {
+                    if (item && typeof item === 'object' && !Array.isArray(item) && !(item instanceof Date)) {
+                        return transformDataBeforeValidation(item as Record<string, unknown>)
+                    }
+
+                    if (item instanceof Date) {
+                        return item.toISOString()
+                    }
+
+                    return item
+                })
+            }
+
+            if (value && typeof value === 'object' && !Array.isArray(value) && !(value instanceof Date)) {
+                value = transformDataBeforeValidation(value)
+            }
+
+            if (value instanceof Date) {
+                value = value.toISOString()
+            }
+
+            return Object.assign(acc, { [key]: value })
+        }, {})
+}
+
 export enum AvailableLanguages {
     cs_CZ = 'cs_CZ',
     sk_SK = 'sk_SK',
