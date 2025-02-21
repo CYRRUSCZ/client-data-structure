@@ -20,14 +20,14 @@ export abstract class AbstractBase implements ValidationAware, JSONSchemaAware {
         const ajv = new Ajv({ allErrors: true, strict: true })
         addFormats(ajv, { formats: ['date', 'date-time', 'time', 'email'], keywords: true })
 
-        function transformData (data: Record<string, any>): Record<string, any> {
+        function transformDataBeforeValidation (data: Record<string, any>): Record<string, any> {
             return Object
                 .entries(data)
                 .reduce<Record<string, unknown>>((acc, [key, value]: [string, unknown]) => {
                     if (value && Array.isArray(value)) {
                         value = value.map((item) => {
                             if (item && typeof item === 'object' && !Array.isArray(item) && !(item instanceof Date)) {
-                                return transformData(item as Record<string, unknown>)
+                                return transformDataBeforeValidation(item as Record<string, unknown>)
                             }
 
                             if (item instanceof Date) {
@@ -39,7 +39,7 @@ export abstract class AbstractBase implements ValidationAware, JSONSchemaAware {
                     }
 
                     if (value && typeof value === 'object' && !Array.isArray(value) && !(value instanceof Date)) {
-                        value = transformData(value)
+                        value = transformDataBeforeValidation(value)
                     }
 
                     if (value instanceof Date) {
@@ -50,7 +50,7 @@ export abstract class AbstractBase implements ValidationAware, JSONSchemaAware {
                 }, {})
         }
 
-        const dataToBeValidated = transformData(input ?? this.toJSON())
+        const dataToBeValidated = transformDataBeforeValidation(input ?? this.toJSON())
         const schema = this.toJSONSchema()
         const validate = ajv.compile(schema)
         const isValid = validate(dataToBeValidated)
