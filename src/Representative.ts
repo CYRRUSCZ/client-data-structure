@@ -287,28 +287,36 @@ export class Representative extends AbstractBase {
         return plain
     }
 
+    // eslint-disable-next-line @typescript-eslint/class-methods-use-this -- This method is required by the AbstractBase class
     toJSONSchema(): RepresentativeJSONSchema {
         return {
             type: 'object',
             properties: {
-                personal: this.personal.toJSONSchema(),
-                position: { type: 'string' },
-                address: this.address.toJSONSchema(),
-                idCard: this.idCard.toJSONSchema(),
                 id: { type: 'string', nullable: true },
-                contact: this.contact.toJSONSchema(),
-                isRepresentative: { type: 'boolean' },
-                isRealOwner: { type: 'boolean' },
-                ...(this.#isRealOwner
-                    ? {
-                        realOwnerReasonChar: { type: 'string' },
-                        realOwnerReasonNumber: { type: 'string' }
-                    }
-                    : {}
-                ),
                 capitolId: { type: 'string' },
                 capitolContactId: { type: 'string' },
-                hasPowerOfAttorney: { type: 'boolean' }
+                position: { type: 'string' },
+                isRepresentative: { type: 'boolean' },
+                isRealOwner: { type: 'boolean' },
+                hasPowerOfAttorney: { type: 'boolean' },
+                personal: PersonalInformation.prototype.toJSONSchema(),
+                address: Address.prototype.toJSONSchema(),
+                idCard: IdCardInformation.prototype.toJSONSchema(),
+                contact: ContactInformation.prototype.toJSONSchema()
+            },
+            if: {
+                properties: {
+                    isRealOwner: {
+                        const: true
+                    }
+                }
+            },
+            then: {
+                properties: {
+                    realOwnerReasonChar: { type: 'string' },
+                    realOwnerReasonNumber: { type: 'string' }
+                },
+                required: ['realOwnerReasonChar', 'realOwnerReasonNumber']
             },
             required: [
                 'id',
@@ -318,7 +326,6 @@ export class Representative extends AbstractBase {
                 'contact',
                 'isRepresentative',
                 'isRealOwner',
-                ...(this.#isRealOwner ? ['realOwnerReasonChar', 'realOwnerReasonNumber'] : []),
                 'capitolId',
                 'capitolContactId',
                 'hasPowerOfAttorney'

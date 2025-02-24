@@ -1,5 +1,5 @@
 import { AbstractBase, type JSONSchema, type JSONSchemaObject } from './AbstractBase'
-import { getStringOrNull } from './helpers'
+import { getStringOrNull, transformDataBeforeValidation } from './helpers'
 import { parsePhoneNumberFromString } from 'libphonenumber-js'
 
 /**
@@ -94,6 +94,48 @@ export class ContactInformation extends AbstractBase {
         return this.#phonePassword
     }
 
+    validate (input?: Record<string, any>): boolean {
+        const dataToBeValidated = transformDataBeforeValidation(input ?? this.toJSON())
+        ContactInformation.validatePhoneNumber(String(dataToBeValidated.phoneNumber ?? ''))
+        ContactInformation.validateEmailMX()
+
+        const schema = this.toJSONSchema()
+        const validate = this._ajv.compile(schema)
+        const isValid = validate(dataToBeValidated)
+        if (!isValid) {
+            const errorsAsString = validate.errors?.map((error) => `${error.instancePath} ${error.message}`).join('\n')
+            throw new Error(errorsAsString, { cause: validate.errors })
+        }
+
+        return isValid
+    }
+
+    // @TODO not implemented yet
+    static validateEmailMX (): boolean {
+        return true
+    }
+
+    /**
+     * Validate the phone number
+     *
+     * @param {string} phoneNumber The phone number to validate
+     *
+     * @throws {Error} If the phone number is not valid
+     * @returns true if the phone number is valid
+     */
+    static validatePhoneNumber (phoneNumber: string): boolean {
+        if (!phoneNumber) {
+            throw new Error('Phone number is required')
+        }
+
+        const number = parsePhoneNumberFromString(phoneNumber)
+        if (!number?.isValid()) {
+            throw new Error('Invalid phone number')
+        }
+
+        return true
+    }
+
     /**
      * Serialize the object to JSON
      */
@@ -105,39 +147,18 @@ export class ContactInformation extends AbstractBase {
         }
     }
 
+    // eslint-disable-next-line @typescript-eslint/class-methods-use-this -- This method is required by the AbstractBase class
     toJSONSchema (): ContactInformationJSONSchema {
         return {
             type: 'object',
             properties: {
                 email: {
-                    allOf: [
-                        { type: 'string', format: 'email' }
-                        // @TODO: backend email resolving, resolveMX and so on
-                    ]
+                    type: 'string',
+                    format: 'email'
                 },
                 phoneNumber: {
-                    allOf: [
-                        (() => {
-                            const randomString = Math.random().toString(36).substring(7)
-                            const invalidSchema = {
-                                type: 'string',
-                                description: 'Invalid phone number guard',
-                                pattern: `^Invalid phone number guard, (${randomString})$`
-                            }
-                            if (this.#phoneNumber === null || this.#phoneNumber === '') {
-                                return invalidSchema
-                            }
-                            const number = parsePhoneNumberFromString(this.#phoneNumber)
-                            if (number?.isValid()) {
-                                return {
-                                    type: 'string',
-                                    description: 'Internally validated'
-                                }
-                            }
-
-                            return invalidSchema
-                        })()
-                    ]
+                    type: 'string',
+                    pattern: '^\\+?[0-9\\s]+$'
                 },
                 phonePassword: {
                     type: 'string',

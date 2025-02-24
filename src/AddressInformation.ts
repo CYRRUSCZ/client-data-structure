@@ -42,7 +42,7 @@ export interface AddressInformationJSONSchema extends JSONSchemaObject {
     type: 'object',
     properties: {
         address: AddressJSONSchema,
-        mailingAddress?: AddressJSONSchema,
+        mailingAddress?: JSONSchema,
         useMailingAddress: JSONSchema,
     }
     required: string[]
@@ -124,17 +124,34 @@ export class AddressInformation extends AbstractBase {
         return plainObject
     }
 
+    // eslint-disable-next-line @typescript-eslint/class-methods-use-this -- This method is required by the AbstractBase class
     toJSONSchema(): AddressInformationJSONSchema {
         return {
             type: 'object',
             properties: {
-                address: this.address.toJSONSchema(),
-                ...(this.#useMailingAddress ? { mailingAddress: this.mailingAddress.toJSONSchema() } : {}),
+                address: Address.prototype.toJSONSchema(),
                 useMailingAddress: {
                     type: 'boolean'
                 }
             },
-            required: [ADDRESS_TYPE_REGULAR, ...(this.#useMailingAddress ? [ADDRESS_TYPE_MAILING] : [])]
+            if: {
+                properties: {
+                    useMailingAddress: {
+                        const: true
+                    }
+                }
+            },
+            then: {
+                properties: {
+                    mailingAddress: Address.prototype.toJSONSchema()
+                },
+                required: [
+                    ADDRESS_TYPE_MAILING
+                ]
+            },
+            required: [
+                ADDRESS_TYPE_REGULAR
+            ]
         }
     }
 

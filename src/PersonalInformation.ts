@@ -1,5 +1,6 @@
 import { AbstractBase, type JSONSchema, type JSONSchemaObject } from './AbstractBase'
-import { generateBirthNumberJSONSchema, getNormalizedDate, getStringOrNull } from './helpers'
+import { getNormalizedDate, getStringOrNull, transformDataBeforeValidation } from './helpers'
+import { mod11_10 as mod1110 } from 'cdigit'
 import { countries } from '@cyrrus/locale-utils'
 
 /**
@@ -295,6 +296,79 @@ export class PersonalInformation extends AbstractBase {
         return countries[this.#citizenship] ?? this.#citizenship
     }
 
+    validate (input?: Record<string, any>): boolean {
+        const dataToBeValidated = transformDataBeforeValidation(input ?? this.toJSON())
+        PersonalInformation.validateBirthNumber(String(this.#birthNumber ?? ''), String(this.#birthNumberCountry ?? ''))
+
+        const schema = this.toJSONSchema()
+        const validate = this._ajv.compile(schema)
+        const isValid = validate(dataToBeValidated)
+        if (!isValid) {
+            const errorsAsString = validate.errors?.map((error) => `${error.instancePath} ${error.message}`).join('\n')
+            throw new Error(errorsAsString, { cause: validate.errors })
+        }
+
+        return isValid
+    }
+
+    static validateBirthNumber (birthNumber: string, birthNumberCountryCode: string): boolean {
+        if (birthNumberCountryCode === 'HRV') {
+            const numericValue = birthNumber.replace(/\D/ig, '')
+            const isOIBValid = mod1110.validate(numericValue)
+            if (numericValue.length === 11 && !isOIBValid) {
+                throw new Error('Invalid HRV birth number')
+            }
+
+            return true
+        }
+
+        if (birthNumberCountryCode === 'CZE' || birthNumberCountryCode === 'SVK') {
+            if (birthNumber === '') {
+                throw new Error('Invalid CZE/SVK birth number')
+            }
+
+            const numericValue = birthNumber.replace(/\D/ig, '')
+            if (numericValue.length < 9) {
+                throw new Error('Invalid CZE/SVK birth number')
+            }
+            let year = parseInt(numericValue.substring(0, 2))
+            let month = parseInt(numericValue.substring(2, 4))
+            const day = parseInt(numericValue.substring(4, 6))
+            const c = (numericValue.length === 9) ? null : parseInt(numericValue.substring(numericValue.length - 1))
+
+            if (c === null) {
+                year += year < 54 ? 1900 : 1800
+            } else {
+                let mod = parseInt(numericValue.substring(0, 9)) % 11
+                if (mod === 10) {
+                    mod = 0
+                }
+                if (mod !== c) {
+                    throw new Error('Invalid CZE/SVK birth number')
+                }
+
+                year += year < 54 ? 2000 : 1900
+            }
+
+            if (month > 70 && year > 2003) {
+                month -= 70
+            } else if (month > 50) {
+                month -= 50
+            } else if (month > 20 && year > 2003) {
+                month -= 20
+            }
+
+            const date = new Date(year, month - 1, day)
+            if (date.getFullYear() !== year || date.getMonth() + 1 !== month || date.getDate() !== day) {
+                throw new Error('Invalid CZE/SVK birth number')
+            }
+
+            return true
+        }
+
+        return true
+    }
+
     /**
      * Returns the personal information as a JSON object
      */
@@ -316,22 +390,8 @@ export class PersonalInformation extends AbstractBase {
         }
     }
 
+    // eslint-disable-next-line @typescript-eslint/class-methods-use-this -- This method is required by the AbstractBase class
     toJSONSchema(): PersonalInformationJSONSchema {
-        const required = [
-            'firstName',
-            'lastName',
-            'dateOfBirth',
-            'birthNumberCountry',
-            'taxDomicile',
-            'citizenship',
-            'placeOfBirth',
-            'gender'
-        ]
-
-        if (!this.#noBirthNumber) {
-            required.push('birthNumber')
-        }
-
         return {
             type: 'object',
             properties: {
@@ -347,23 +407,15 @@ export class PersonalInformation extends AbstractBase {
                 postnominal: {
                     type: ['string', 'null']
                 },
-                ...(!this.#noBirthNumber ? generateBirthNumberJSONSchema(this.#birthNumber ?? '', this.#birthNumberCountry ?? '') : {}),
                 dateOfBirth: {
-                    allOf: [
-                        {
-                            type: 'string',
-                            format: 'date-time'
-                        },
-                        {
-                            type: 'string',
-                            format: 'date-time',
-                            formatMaximum: (() => {
-                                const d = new Date()
+                    type: 'string',
+                    format: 'date-time',
+                    description: 'Checks only if birth date is in the past',
+                    formatMaximum: (() => {
+                        const d = new Date()
 
-                                return new Date(d.getFullYear() - 18, d.getMonth(), d.getDate()).toISOString()
-                            })()
-                        }
-                    ]
+                        return new Date(d.getFullYear() - 1, d.getMonth(), d.getDate()).toISOString()
+                    })()
                 },
                 noBirthNumber: {
                     type: 'boolean'
@@ -388,7 +440,49 @@ export class PersonalInformation extends AbstractBase {
                     type: 'boolean'
                 }
             },
-            required
+            if: {
+                properties: {
+                    noBirthNumber: {
+                        const: false
+                    }
+                }
+            },
+            then: {
+                if: {
+                    properties: {
+                        birthNumberCountry: {
+                            const: 'HRV'
+                        }
+                    }
+                },
+                then: {
+                    properties: {
+                        birthNumber: {
+                            type: 'string',
+                            pattern: '^\\d{11}$'
+                        }
+                    }
+                },
+                else: {
+                    properties: {
+                        birthNumber: {
+                            type: 'string',
+                            pattern: '^\\s*\\d{6}[ /]*\\d{3,4}\\s*$'
+                        }
+                    }
+                },
+                required: ['birthNumber']
+            },
+            required: [
+                'firstName',
+                'lastName',
+                'dateOfBirth',
+                'birthNumberCountry',
+                'taxDomicile',
+                'citizenship',
+                'placeOfBirth',
+                'gender'
+            ]
         }
     }
 

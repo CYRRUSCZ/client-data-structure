@@ -171,6 +171,7 @@ export class CompanyInformation extends AbstractBase {
         return plain
     }
 
+    // eslint-disable-next-line @typescript-eslint/class-methods-use-this -- This method is required by the AbstractBase class
     toJSONSchema (): CompanyInformationJSONSchema {
         return {
             type: 'object',
@@ -192,15 +193,8 @@ export class CompanyInformation extends AbstractBase {
                     type: 'string'
                 },
                 [PLAIN_OBJECT_KEY_REPRESENTATIVES]: {
-                    // Problematic hack to make the JSON schema work because representative have a dynamic schema
-                    // and we don't want the validation to pass if not all items are valid
-                    // Causing the validation to throw error telling all items are invalid even it is not true
-                    ...(this.#representatives.length > 0 ? {
-                        type: 'array',
-                        items: {
-                            allOf: this.#representatives.map((entry) => entry.toJSONSchema())
-                        }
-                    } : {})
+                    type: 'array',
+                    items: Representative.prototype.toJSONSchema()
                 }
             },
             required: [

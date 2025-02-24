@@ -1,6 +1,6 @@
 import { AbstractBase, type JSONSchema, type JSONSchemaObject } from './AbstractBase'
-import { getStringOrNull } from './helpers'
-import { bankCodes } from '@cyrrus/locale-utils'
+import { getStringOrNull, transformDataBeforeValidation } from './helpers'
+import { bankCodes, currencies } from '@cyrrus/locale-utils'
 import { electronicFormatIBAN, isValidBIC, isValidIBAN } from 'ibantools'
 
 /**
@@ -231,6 +231,59 @@ export class BankAccount extends AbstractBase {
         return this.#capitolId
     }
 
+    validate(input?: Record<string, unknown>): boolean {
+        const dataToBeValidated = transformDataBeforeValidation(input ?? this.toJSON())
+        BankAccount.validateIBAN(String(dataToBeValidated.iban ?? ''))
+        BankAccount.validateSWIFT(String(dataToBeValidated.swift ?? ''))
+
+        const schema = this.toJSONSchema()
+        const validate = this._ajv.compile(schema)
+        const isValid = validate(dataToBeValidated)
+        if (!isValid) {
+            const errorsAsString = validate.errors?.map((error) => `${error.instancePath} ${error.message}`).join('\n')
+            throw new Error(errorsAsString, { cause: validate.errors })
+        }
+
+        return isValid
+    }
+
+    /**
+     * Validates the IBAN
+     *
+     * @param {string} iban the IBAN to validate
+     *
+     * @throws {Error} if the IBAN is invalid
+     * @returns true if the IBAN is valid
+     */
+    static validateIBAN (iban: string): boolean {
+        const ibanFormatted = electronicFormatIBAN(iban)
+        if (!ibanFormatted) {
+            throw new Error('Invalid IBAN')
+        }
+
+        if (!isValidIBAN(ibanFormatted)) {
+            throw new Error('Invalid IBAN')
+        }
+
+        return true
+    }
+
+    /**
+     * Validates the SWIFT/BIC
+     *
+     * @param {string} swift the SWIFT/BIC to validate
+     *
+     * @throws {Error} if the SWIFT/BIC is invalid
+     * @returns true if the SWIFT/BIC is valid
+     */
+    static validateSWIFT (swift: string): boolean {
+        if (!isValidBIC(swift)) {
+            throw new Error('Invalid SWIFT/BIC')
+        }
+
+        return true
+    }
+
     /**
      * Converts the BankAccount object to a plain object
      */
@@ -250,78 +303,61 @@ export class BankAccount extends AbstractBase {
         }
     }
 
-    // @TODO maybe add validation which checks first 2 letters of IBAN and tries to find
-    // occurence in SWIFT country code part to validate they are compatible
+    // eslint-disable-next-line @typescript-eslint/class-methods-use-this -- This method is required by the AbstractBase class
     toJSONSchema (): BankAccountJSONSchema {
-        const randomString = Math.random().toString(36).substring(7)
-
         return {
             type: 'object',
             properties: {
-                currency: { type: 'string', enum: ['CZK', 'EUR', 'USD'] },
-                foreign: { type: 'boolean' },
-                ...(!this.#foreign ? {
-                    prefix: { type: 'string', minLength: 6, maxLength: 6 },
-                    account: { type: 'string', minLength: 10, maxLength: 10 },
-                    code: { type: 'string' }
-                } : {
+                currency: { type: 'string', enum: Object.values(currencies) },
+                foreign: { type: 'boolean' }
+            },
+            if: {
+                properties: {
+                    foreign: {
+                        const: true
+                    }
+                }
+            },
+            then: {
+                properties: {
                     iban: {
                         type: 'string',
-                        ...(() => {
-                            const invalidSchema = {
-                                description: 'Internally validated IBAN',
-                                pattern: `^Invalid IBAN guard, (${randomString})$`,
-                            }
-
-                            const iban = electronicFormatIBAN(this.#iban ?? '')
-                            if (!iban) {
-                                return invalidSchema
-                            }
-
-                            try {
-                                const isValid = isValidIBAN(iban)
-                                if (!isValid) {
-                                    throw new Error('Invalid IBAN')
-                                }
-
-                                return { description: 'Internally validated IBAN' }
-                            } catch (error) {
-                                return invalidSchema
-                            }
-                        })()
+                        pattern: '^[A-Z]{2}\\d{2}[\\s0-9A-Z]{1,35}$',
                     },
                     swift: {
                         type: 'string',
-                        ...(() => {
-                            const invalidSchema = {
-                                description: 'Internally validated SWIFT',
-                                pattern: `^Invalid SWIFT guard, (${randomString})$`,
-                            }
-                            if (!this.#swift) {
-                                return invalidSchema
-                            }
-                            try {
-                                const isValid = isValidBIC(this.#swift)
-                                if (!isValid) {
-                                    throw new Error('Invalid SWIFT/BIC')
-                                }
-
-                                return { description: 'Internally validated SWIFT' }
-                            } catch (error) {
-                                return invalidSchema
-                            }
-                        })()
+                        pattern: '^\\w{4}[A-Z]{2}\\w{2}(\\w{3})?$',
                     },
-                    accountName: { type: 'string' },
                     bankNameAddress: { type: 'string' },
-                })
+                    accountName: { type: 'string' }
+                },
+                required: [
+                    'iban', 'swift', 'bankNameAddress', 'accountName'
+                ]
+            },
+            else: {
+                properties: {
+                    prefix: {
+                        type: 'string',
+                        minLength: 6,
+                        maxLength: 6,
+                    },
+                    account: {
+                        type: 'string',
+                        minLength: 10,
+                        maxLength: 10,
+                    },
+                    code: {
+                        type: 'string',
+                        pattern: '^[0-9]{4}$',
+                    },
+                },
+                required: [
+                    'prefix', 'account', 'code'
+                ]
             },
             required: [
-                'foreign', 'currency',
-                ...(!this.#foreign
-                    ? ['prefix', 'account', 'code']
-                    : ['iban', 'swift', 'bankNameAddress', 'accountName', ]
-                )
+                'foreign', 'currency'
             ]
         }
     }

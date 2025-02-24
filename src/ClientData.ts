@@ -304,22 +304,40 @@ export class ClientData extends AbstractBase {
         return plainObject
     }
 
+    // eslint-disable-next-line @typescript-eslint/class-methods-use-this -- This method is required by the AbstractBase class
     toJSONSchema (): ClientDataJSONSchema {
         return {
             type: 'object',
             properties: {
-                client: this.client.toJSONSchema(),
-                personal: this.personal.toJSONSchema(),
-                idCard: this.idCard.toJSONSchema(),
-                address: this.address.toJSONSchema(),
-                contact: this.contact.toJSONSchema(),
+                client: ClientInformation.prototype.toJSONSchema(),
+                personal: PersonalInformation.prototype.toJSONSchema(),
+                idCard: IdCardInformation.prototype.toJSONSchema(),
+                address: AddressInformation.prototype.toJSONSchema(),
+                contact: ContactInformation.prototype.toJSONSchema(),
                 bankAccounts: {
                     type: 'array',
-                    items: {
-                        allOf: this.#bankAccounts.map((account) => account.toJSONSchema())
+                    items: BankAccount.prototype.toJSONSchema()
+                }
+            },
+            if: {
+                properties: {
+                    client: {
+                        type: 'object',
+                        properties: {
+                            type: {
+                                const: ClientInformation.CLIENT_TYPE_COMPANY
+                            }
+                        }
                     }
+                }
+            },
+            then: {
+                properties: {
+                    company: CompanyInformation.prototype.toJSONSchema()
                 },
-                ...(this.#company.toJSON().ic ? { company: this.company.toJSONSchema() } : {})
+                required: [
+                    PLAIN_OBJECT_KEY_COMPANY
+                ]
             },
             required: [
                 PLAIN_OBJECT_KEY_CLIENT,
@@ -327,8 +345,7 @@ export class ClientData extends AbstractBase {
                 PLAIN_OBJECT_KEY_ID_CARD,
                 PLAIN_OBJECT_KEY_ADDRESS,
                 PLAIN_OBJECT_KEY_CONTACT,
-                PLAIN_OBJECT_KEY_BANK_ACCOUNTS,
-                ...(this.#company.toJSON().ic ? [PLAIN_OBJECT_KEY_COMPANY] : [])
+                PLAIN_OBJECT_KEY_BANK_ACCOUNTS
             ]
         }
     }

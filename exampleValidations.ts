@@ -6,15 +6,14 @@ import {
     ClientInformation,
     CLIENT_TYPE_PERSON,
     CLIENT_ORIGIN_WEB,
-    ClientData
+    ClientData,
+    CLIENT_TYPE_COMPANY
 } from './src'
 
 const args = process.argv.slice(2)
 
 function address (): void {
     const address = Address.create('John Doe', 'Main Street', 123, 'Springfield', 'USA', 12345)
-    console.log(address.toJSON())
-    console.log(address.toJSONSchema())
 
     try {
         address.validate()
@@ -25,10 +24,8 @@ function address (): void {
 
 function addressInformation (): void {
     const addressInformationAddress = Address.create('John Doe', 'Main Street', 123, 'Springfield', 'USA', 12345)
-    // const addressInformationMailingAddress = Address.create('Mail Recipient', 'Main Street', 123, 'Springfield', 'USA', 12345)
-    const addressInformation = AddressInformation.create(addressInformationAddress, {}, true)
-    console.log(addressInformation.toJSON())
-    console.log(addressInformation.toJSONSchema())
+    const addressInformationMailingAddress = Address.create('Mail Recipient', 'Main Street', 123, 'Springfield', 'USA', 12345)
+    const addressInformation = AddressInformation.create(addressInformationAddress, addressInformationMailingAddress, true)
 
     try {
         addressInformation.validate()
@@ -40,8 +37,6 @@ function addressInformation (): void {
 function personalInformation (): void {
     const personalInformation = PersonalInformation.create('', 'Zadar', 'Doe', '', '24076340234', new Date('2006-01-01'), false, 'HRV', 'CZ', 'CZ', 'Brno', 'male', false)
     // const personalInformation = PersonalInformation.create('', 'Zadar', 'Doe', '', '45678998652', new Date('2012-01-01'), false, 'HRV', 'CZ', 'CZ', 'Brno', 'male', false)
-    console.log(personalInformation.toJSON())
-    console.dir(personalInformation.toJSONSchema(), { depth: null })
 
     try {
         personalInformation.validate()
@@ -53,8 +48,6 @@ function personalInformation (): void {
 function contactInformation (): void {
     const contactInformation = ContactInformation.create('test@test.com', '+385 91 124 4567', 'password')
     // const contactInformation = ContactInformation.create('test@test.com', '+385 91 124563 4567', 'password')
-    console.log(contactInformation.toJSON())
-    console.dir(contactInformation.toJSONSchema(), { depth: null })
 
     try {
         contactInformation.validate()
@@ -66,8 +59,6 @@ function contactInformation (): void {
 function bankAccount (): void {
     // const bankAccount = BankAccount.create('123456789', '123456', '1234567890', '5500', 'CZK', '', '', '', '', false, '123456789')
     const bankAccount = BankAccount.create('123456789', '123456', '1234567890', '5500', 'CZK', 'IT60 X054 2811 1010 0000 0123 456', 'UNCRITMM', 'Moving street 911, Outer space', 'My account', true, '123456789')
-    console.log(bankAccount.toJSON())
-    console.dir(bankAccount.toJSONSchema(), { depth: null })
 
     try {
         bankAccount.validate()
@@ -79,8 +70,6 @@ function bankAccount (): void {
 function idCardInformation (): void {
     const idCardInformation = IdCardInformation.create('24076340234', 'Ministry of Interior', 'HRV', new Date('2035-01-01'), 'OP', false)
     // const idCardInformation = IdCardInformation.create('1234567890', 'Ministry of Interior', 'HRV', new Date('2024-01-01'), 'OP', false)
-    console.log(idCardInformation.toJSON())
-    console.dir(idCardInformation.toJSONSchema(), { depth: null })
 
     try {
         idCardInformation.validate()
@@ -96,8 +85,6 @@ function representative (): void {
     const contactInformation = ContactInformation.create('test@test.com', '+385 91 124 4567', 'password')
     const representative = Representative.create(personalInformation, 'CEO', address, idCardInformation, null, contactInformation, true, true, 'a', '1', '123456789', '123456789', true)
     // const representative = Representative.create(personalInformation, 'CTO', address, null, null, null)
-    console.log(representative.toJSON())
-    console.dir(representative.toJSONSchema(), { depth: null })
 
     try {
         representative.validate()
@@ -115,12 +102,10 @@ function companyInformation (): void {
     const ctoIdCardInformation = IdCardInformation.create('24076340234', 'Ministry of Interior', 'HRV', new Date('2045-01-01'), 'Pas', false)
     const ceoContactInformation = ContactInformation.create('test@test.com', '+385 91 124 4567', 'password')
     // const ctoContactInformation = ContactInformation.create('jolanda-test@test.com', '+385 48 122 4587', 'hodnebudesnekde')
-    const ctoContactInformation = ContactInformation.create('jolanda-test@test.com', '+385 48 1222 4587', 'hodnebudesnekdesdfsdfsfsdfsdf')
+    const ctoContactInformation = ContactInformation.create('jolanda-test@test.com', '+385 48 1222 4587', 'hodnebudesnekde')
     const representative = Representative.create(personalInformation, 'CEO', ceoAddress, ceoIdCardInformation, null, ceoContactInformation, true, true, 'a', '1', '123456789', '123456789', true)
     const representative2 = Representative.create(personalInformation2, 'CTO', ctoAddress, ctoIdCardInformation, null, ctoContactInformation, true, true, 'a', '1', '123456789', '123456789', true)
     const companyInformation = CompanyInformation.create('123456789', 'CZ123456789', 'XYZ123456789', 'HRV', [representative, representative2], 'Turn My Turtle s.p.')
-    console.dir(companyInformation.toJSON(), { depth: null })
-    console.dir(companyInformation.toJSONSchema(), { depth: null })
 
     try {
         companyInformation.validate()
@@ -131,8 +116,6 @@ function companyInformation (): void {
 
 function investmentParameter (): void {
     const investmentParameter = InvestmentParameter.create('1.0.0', 'parAmlProfile', 'AML Profile', new Date('2021-01-01'), '1', true)
-    console.log(investmentParameter.toJSON())
-    console.dir(investmentParameter.toJSONSchema(), { depth: null })
 
     try {
         investmentParameter.validate()
@@ -143,8 +126,6 @@ function investmentParameter (): void {
 
 function investmentService (): void {
     const investmentService = InvestmentService.create('svcAml', 'AML Profile Service', new Date('2024-01-01'))
-    console.log(investmentService.toJSON())
-    console.dir(investmentService.toJSONSchema(), { depth: null })
 
     try {
         investmentService.validate()
@@ -156,8 +137,6 @@ function investmentService (): void {
 function investmentProfile (): void {
     const investmentService = InvestmentService.create('svcAml', 'AML Profile Service', new Date('2024-01-01'))
     const investmentProfile = InvestmentProfile.create('1.0.0', 'profileAml', 'AML Profile', new Date('2021-01-01'), '1', [investmentService], 100)
-    console.log(investmentProfile.toJSON())
-    console.dir(investmentProfile.toJSONSchema(), { depth: null })
 
     try {
         investmentProfile.validate()
@@ -170,8 +149,6 @@ function clientInformation (): void {
     const investmentService = InvestmentService.create('svcAml', 'AML Profile Service', new Date('2024-01-01'))
     const investmentProfile = InvestmentProfile.create('1.0.0', 'profileAml', 'AML Profile', new Date('2021-01-01'), '1', [investmentService], 100)
     const clientInformation = ClientInformation.create(CLIENT_TYPE_PERSON, CLIENT_ORIGIN_WEB, '123', '123456789', '987654321', [investmentProfile], false, 'richAF', '123FF', 'BC123', 'BC123KID', 'ČR', [], false)
-    console.log(clientInformation.toJSON())
-    console.dir(clientInformation.toJSONSchema(), { depth: null })
 
     try {
         clientInformation.validate()
@@ -183,22 +160,37 @@ function clientInformation (): void {
 function clientData (): void {
     const investmentService = InvestmentService.create('svcAml', 'AML Profile Service', new Date('2024-01-01'))
     const investmentProfile = InvestmentProfile.create('1.0.0', 'profileAml', 'AML Profile', new Date('2021-01-01'), '1', [investmentService], 100)
-    const clientInformation = ClientInformation.create(CLIENT_TYPE_PERSON, CLIENT_ORIGIN_WEB, '123', '123456789', '987654321', [investmentProfile], false, 'richAF', '123FF', 'BC123', 'BC123KID', 'ČR', [], false)
+    const clientInformation = ClientInformation.create(CLIENT_TYPE_COMPANY, CLIENT_ORIGIN_WEB, '123', '123456789', '987654321', [investmentProfile], false, 'richAF', '123FF', 'BC123', 'BC123KID', 'ČR', [], false)
     const personalInformation = PersonalInformation.create('', 'Zadar', 'Doe', '', '24076340234', new Date('2006-01-01'), false, 'HRV', 'CZ', 'CZ', 'Brno', 'male', false)
     const idCardInformation = IdCardInformation.create('24076340234', 'Ministry of Interior', 'HRV', new Date('2035-01-01'), 'OP', false)
     const address = Address.create('John Doe', 'Main Street', 123, 'Springfield', 'USA', 12345)
     const addressInformation = AddressInformation.create(address, {}, false)
     const contactInformation = ContactInformation.create('test@test.com', '+385 91 124 4567', 'password')
     const bankAccount = BankAccount.create('123456789', '123456', '1234567890', '5500', 'CZK', 'IT60 X054 2811 1010 0000 0123 456', 'UNCRITMM', 'Moving street 911, Outer space', 'My account', true, '123456789')
-    const clientData = ClientData.create(clientInformation, personalInformation, idCardInformation, addressInformation, contactInformation, [bankAccount], {})
-    console.log(clientData.toJSON())
-    console.dir(clientData.toJSONSchema(), { depth: null })
+    const companyInformation = CompanyInformation.create('123456789', 'CZ123456789', 'XYZ123456789', 'HRV', [], 'Turn My Turtle s.p.')
+    const clientData = ClientData.create(clientInformation, personalInformation, idCardInformation, addressInformation, contactInformation, [bankAccount], companyInformation)
 
     try {
         clientData.validate()
     } catch (error) {
         console.error(error)
     }
+}
+
+function runValidations (): void {
+    address()
+    addressInformation()
+    personalInformation()
+    contactInformation()
+    bankAccount()
+    idCardInformation()
+    representative()
+    companyInformation()
+    investmentParameter()
+    investmentService()
+    investmentProfile()
+    clientInformation()
+    clientData()
 }
 
 switch (args[0]) {
@@ -242,5 +234,5 @@ switch (args[0]) {
         clientData()
         break
     default:
-        clientData()
+        runValidations()
 }
