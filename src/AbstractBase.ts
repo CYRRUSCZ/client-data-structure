@@ -1,4 +1,4 @@
-import { Ajv, type ErrorObject } from 'ajv'
+import { Ajv, type ValidateFunction, type ErrorObject } from 'ajv'
 import addFormats from 'ajv-formats'
 
 import { transformDataBeforeValidation } from './helpers'
@@ -18,18 +18,11 @@ export interface JSONSchemaObject extends JSONSchema {
 }
 
 export abstract class AbstractBase implements ValidationAware, JSONSchemaAware {
-    readonly _ajv: Ajv
     _errors: ErrorObject[] = []
 
-    constructor () {
-        this._ajv = new Ajv({ allErrors: true, strict: true })
-        addFormats(this._ajv, { formats: ['date', 'date-time', 'time', 'email'], keywords: true })
-    }
-
     validate (input?: Record<string, any>): boolean {
+        const validate = this.bootstrapValidator()
         const dataToBeValidated = transformDataBeforeValidation(input ?? this.toJSON())
-        const schema = this.toJSONSchema()
-        const validate = this._ajv.compile(schema)
         const isValid = validate(dataToBeValidated)
         if (!isValid) {
             const { errors } = validate
@@ -43,6 +36,15 @@ export abstract class AbstractBase implements ValidationAware, JSONSchemaAware {
         }
 
         return isValid
+    }
+
+    protected bootstrapValidator (): ValidateFunction {
+        const schema = this.toJSONSchema()
+        const ajv = new Ajv({ allErrors: true, strict: true })
+        addFormats(ajv, { formats: ['date', 'date-time', 'time', 'email'], keywords: true })
+        const validate = ajv.compile(schema)
+
+        return validate
     }
 
     getValidationErrors (): ErrorObject[] {

@@ -297,11 +297,11 @@ export class PersonalInformation extends AbstractBase {
     }
 
     validate (input?: Record<string, any>): boolean {
+        const validate = this.bootstrapValidator()
         const dataToBeValidated = transformDataBeforeValidation(input ?? this.toJSON())
+
         PersonalInformation.validateBirthNumber(String(this.#birthNumber ?? ''), String(this.#birthNumberCountry ?? ''))
 
-        const schema = this.toJSONSchema()
-        const validate = this._ajv.compile(schema)
         const isValid = validate(dataToBeValidated)
         if (!isValid) {
             const errorsAsString = validate.errors?.map((error) => `${error.instancePath} ${error.message}`).join('\n')

@@ -161,7 +161,8 @@ function clientData (): void {
     const investmentService = InvestmentService.create('svcAml', 'AML Profile Service', new Date('2024-01-01'))
     const investmentProfile = InvestmentProfile.create('1.0.0', 'profileAml', 'AML Profile', new Date('2021-01-01'), '1', [investmentService], 100)
     const clientInformation = ClientInformation.create(CLIENT_TYPE_COMPANY, CLIENT_ORIGIN_WEB, '123', '123456789', '987654321', [investmentProfile], false, 'richAF', '123FF', 'BC123', 'BC123KID', 'ČR', [], false)
-    const personalInformation = PersonalInformation.create('', 'Zadar', 'Doe', '', '24076340234', new Date('2006-01-01'), false, 'HRV', 'CZ', 'CZ', 'Brno', 'male', false)
+    // const personalInformation = PersonalInformation.create('', 'Zadar', 'Doe', '', '24076340234', new Date('2006-01-01'), false, 'HRV', 'CZ', 'CZ', 'Brno', 'male', false)
+    const personalInformation = PersonalInformation.create('', 'Zadar', 'Doe', '', 'XXX', new Date('2006-01-01'), false, 'HRV', 'CZ', 'CZ', 'Brno', 'male', false)
     const idCardInformation = IdCardInformation.create('24076340234', 'Ministry of Interior', 'HRV', new Date('2035-01-01'), 'OP', false)
     const address = Address.create('John Doe', 'Main Street', 123, 'Springfield', 'USA', 12345)
     const addressInformation = AddressInformation.create(address, {}, false)
@@ -173,7 +174,9 @@ function clientData (): void {
     try {
         clientData.validate()
     } catch (error) {
-        console.error(error)
+        // console.error(error)
+    } finally {
+        console.error(clientData.getValidationErrors())
     }
 }
 

@@ -232,12 +232,12 @@ export class BankAccount extends AbstractBase {
     }
 
     validate(input?: Record<string, unknown>): boolean {
+        const validate = this.bootstrapValidator()
         const dataToBeValidated = transformDataBeforeValidation(input ?? this.toJSON())
+
         BankAccount.validateIBAN(String(dataToBeValidated.iban ?? ''))
         BankAccount.validateSWIFT(String(dataToBeValidated.swift ?? ''))
 
-        const schema = this.toJSONSchema()
-        const validate = this._ajv.compile(schema)
         const isValid = validate(dataToBeValidated)
         if (!isValid) {
             const errorsAsString = validate.errors?.map((error) => `${error.instancePath} ${error.message}`).join('\n')

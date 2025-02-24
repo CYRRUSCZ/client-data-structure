@@ -95,12 +95,11 @@ export class ContactInformation extends AbstractBase {
     }
 
     validate (input?: Record<string, any>): boolean {
+        const validate = this.bootstrapValidator()
         const dataToBeValidated = transformDataBeforeValidation(input ?? this.toJSON())
-        ContactInformation.validatePhoneNumber(String(dataToBeValidated.phoneNumber ?? ''))
-        ContactInformation.validateEmailMX()
 
-        const schema = this.toJSONSchema()
-        const validate = this._ajv.compile(schema)
+        ContactInformation.validatePhoneNumber(String(dataToBeValidated.phoneNumber ?? ''))
+
         const isValid = validate(dataToBeValidated)
         if (!isValid) {
             const errorsAsString = validate.errors?.map((error) => `${error.instancePath} ${error.message}`).join('\n')
@@ -108,11 +107,6 @@ export class ContactInformation extends AbstractBase {
         }
 
         return isValid
-    }
-
-    // @TODO not implemented yet
-    static validateEmailMX (): boolean {
-        return true
     }
 
     /**
