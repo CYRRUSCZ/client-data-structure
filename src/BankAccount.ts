@@ -235,13 +235,44 @@ export class BankAccount extends AbstractBase {
         const validate = this.bootstrapValidator()
         const dataToBeValidated = transformDataBeforeValidation(input ?? this.toJSON())
 
-        BankAccount.validateIBAN(String(dataToBeValidated.iban ?? ''))
-        BankAccount.validateSWIFT(String(dataToBeValidated.swift ?? ''))
+        if (dataToBeValidated.foreign) {
+            try {
+                BankAccount.validateIBAN(String(dataToBeValidated.iban ?? ''))
+            } catch (error) {
+                this._errors.push({
+                    instancePath: '/iban',
+                    keyword: 'foreign',
+                    schemaPath: '#/then/required',
+                    params: {},
+                    message: 'has invalid value',
+                    data: dataToBeValidated.foreign
+                })
+            }
+
+            try {
+                BankAccount.validateSWIFT(String(dataToBeValidated.swift ?? ''))
+            } catch (error) {
+                this._errors.push({
+                    instancePath: '/swift',
+                    keyword: 'foreign',
+                    schemaPath: '#/then/required',
+                    params: {},
+                    message: 'has invalid value',
+                    data: dataToBeValidated.foreign
+                })
+            }
+        }
 
         const isValid = validate(dataToBeValidated)
         if (!isValid) {
-            const errorsAsString = validate.errors?.map((error) => `${error.instancePath} ${error.message}`).join('\n')
-            throw new Error(errorsAsString, { cause: validate.errors })
+            const { errors } = validate
+            let errorsAsString = ''
+            if (errors && errors.length > 0) {
+                errorsAsString = errors.map((error) => `${error.instancePath} ${error.message}`).join('\n')
+                this._errors.push(...errors)
+            }
+
+            throw new Error(errorsAsString, { cause: this._errors })
         }
 
         return isValid
@@ -257,7 +288,7 @@ export class BankAccount extends AbstractBase {
      */
     static validateIBAN (iban: string): boolean {
         const ibanFormatted = electronicFormatIBAN(iban)
-        if (!ibanFormatted) {
+        if (!ibanFormatted || ibanFormatted.length === 0) {
             throw new Error('Invalid IBAN')
         }
 
@@ -339,21 +370,22 @@ export class BankAccount extends AbstractBase {
                 properties: {
                     prefix: {
                         type: 'string',
-                        minLength: 6,
-                        maxLength: 6,
+                        nullable: true,
+                        minLength: 0,
+                        maxLength: 6
                     },
                     account: {
                         type: 'string',
-                        minLength: 10,
-                        maxLength: 10,
+                        minLength: 2,
+                        maxLength: 10
                     },
                     code: {
                         type: 'string',
-                        pattern: '^[0-9]{4}$',
+                        pattern: '^[0-9]{4}$'
                     },
                 },
                 required: [
-                    'prefix', 'account', 'code'
+                    'account', 'code'
                 ]
             },
             required: [
