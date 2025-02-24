@@ -1,4 +1,4 @@
-const { ClientInformation, ClientData, InvestmentProfile } = require('../dist/client-data-structure.cjs.js')
+const { ClientInformation, ClientData, InvestmentProfile } = require('../dist/client-data-structure.cjs')
 const clientDataset = require('./mock/clientDataset.js')
 
 let clientInformation = new ClientInformation(

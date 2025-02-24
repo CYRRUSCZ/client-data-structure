@@ -2,7 +2,7 @@ const {
     ClientData, AddressInformation, BankAccount,
     ContactInformation, IdCardInformation, PersonalInformation,
     ClientInformation, CompanyInformation
-} = require('../dist/client-data-structure.cjs.js')
+} = require('../dist/client-data-structure.cjs')
 const clientDataset = require('./mock/clientDataset.js')
 
 const client = new ClientData(clientDataset)

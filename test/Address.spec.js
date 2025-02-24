@@ -1,4 +1,4 @@
-const { Address, ClientData } = require('../dist/client-data-structure.cjs.js')
+const { Address, ClientData } = require('../dist/client-data-structure.cjs')
 const clientDataset = require('./mock/clientDataset.js')
 
 const regularAddress = new Address(

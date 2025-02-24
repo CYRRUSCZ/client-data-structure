@@ -1,4 +1,4 @@
-const { IdCardInformation, ClientData } = require('../dist/client-data-structure.cjs.js')
+const { IdCardInformation, ClientData } = require('../dist/client-data-structure.cjs')
 const clientDataset = require('./mock/clientDataset.js')
 
 const idInformation = new IdCardInformation(
