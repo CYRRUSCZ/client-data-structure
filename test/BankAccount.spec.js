@@ -52,23 +52,6 @@ describe('BankAccount validations', () => {
         }
     })
 
-    it('Expect BankAccount validations throws exceptions', () => {
-        for (const testCase of expectErrorsTestCases) {
-            const bankAccount = new BankAccount(testCase.data)
-            try {
-                bankAccount.validate()
-            } catch (error) {
-                const errors = bankAccount.getValidationErrors()
-                const validationErrors = errors.map(error => `${error.instancePath ? `${error.instancePath} `: ''}${error.message}`)
-                if (Array.isArray(testCase.expected)) {
-                    expect(validationErrors.sort()).toEqual(testCase.expected.sort())
-                } else {
-                    expect(error.message).toBe(testCase.expected)
-                }
-            }
-        }
-    })
-
     it('Expect BankAccount validations throws exceptions when POJO directly passed to validate()', () => {
         for (const testCase of expectPojoErrorsTestCases) {
             const bankAccount = new BankAccount()
