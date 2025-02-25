@@ -185,6 +185,7 @@ export class CompanyInformation extends AbstractBase {
                 },
                 [PLAIN_OBJECT_KEY_LEI]: {
                     type: 'string',
+                    nullable: true
                 },
                 [PLAIN_OBJECT_KEY_NAME]: {
                     type: 'string'
