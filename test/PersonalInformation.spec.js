@@ -1,5 +1,6 @@
 const { PersonalInformation, ClientData } = require('../dist/client-data-structure.cjs')
 const clientDataset = require('./mock/clientDataset.js')
+const { expectErrorsTestCases, testCasesValidData } = require('./mock/personalInformationValidations.js')
 
 const personal = new PersonalInformation(
     clientDataset[ClientData.PLAIN_OBJECT_KEY_PERSONAL]
@@ -62,5 +63,31 @@ describe('PersonalInformation', () => {
     it('should have same date in birthDate', () => {
         const tmp = new PersonalInformation({ dateOfBirth: new Date('2020-01-01T12:00:00.000Z') })
         expect(tmp.dateOfBirth.toISOString()).toBe(new Date('2020-01-01T12:00:00.000Z').toISOString())
+    })
+})
+
+describe('PersonalInformation validations', () => {
+    it('Expect valid PersonalInformation', () => {
+        for (const testCase of testCasesValidData) {
+            const personalInformation = new PersonalInformation(testCase.data)
+            expect(personalInformation.validate()).toBe(true)
+        }
+    })
+
+    it('Expect PersonalInformation validations throws exceptions', () => {
+        for (const testCase of expectErrorsTestCases) {
+            const personalInformation = new PersonalInformation(testCase.data)
+            try {
+                personalInformation.validate()
+            } catch (error) {
+                const errors = personalInformation.getValidationErrors()
+                const validationErrors = errors.map(error => `${error.instancePath ? `${error.instancePath} `: ''}${error.message}`)
+                if (Array.isArray(testCase.expected)) {
+                    expect(validationErrors.sort()).toEqual(testCase.expected.sort())
+                } else {
+                    expect(error.message).toBe(testCase.expected)
+                }
+            }
+        }
     })
 })
