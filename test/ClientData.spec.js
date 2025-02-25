@@ -4,6 +4,7 @@ const {
     ClientInformation, CompanyInformation
 } = require('../dist/client-data-structure.cjs')
 const clientDataset = require('./mock/clientDataset.js')
+const { expectErrorsTestCases, expectPojoErrorsTestCases, testCasesValidData } = require('./mock/clientDataValidations.js')
 
 const client = new ClientData(clientDataset)
 const address = new AddressInformation(clientDataset[ClientData.PLAIN_OBJECT_KEY_ADDRESS])
@@ -143,5 +144,48 @@ describe('ClientData', () => {
     it('should have same date in birthDate in representative', () => {
         const tmp = new ClientData({ company: { representatives: [{ personal: { dateOfBirth: new Date('2020-01-01T12:00:00.000Z') } }] } })
         expect(tmp.company.representatives[0].personal.dateOfBirth.toISOString()).toEqual(new Date('2020-01-01T12:00:00.000Z').toISOString())
+    })
+})
+
+describe('ClientData validations', () => {
+    it('Expect valid ClientData', () => {
+        for (const testCase of testCasesValidData) {
+            const clientData = new ClientData(testCase.data)
+            expect(clientData.validate()).toBe(true)
+        }
+    })
+
+    it('Expect ClientData validations throws exceptions', () => {
+        for (const testCase of expectErrorsTestCases) {
+            const clientData = new ClientData(testCase.data)
+            try {
+                clientData.validate()
+            } catch (error) {
+                const errors = clientData.getValidationErrors()
+                const validationErrors = errors.map(error => `${error.instancePath ? `${error.instancePath} `: ''}${error.message}`)
+                if (Array.isArray(testCase.expected)) {
+                    expect(validationErrors.sort()).toEqual(testCase.expected.sort())
+                } else {
+                    expect(error.message).toBe(testCase.expected)
+                }
+            }
+        }
+    })
+
+    it('Expect ClientData validations throws exceptions when POJO directly passed to validate()', () => {
+        for (const testCase of expectPojoErrorsTestCases) {
+            const clientData = new ClientData()
+            try {
+                clientData.validate(testCase.data)
+            } catch (error) {
+                const errors = clientData.getValidationErrors()
+                const validationErrors = errors.map(error => `${error.instancePath ? `${error.instancePath} `: ''}${error.message}`)
+                if (Array.isArray(testCase.expected)) {
+                    expect(validationErrors.sort()).toEqual(testCase.expected.sort())
+                } else {
+                    expect(error.message).toBe(testCase.expected)
+                }
+            }
+        }
     })
 })
