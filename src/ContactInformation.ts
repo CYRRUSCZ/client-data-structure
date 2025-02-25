@@ -98,12 +98,32 @@ export class ContactInformation extends AbstractBase {
         const validate = this.bootstrapValidator()
         const dataToBeValidated = transformDataBeforeValidation(input ?? this.toJSON())
 
-        ContactInformation.validatePhoneNumber(String(dataToBeValidated.phoneNumber ?? ''))
+        try {
+            ContactInformation.validatePhoneNumber(String(dataToBeValidated.phoneNumber ?? ''))
+        } catch (error) {
+            const message = error instanceof Error ? error.message : 'Invalid phone number'
+            const errorObject = {
+                keyword: 'phoneNumber',
+                instancePath: '/phoneNumber',
+                schemaPath: '#/properties/phoneNumber/pattern',
+                params: {},
+                message
+            }
+            this._errors.push(errorObject)
+
+            throw new Error(errorObject.message, { cause: this._errors })
+        }
 
         const isValid = validate(dataToBeValidated)
         if (!isValid) {
-            const errorsAsString = validate.errors?.map((error) => `${error.instancePath} ${error.message}`).join('\n')
-            throw new Error(errorsAsString, { cause: validate.errors })
+            const { errors } = validate
+            let errorsAsString = ''
+            if (errors && errors.length > 0) {
+                errorsAsString = errors.map((error) => `${error.instancePath} ${error.message}`).join('\n')
+                this._errors.push(...errors)
+            }
+
+            throw new Error(errorsAsString, { cause: this._errors })
         }
 
         return isValid
@@ -152,7 +172,8 @@ export class ContactInformation extends AbstractBase {
                 },
                 phoneNumber: {
                     type: 'string',
-                    pattern: '^\\+?[0-9\\s]+$'
+                    description: 'The phone number, must be provided with international prefix',
+                    pattern: '^(\\()?\\+[0-9\\s]+(\\))?[0-9\\s]+$'
                 },
                 phonePassword: {
                     type: 'string',
