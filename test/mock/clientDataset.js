@@ -33,6 +33,16 @@ module.exports = {
                 weight: 2
             }
         ],
+        investmentParameters: [
+            {
+                version: 'foo-version',
+                uid: 'parFoo',
+                name: 'Foo super risky',
+                added: new Date('2019-02-14T12:00:00.000Z'),
+                value: 1,
+                isInvestmentCategory: true
+            }
+        ],
         residency: false,
         brokerId: 123,
         externalBrokerCapitolId: 11,
