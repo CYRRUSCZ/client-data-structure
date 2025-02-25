@@ -1,6 +1,6 @@
 const { CompanyInformation } = require('../dist/client-data-structure.cjs')
 const clientDataset = require('./mock/clientDataset.js')
-const { expectErrorsTestCases, testCasesValidData } = require('./mock/companyInformationValidations.js')
+const { expectErrorsTestCases, expectPojoErrorsTestCases, testCasesValidData } = require('./mock/companyInformationValidations.js')
 
 const companyInformation = new CompanyInformation(clientDataset.company)
 
@@ -58,6 +58,23 @@ describe('CompanyInformation validations', () => {
             const companyInformation = new CompanyInformation(testCase.data)
             try {
                 companyInformation.validate()
+            } catch (error) {
+                const errors = companyInformation.getValidationErrors()
+                const validationErrors = errors.map(error => `${error.instancePath ? `${error.instancePath} `: ''}${error.message}`)
+                if (Array.isArray(testCase.expected)) {
+                    expect(validationErrors.sort()).toEqual(testCase.expected.sort())
+                } else {
+                    expect(error.message).toBe(testCase.expected)
+                }
+            }
+        }
+    })
+
+    it('Expect CompanyInformation validations throws exceptions when POJO directly passed to validate()', () => {
+        for (const testCase of expectPojoErrorsTestCases) {
+            const companyInformation = new CompanyInformation()
+            try {
+                companyInformation.validate(testCase.data)
             } catch (error) {
                 const errors = companyInformation.getValidationErrors()
                 const validationErrors = errors.map(error => `${error.instancePath ? `${error.instancePath} `: ''}${error.message}`)

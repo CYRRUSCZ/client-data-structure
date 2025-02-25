@@ -40,6 +40,47 @@ module.exports = {
             ]
         }
     ],
+    expectPojoErrorsTestCases: [
+        {
+            data: {
+                name: 'FooBaarBaZqaz',
+                ic: '123456789',
+                dic: '123456789',
+                lei: '123456789',
+                taxDomicile: '',
+                representatives: []
+            },
+            expected: [
+                '/taxDomicile must be string'
+            ]
+        },
+        {
+            data: {
+                name: 'FooBaarBaZqaz',
+                ic: null,
+                dic: null,
+                lei: '123456789',
+                taxDomicile: '123456',
+                representatives: []
+            },
+            expected: [
+                '/ic must be string'
+            ]
+        },
+        {
+            data: {
+                name: null,
+                ic: '123456789',
+                dic: null,
+                lei: '123456789',
+                taxDomicile: '123456',
+                representatives: []
+            },
+            expected: [
+                '/name must be string'
+            ]
+        }
+    ],
     testCasesValidData: [
         {
             data: {
@@ -105,7 +146,7 @@ module.exports = {
                             scanNotAllowed: false
                         },
                         contact: {
-                            phoneNumber: '728796525',
+                            phoneNumber: '+420728796525',
                             email: 'tomas@valiasek.cz',
                             phonePassword: 'jemuhodne'
                         }
