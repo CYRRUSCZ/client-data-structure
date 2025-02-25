@@ -1,6 +1,6 @@
 const { IdCardInformation, ClientData } = require('../dist/client-data-structure.cjs')
 const clientDataset = require('./mock/clientDataset.js')
-const { expectErrorsTestCases, testCasesValidData } = require('./mock/idCardInformationValidations.js')
+const { expectErrorsTestCases, expectPojoErrorsTestCases, testCasesValidData } = require('./mock/idCardInformationValidations.js')
 
 const idInformation = new IdCardInformation(
     clientDataset[ClientData.PLAIN_OBJECT_KEY_ID_CARD]
@@ -53,6 +53,23 @@ describe('IdCardInformation validations', () => {
             const idCardInformation = new IdCardInformation(testCase.data)
             try {
                 idCardInformation.validate()
+            } catch (error) {
+                const errors = idCardInformation.getValidationErrors()
+                const validationErrors = errors.map(error => `${error.instancePath ? `${error.instancePath} `: ''}${error.message}`)
+                if (Array.isArray(testCase.expected)) {
+                    expect(validationErrors.sort()).toEqual(testCase.expected.sort())
+                } else {
+                    expect(error.message).toBe(testCase.expected)
+                }
+            }
+        }
+    })
+
+    it('Expect IdCardInformation validations throws exceptions when POJO directly passed to validate()', () => {
+        for (const testCase of expectPojoErrorsTestCases) {
+            const idCardInformation = new IdCardInformation()
+            try {
+                idCardInformation.validate(testCase.data)
             } catch (error) {
                 const errors = idCardInformation.getValidationErrors()
                 const validationErrors = errors.map(error => `${error.instancePath ? `${error.instancePath} `: ''}${error.message}`)
