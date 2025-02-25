@@ -48,18 +48,18 @@ describe('CompanyInformation', () => {
 describe('CompanyInformation validations', () => {
     it('Expect valid CompanyInformation', () => {
         for (const testCase of testCasesValidData) {
-            const clientInformation = new CompanyInformation(testCase.data)
-            expect(clientInformation.validate()).toBe(true)
+            const companyInformation = new CompanyInformation(testCase.data)
+            expect(companyInformation.validate()).toBe(true)
         }
     })
 
     it('Expect CompanyInformation validations throws exceptions', () => {
         for (const testCase of expectErrorsTestCases) {
-            const clientInformation = new CompanyInformation(testCase.data)
+            const companyInformation = new CompanyInformation(testCase.data)
             try {
-                clientInformation.validate()
+                companyInformation.validate()
             } catch (error) {
-                const errors = clientInformation.getValidationErrors()
+                const errors = companyInformation.getValidationErrors()
                 const validationErrors = errors.map(error => `${error.instancePath ? `${error.instancePath} `: ''}${error.message}`)
                 if (Array.isArray(testCase.expected)) {
                     expect(validationErrors.sort()).toEqual(testCase.expected.sort())
