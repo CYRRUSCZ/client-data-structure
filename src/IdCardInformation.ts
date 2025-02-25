@@ -183,8 +183,7 @@ export class IdCardInformation extends AbstractBase {
                 validity: {
                     type: 'string',
                     format: 'date-time',
-                    description: 'Internally validated validity date',
-                    formatMinimum: new Date().toISOString(),
+                    formatMinimum: new Date().toISOString()
                 },
                 type: {
                     type: 'string',

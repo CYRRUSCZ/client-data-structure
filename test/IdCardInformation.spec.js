@@ -1,5 +1,6 @@
 const { IdCardInformation, ClientData } = require('../dist/client-data-structure.cjs')
 const clientDataset = require('./mock/clientDataset.js')
+const { expectErrorsTestCases, testCasesValidData } = require('./mock/idCardInformationValidations.js')
 
 const idInformation = new IdCardInformation(
     clientDataset[ClientData.PLAIN_OBJECT_KEY_ID_CARD]
@@ -36,5 +37,31 @@ describe('IdCardInformation', () => {
 
     it('country code can be converted to correct country name', () => {
         expect(idInformation.countryName).toBe('Česká republika')
+    })
+})
+
+describe('IdCardInformation validations', () => {
+    it('Expect valid IdCardInformation', () => {
+        for (const testCase of testCasesValidData) {
+            const idCardInformation = new IdCardInformation(testCase.data)
+            expect(idCardInformation.validate()).toBe(true)
+        }
+    })
+
+    it('Expect IdCardInformation validations throws exceptions', () => {
+        for (const testCase of expectErrorsTestCases) {
+            const idCardInformation = new IdCardInformation(testCase.data)
+            try {
+                idCardInformation.validate()
+            } catch (error) {
+                const errors = idCardInformation.getValidationErrors()
+                const validationErrors = errors.map(error => `${error.instancePath ? `${error.instancePath} `: ''}${error.message}`)
+                if (Array.isArray(testCase.expected)) {
+                    expect(validationErrors.sort()).toEqual(testCase.expected.sort())
+                } else {
+                    expect(error.message).toBe(testCase.expected)
+                }
+            }
+        }
     })
 })
