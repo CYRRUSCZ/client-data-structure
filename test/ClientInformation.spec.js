@@ -1,5 +1,6 @@
 const { ClientInformation, ClientData, InvestmentProfile } = require('../dist/client-data-structure.cjs')
 const clientDataset = require('./mock/clientDataset.js')
+const { expectErrorsTestCases, testCasesValidData } = require('./mock/clientInformationValidations.js')
 
 let clientInformation = new ClientInformation(
     clientDataset[ClientData.PLAIN_OBJECT_KEY_CLIENT]
@@ -97,5 +98,31 @@ describe('ClientInformation', () => {
 
         expect(clientInformation.hasInvestmentService(profile1.services[0].uid)).toBe(true)
         expect(clientInformation.hasInvestmentService('asdf')).toBe(false)
+    })
+})
+
+describe('ClientInformation validations', () => {
+    it('Expect valid ClientInformation', () => {
+        for (const testCase of testCasesValidData) {
+            const clientInformation = new ClientInformation(testCase.data)
+            expect(clientInformation.validate()).toBe(true)
+        }
+    })
+
+    it('Expect ClientInformation validations throws exceptions', () => {
+        for (const testCase of expectErrorsTestCases) {
+            const clientInformation = new ClientInformation(testCase.data)
+            try {
+                clientInformation.validate()
+            } catch (error) {
+                const errors = clientInformation.getValidationErrors()
+                const validationErrors = errors.map(error => `${error.instancePath ? `${error.instancePath} `: ''}${error.message}`)
+                if (Array.isArray(testCase.expected)) {
+                    expect(validationErrors.sort()).toEqual(testCase.expected.sort())
+                } else {
+                    expect(error.message).toBe(testCase.expected)
+                }
+            }
+        }
     })
 })
