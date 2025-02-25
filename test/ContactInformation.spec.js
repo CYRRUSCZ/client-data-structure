@@ -1,6 +1,6 @@
 const { ContactInformation, ClientData } = require('../dist/client-data-structure.cjs')
 const clientDataset = require('./mock/clientDataset.js')
-const { expectErrorsTestCases, testCasesValidData } = require('./mock/contactInformationValidations.js')
+const { expectErrorsTestCases, expectPojoErrorsTestCases, testCasesValidData } = require('./mock/contactInformationValidations.js')
 
 const contactInformation = new ContactInformation(
     clientDataset[ClientData.PLAIN_OBJECT_KEY_CONTACT]
@@ -45,6 +45,23 @@ describe('ContactInformation validations', () => {
             const contactInformation = new ContactInformation(testCase.data)
             try {
                 contactInformation.validate()
+            } catch (error) {
+                const errors = contactInformation.getValidationErrors()
+                const validationErrors = errors.map(error => `${error.instancePath ? `${error.instancePath} `: ''}${error.message}`)
+                if (Array.isArray(testCase.expected)) {
+                    expect(validationErrors.sort()).toEqual(testCase.expected.sort())
+                } else {
+                    expect(error.message).toBe(testCase.expected)
+                }
+            }
+        }
+    })
+
+    it('Expect ContactInformation validations throws exceptions when POJO directly passed to validate()', () => {
+        for (const testCase of expectPojoErrorsTestCases) {
+            const contactInformation = new ContactInformation()
+            try {
+                contactInformation.validate(testCase.data)
             } catch (error) {
                 const errors = contactInformation.getValidationErrors()
                 const validationErrors = errors.map(error => `${error.instancePath ? `${error.instancePath} `: ''}${error.message}`)
