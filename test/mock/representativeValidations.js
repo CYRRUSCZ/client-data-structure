@@ -1,3 +1,9 @@
+const validValidityDate = (() => {
+    const date = new Date();
+    date.setFullYear(date.getFullYear() + 1);
+    return date;
+})()
+
 module.exports = {
     expectErrorsTestCases: [
         {
@@ -30,7 +36,7 @@ module.exports = {
                     number: '123456789',
                     issuedBy: 'Uncle Bob',
                     country: 'CR',
-                    validity: new Date().setFullYear(new Date().getFullYear() + 1),
+                    validity: validValidityDate,
                     type: 'OP',
                     scanNotAllowed: true,
                 },
@@ -59,7 +65,7 @@ module.exports = {
                     number: '123456789',
                     issuedBy: 'Uncle Bob',
                     country: 'CR',
-                    validity: new Date().setFullYear(new Date().getFullYear() + 1),
+                    validity: validValidityDate,
                     type: 'OP',
                     scanNotAllowed: true,
                 },
@@ -106,7 +112,7 @@ module.exports = {
                     number: '123456789',
                     issuedBy: 'Uncle Bob',
                     country: 'CR',
-                    validity: new Date().setFullYear(new Date().getFullYear() + 1),
+                    validity: validValidityDate,
                     type: 'OP',
                     scanNotAllowed: true,
                 },
@@ -152,7 +158,7 @@ module.exports = {
                     country: 'CZE'
                 },
                 idCard: {
-                    validity: new Date().setFullYear(new Date().getFullYear() + 1),
+                    validity: validValidityDate,
                 },
                 contact: {
                     phoneNumber: '+420 777 908 902',
@@ -198,7 +204,7 @@ module.exports = {
                     number: '123456789',
                     issuedBy: 'Uncle Bob',
                     country: 'CR',
-                    validity: new Date().setFullYear(new Date().getFullYear() + 1),
+                    validity: validValidityDate,
                     type: 'OP',
                     scanNotAllowed: true,
                 }
@@ -241,7 +247,7 @@ module.exports = {
                     number: '123456789',
                     issuedBy: 'Uncle Bob',
                     country: 'CR',
-                    validity: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString(),
+                    validity: validValidityDate.toISOString(),
                     type: 'OP',
                     scanNotAllowed: true,
                 },
@@ -357,7 +363,7 @@ module.exports = {
                     number: '123456789',
                     issuedBy: 'Uncle Bob',
                     country: 'CR',
-                    validity: new Date(new Date().setFullYear(new Date().getFullYear() + 1)),
+                    validity: validValidityDate,
                     type: 'OP',
                     scanNotAllowed: true,
                 },
