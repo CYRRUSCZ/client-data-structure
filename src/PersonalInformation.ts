@@ -300,12 +300,32 @@ export class PersonalInformation extends AbstractBase {
         const validate = this.bootstrapValidator()
         const dataToBeValidated = transformDataBeforeValidation(input ?? this.toJSON())
 
-        PersonalInformation.validateBirthNumber(String(this.#birthNumber ?? ''), String(this.#birthNumberCountry ?? ''))
+        try {
+            PersonalInformation.validateBirthNumber(String(this.#birthNumber ?? ''), String(this.#birthNumberCountry ?? ''))
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : 'Invalid birth number'
+            const errorObject = {
+                instancePath: '/birthNumber',
+                keyword: 'birthNumber',
+                schemaPath: '',
+                params: {},
+                message: errorMessage
+            }
+            this._errors.push(errorObject)
+
+            throw new Error(errorMessage, { cause: this._errors })
+        }
 
         const isValid = validate(dataToBeValidated)
         if (!isValid) {
-            const errorsAsString = validate.errors?.map((error) => `${error.instancePath} ${error.message}`).join('\n')
-            throw new Error(errorsAsString, { cause: validate.errors })
+            const { errors } = validate
+            let errorsAsString = ''
+            if (errors && errors.length > 0) {
+                errorsAsString = errors.map((error) => `${error.instancePath} ${error.message}`).join('\n')
+                this._errors.push(...errors)
+            }
+
+            throw new Error(errorsAsString, { cause: this._errors })
         }
 
         return isValid
