@@ -1,6 +1,6 @@
 const { Address, AddressInformation, ClientData } = require('../dist/client-data-structure.cjs')
 const clientDataset = require('./mock/clientDataset.js')
-const { expectErrorsTestCases, testCases } = require('./mock/addressInformationValidations.js')
+const { expectErrorsTestCases, expectPojoErrorsTestCases, testCasesValidData } = require('./mock/addressInformationValidations.js')
 
 const regularAddress = new Address(
     clientDataset[ClientData.PLAIN_OBJECT_KEY_ADDRESS][ClientData.ADDRESS_TYPE_REGULAR]
@@ -70,38 +70,16 @@ describe('AddressInformation', () => {
 })
 
 describe('Address information validations', () => {
-    it('Expect valid address information', () => {
-        const validAddress = new AddressInformation({
-            address: {
-                recipient: 'První firma a.s.',
-                street: 'Příčná',
-                streetNumber: '554/6a',
-                city: 'Brno',
-                postalCode: '66609',
-                country: 'CZE'
-            },
-            mailingAddress: {
-                recipient: 'První firma a.s.',
-                street: 'Příčná',
-                streetNumber: '554/6a',
-                city: 'Brno',
-                postalCode: '66609',
-                country: 'CZE'
-            },
-            useMailingAddress: true
-        })
-        expect(validAddress.validate()).toBe(true)
+    it('Expect valid Address', () => {
+        for (const testCase of testCasesValidData) {
+            const addressInformation = new AddressInformation(testCase.data)
+            expect(addressInformation.validate()).toBe(true)
+        }
     })
 
-    it('Expect address information validation throws exceptions', () => {
+    it('Expect address validation throws exceptions', () => {
         for (const testCase of expectErrorsTestCases) {
-            const address = new Address(testCase.data.address)
-            const mailingAddress = new Address(testCase.data.mailingAddress)
-            const addressInformation = new AddressInformation({
-                address,
-                mailingAddress,
-                useMailingAddress: testCase.data.useMailingAddress
-            })
+            const addressInformation = new AddressInformation(testCase.data)
             try {
                 addressInformation.validate()
             } catch (error) {
@@ -116,16 +94,20 @@ describe('Address information validations', () => {
         }
     })
 
-    it('Expect address information validation ignores mailingAddress when useMailingAddress is false', () => {
-        for (const testCase of testCases) {
-            const address = new Address(testCase.data.address)
-            const mailingAddress = new Address(testCase.data.mailingAddress)
-            const addressInformation = new AddressInformation({
-                address,
-                mailingAddress,
-                useMailingAddress: testCase.data.useMailingAddress
-            })
-            expect(addressInformation.validate()).toBe(true)
+    it('Expect address validation throws exceptions when POJO directly passed to validate()', () => {
+        for (const testCase of expectPojoErrorsTestCases) {
+            const addressInformation = new AddressInformation()
+            try {
+                addressInformation.validate(testCase.data)
+            } catch (error) {
+                const errors = addressInformation.getValidationErrors()
+                const validationErrors = errors.map(error => `${error.instancePath ? `${error.instancePath} `: ''}${error.message}`)
+                if (Array.isArray(testCase.expected)) {
+                    expect(validationErrors.sort()).toEqual(testCase.expected.sort())
+                } else {
+                    expect(error.message).toBe(testCase.expected)
+                }
+            }
         }
     })
 })
