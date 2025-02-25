@@ -2,7 +2,7 @@ const { Address, ClientData } = require('../dist/client-data-structure.cjs')
 const clientDataset = require('./mock/clientDataset.js')
 const addressValidations = require('./mock/addressValidations.js')
 
-const { expectErrorsTestCases } = addressValidations
+const { expectErrorsTestCases, expectPojoErrorsTestCases, testCasesValidData } = addressValidations
 
 const regularAddress = new Address(
     clientDataset[ClientData.PLAIN_OBJECT_KEY_ADDRESS][ClientData.ADDRESS_TYPE_REGULAR]
@@ -74,25 +74,43 @@ describe('Address', () => {
 })
 
 describe('Address validations', () => {
-    it('Expect valid address', () => {
-        const validAddress = new Address({
-            recipient: 'První firma a.s.',
-            street: 'Příčná',
-            streetNumber: '554/6a',
-            city: 'Brno',
-            postalCode: '66609',
-            country: 'CZE'
-        })
-        expect(validAddress.validate()).toBe(true)
+    it('Expect valid Address', () => {
+        for (const testCase of testCasesValidData) {
+            const address = new Address(testCase.data)
+            expect(address.validate()).toBe(true)
+        }
     })
 
     it('Expect address validation throws exceptions', () => {
         for (const testCase of expectErrorsTestCases) {
-            const invalidAddress = new Address(testCase.data)
+            const address = new Address(testCase.data)
             try {
-                invalidAddress.validate()
+                address.validate()
             } catch (error) {
-                expect(error.message).toContain(testCase.expected)
+                const errors = address.getValidationErrors()
+                const validationErrors = errors.map(error => `${error.instancePath ? `${error.instancePath} `: ''}${error.message}`)
+                if (Array.isArray(testCase.expected)) {
+                    expect(validationErrors.sort()).toEqual(testCase.expected.sort())
+                } else {
+                    expect(error.message).toBe(testCase.expected)
+                }
+            }
+        }
+    })
+
+    it('Expect address validation throws exceptions when POJO directly passed to validate()', () => {
+        for (const testCase of expectPojoErrorsTestCases) {
+            const address = new Address()
+            try {
+                address.validate(testCase.data)
+            } catch (error) {
+                const errors = address.getValidationErrors()
+                const validationErrors = errors.map(error => `${error.instancePath ? `${error.instancePath} `: ''}${error.message}`)
+                if (Array.isArray(testCase.expected)) {
+                    expect(validationErrors.sort()).toEqual(testCase.expected.sort())
+                } else {
+                    expect(error.message).toBe(testCase.expected)
+                }
             }
         }
     })
