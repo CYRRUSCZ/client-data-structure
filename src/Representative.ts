@@ -293,12 +293,12 @@ export class Representative extends AbstractBase {
             type: 'object',
             properties: {
                 id: { type: 'string', nullable: true },
-                capitolId: { type: 'string' },
-                capitolContactId: { type: 'string' },
-                position: { type: 'string' },
+                capitolId: { type: 'string', nullable: true },
+                capitolContactId: { type: 'string', nullable: true },
                 isRepresentative: { type: 'boolean' },
                 isRealOwner: { type: 'boolean' },
                 hasPowerOfAttorney: { type: 'boolean' },
+                position: { type: 'string' },
                 personal: PersonalInformation.prototype.toJSONSchema(),
                 address: Address.prototype.toJSONSchema(),
                 idCard: IdCardInformation.prototype.toJSONSchema(),
@@ -326,8 +326,6 @@ export class Representative extends AbstractBase {
                 'contact',
                 'isRepresentative',
                 'isRealOwner',
-                'capitolId',
-                'capitolContactId',
                 'hasPowerOfAttorney'
             ]
         }
