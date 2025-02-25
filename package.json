@@ -19,7 +19,6 @@
     "main": "dist/client-data-structure.cjs",
     "scripts": {
         "build": "node ./build.mjs",
-        "run:example:validations": "node ./examples.mjs && node ./dist/exampleValidations.esm.js",
         "lint": "eslint ./src",
         "postbuild": "tsc --emitDeclarationOnly --declaration",
         "test": "jest",
