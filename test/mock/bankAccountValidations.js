@@ -63,9 +63,7 @@ module.exports = {
                 foreign: true
             },
             expected: [
-                'must match "then" schema',
-                '/iban must match pattern "^[A-Z]{2}\\d{2}[\\s0-9A-Z]{1,35}$"',
-                '/iban has invalid value'
+                '/iban Invalid IBAN'
             ]
         },
         {
@@ -81,9 +79,7 @@ module.exports = {
                 foreign: true
             },
             expected: [
-                'must match "then" schema',
-                '/swift has invalid value',
-                '/swift must match pattern "^\\w{4}[A-Z]{2}\\w{2}(\\w{3})?$"',
+                '/swift Invalid SWIFT/BIC'
             ]
         },
         {

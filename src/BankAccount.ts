@@ -231,7 +231,7 @@ export class BankAccount extends AbstractBase {
         return this.#capitolId
     }
 
-    validate(input?: Record<string, unknown>): boolean {
+    validate (input?: Record<string, unknown>): boolean {
         const validate = this.bootstrapValidator()
         const dataToBeValidated = transformDataBeforeValidation(input ?? this.toJSON())
 
@@ -239,27 +239,33 @@ export class BankAccount extends AbstractBase {
             try {
                 BankAccount.validateIBAN(String(dataToBeValidated.iban ?? ''))
             } catch (error) {
-                this._errors.push({
+                const errorMessage = error instanceof Error ? error.message : 'Invalid IBAN'
+                const errorObject = {
                     instancePath: '/iban',
                     keyword: 'foreign',
                     schemaPath: '#/then/required',
                     params: {},
-                    message: 'has invalid value',
-                    data: dataToBeValidated.foreign
-                })
+                    message: errorMessage
+                }
+                this._errors.push(errorObject)
+
+                throw new Error(errorMessage, { cause: this._errors })
             }
 
             try {
                 BankAccount.validateSWIFT(String(dataToBeValidated.swift ?? ''))
             } catch (error) {
-                this._errors.push({
+                const errorMessage = error instanceof Error ? error.message : 'Invalid SWIFT/BIC'
+                const errorObject = {
                     instancePath: '/swift',
                     keyword: 'foreign',
                     schemaPath: '#/then/required',
                     params: {},
-                    message: 'has invalid value',
-                    data: dataToBeValidated.foreign
-                })
+                    message: errorMessage
+                }
+                this._errors.push(errorObject)
+
+                throw new Error(errorMessage, { cause: this._errors })
             }
         }
 
