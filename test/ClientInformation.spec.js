@@ -1,6 +1,6 @@
 const { ClientInformation, ClientData, InvestmentProfile } = require('../dist/client-data-structure.cjs')
 const clientDataset = require('./mock/clientDataset.js')
-const { expectErrorsTestCases, testCasesValidData } = require('./mock/clientInformationValidations.js')
+const { expectErrorsTestCases, expectPojoErrorsTestCases, testCasesValidData } = require('./mock/clientInformationValidations.js')
 
 let clientInformation = new ClientInformation(
     clientDataset[ClientData.PLAIN_OBJECT_KEY_CLIENT]
@@ -114,6 +114,23 @@ describe('ClientInformation validations', () => {
             const clientInformation = new ClientInformation(testCase.data)
             try {
                 clientInformation.validate()
+            } catch (error) {
+                const errors = clientInformation.getValidationErrors()
+                const validationErrors = errors.map(error => `${error.instancePath ? `${error.instancePath} `: ''}${error.message}`)
+                if (Array.isArray(testCase.expected)) {
+                    expect(validationErrors.sort()).toEqual(testCase.expected.sort())
+                } else {
+                    expect(error.message).toBe(testCase.expected)
+                }
+            }
+        }
+    })
+
+    it('Expect ClientInformation validations throws exceptions when POJO directly passed to validate()', () => {
+        for (const testCase of expectPojoErrorsTestCases) {
+            const clientInformation = new ClientInformation()
+            try {
+                clientInformation.validate(testCase.data)
             } catch (error) {
                 const errors = clientInformation.getValidationErrors()
                 const validationErrors = errors.map(error => `${error.instancePath ? `${error.instancePath} `: ''}${error.message}`)
