@@ -61,8 +61,6 @@ export interface RepresentativeJSONSchema extends JSONSchemaObject {
         isRealOwner: JSONSchema,
         realOwnerReasonChar?: JSONSchema,
         realOwnerReasonNumber?: JSONSchema,
-        capitolId: JSONSchema,
-        capitolContactId: JSONSchema,
         hasPowerOfAttorney: JSONSchema
     }
 
@@ -293,8 +291,6 @@ export class Representative extends AbstractBase {
             type: 'object',
             properties: {
                 id: { type: 'string', nullable: true },
-                capitolId: { type: 'string', nullable: true },
-                capitolContactId: { type: 'string', nullable: true },
                 isRepresentative: { type: 'boolean' },
                 isRealOwner: { type: 'boolean' },
                 hasPowerOfAttorney: { type: 'boolean' },

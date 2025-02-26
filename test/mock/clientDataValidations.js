@@ -3,6 +3,12 @@ const maxDateOfBirth = (() => {
 
     return new Date(d.getFullYear() - 1, d.getMonth(), d.getDate()).toISOString()
 })()
+const validityValidDate = (() => {
+    const d = new Date()
+    d.setFullYear(d.getFullYear() + 1)
+
+    return d
+})()
 
 module.exports = {
     expectErrorsTestCases: [
@@ -273,7 +279,7 @@ module.exports = {
                     number: '123456789',
                     issuedBy: 'Brno',
                     country: 'CZE',
-                    validity: new Date(Date.now() + 1000000000000),
+                    validity: validityValidDate,
                     type: 'OP',
                     scanNotAllowed: true
                 },
