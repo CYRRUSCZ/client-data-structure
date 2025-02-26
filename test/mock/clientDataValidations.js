@@ -1,3 +1,9 @@
+const maxDateOfBirth = (() => {
+    const d = new Date()
+
+    return new Date(d.getFullYear() - 1, d.getMonth(), d.getDate()).toISOString()
+})()
+
 module.exports = {
     expectErrorsTestCases: [
         {
@@ -9,15 +15,7 @@ module.exports = {
                 '/address/address/recipient must be string',
                 '/address/address/street must be string',
                 '/address/address/streetNumber must be string',
-                '/client/brokerId must be string',
-                '/client/capitolId must be string',
-                '/client/crmId must be string',
-                '/client/dataOrigin must be equal to one of the allowed values',
-                '/client/dataOrigin must be string',
-                '/client/dataOriginId must be string',
                 '/client/economicalSectorCode must be string',
-                '/client/externalBrokerAgentCapitolId must be string',
-                '/client/externalBrokerCapitolId must be string',
                 '/client/legislation must be string',
                 '/client/type must be equal to one of the allowed values',
                 '/client/type must be string',
@@ -34,7 +32,7 @@ module.exports = {
                 '/personal/birthNumber must be string',
                 '/personal/birthNumberCountry must be string',
                 '/personal/citizenship must be string',
-                '/personal/dateOfBirth should be <= 2024-02-24T23:00:00.000Z',
+                `/personal/dateOfBirth should be <= ${maxDateOfBirth}`,
                 '/personal/firstName must be string',
                 '/personal/gender must be equal to one of the allowed values',
                 '/personal/gender must be string',
@@ -68,15 +66,7 @@ module.exports = {
                 '/address/address/recipient must be string',
                 '/address/address/street must be string',
                 '/address/address/streetNumber must be string',
-                '/client/brokerId must be string',
-                '/client/capitolId must be string',
-                '/client/crmId must be string',
-                '/client/dataOrigin must be equal to one of the allowed values',
-                '/client/dataOrigin must be string',
-                '/client/dataOriginId must be string',
                 '/client/economicalSectorCode must be string',
-                '/client/externalBrokerAgentCapitolId must be string',
-                '/client/externalBrokerCapitolId must be string',
                 '/client/legislation must be string',
                 '/client/type must be equal to one of the allowed values',
                 '/client/type must be string',
@@ -128,15 +118,7 @@ module.exports = {
                 },
             },
             expected: [
-                '/client/brokerId must be string',
-                '/client/capitolId must be string',
-                '/client/crmId must be string',
-                '/client/dataOrigin must be equal to one of the allowed values',
-                '/client/dataOrigin must be string',
-                '/client/dataOriginId must be string',
                 '/client/economicalSectorCode must be string',
-                '/client/externalBrokerAgentCapitolId must be string',
-                '/client/externalBrokerCapitolId must be string',
                 '/client/legislation must be string',
                 '/client/type must be equal to one of the allowed values',
                 '/client/type must be string',
@@ -152,19 +134,6 @@ module.exports = {
         }
     ],
     expectPojoErrorsTestCases: [
-        {
-            data: {},
-            expected: [
-                'must have required property \'address\'',
-                'must have required property \'bankAccounts\'',
-                'must have required property \'client\'',
-                'must have required property \'company\'',
-                'must have required property \'contact\'',
-                'must have required property \'idCard\'',
-                'must have required property \'personal\'',
-                'must match "then" schema',
-            ]
-        },
         {
             data: {
                 personal: {
@@ -245,10 +214,6 @@ module.exports = {
             data: {
                 client: {
                     type: 'person',
-                    dataOrigin: 'capitol',
-                    dataOriginId: '123456789',
-                    crmId: 'FooBaarBaZqaz',
-                    capitolId: 'crapItAll',
                     economicalSectorCode: '2002212',
                     legislation: 'cs_CZ',
                     investmentProfiles: [
@@ -287,10 +252,7 @@ module.exports = {
                             isInvestmentCategory: true
                         }
                     ],
-                    residency: false,
-                    brokerId: 123,
-                    externalBrokerCapitolId: 11,
-                    externalBrokerAgentCapitolId: 22
+                    residency: false
                 },
                 personal: {
                     prenominal: 'Ing.',

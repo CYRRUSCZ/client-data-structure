@@ -1,7 +1,15 @@
 const validValidityDate = (() => {
-    const date = new Date();
-    date.setFullYear(date.getFullYear() + 1);
-    return date;
+    const d = new Date()
+    const date = new Date()
+    date.setFullYear(d.getFullYear() + 1)
+
+    return date
+})()
+
+const maxDateOfBirth = (() => {
+    const d = new Date()
+
+    return new Date(d.getFullYear() - 1, d.getMonth(), d.getDate()).toISOString()
 })()
 
 module.exports = {
@@ -80,7 +88,7 @@ module.exports = {
                 '/personal/birthNumber must be string',
                 '/personal/birthNumberCountry must be string',
                 '/personal/citizenship must be string',
-                '/personal/dateOfBirth should be <= 2024-02-24T23:00:00.000Z',
+                `/personal/dateOfBirth should be <= ${maxDateOfBirth}`,
                 '/personal/firstName must be string',
                 '/personal/gender must be equal to one of the allowed values',
                 '/personal/gender must be string',

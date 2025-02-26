@@ -82,16 +82,8 @@ export interface ClientInformationJSONSchema extends JSONSchemaObject {
     type: 'object',
     properties: {
         type: JSONSchema,
-        dataOrigin: JSONSchema,
-        dataOriginId: JSONSchema,
-        capitolId: JSONSchema,
-        crmId: JSONSchema,
-        investmentProfiles: JSONSchema,
         residency: JSONSchema,
         economicalSectorCode: JSONSchema,
-        brokerId: JSONSchema,
-        externalBrokerCapitolId: JSONSchema,
-        externalBrokerAgentCapitolId: JSONSchema,
         legislation: JSONSchema,
         investmentParameters: JSONSchema,
         bankAccountsConfirmedByAffidavit: JSONSchema
@@ -369,24 +361,14 @@ export class ClientInformation extends AbstractBase {
             type: 'object',
             properties: {
                 type: { type: 'string', enum: CLIENT_TYPES },
-                dataOrigin: { type: 'string', enum: CLIENT_ORIGINS },
-                dataOriginId: { type: 'string' },
-                capitolId: { type: 'string' },
-                crmId: { type: 'string' },
-                investmentProfiles: { type: 'array', items: InvestmentProfile.prototype.toJSONSchema() },
                 residency: { type: 'boolean' },
                 economicalSectorCode: { type: 'string' },
-                brokerId: { type: 'string' },
-                externalBrokerCapitolId: { type: 'string' },
-                externalBrokerAgentCapitolId: { type: 'string' },
                 legislation: { type: 'string' },
                 investmentParameters: { type: 'array', items: InvestmentParameter.prototype.toJSONSchema() },
                 bankAccountsConfirmedByAffidavit: { type: 'boolean' }
             },
             required: [
-                'type', 'dataOrigin', 'dataOriginId', 'capitolId', 'crmId',
-                'investmentProfiles', 'residency', 'economicalSectorCode',
-                'brokerId', 'externalBrokerCapitolId', 'externalBrokerAgentCapitolId',
+                'type', 'residency', 'economicalSectorCode',
                 'legislation', 'investmentParameters', 'bankAccountsConfirmedByAffidavit'
             ]
         }
