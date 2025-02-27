@@ -1,4 +1,8 @@
 import * as esbuild from 'esbuild'
+import { readFileSync } from 'node:fs'
+
+const { peerDependencies } = JSON.parse(readFileSync('package.json', 'utf-8'))
+const external = Object.keys(peerDependencies)
 
 await esbuild.build({
     entryPoints: ['src/index.ts'],
@@ -6,6 +10,9 @@ await esbuild.build({
     platform: 'node',
     format: 'esm',
     outfile: 'dist/client-data-structure.esm.js',
+    external,
+    minify: true,
+    sourcemap: true
 })
 
 await esbuild.build({
@@ -14,4 +21,7 @@ await esbuild.build({
     platform: 'node',
     format: 'cjs',
     outfile: 'dist/client-data-structure.cjs',
+    external,
+    minify: true,
+    sourcemap: true
 })

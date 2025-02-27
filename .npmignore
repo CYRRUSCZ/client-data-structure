@@ -3,3 +3,5 @@ tests
 *.config.js
 *.md
 tsconfig.*
+.history
+dataExamples

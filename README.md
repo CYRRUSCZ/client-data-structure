@@ -6,6 +6,15 @@ This library is a set of classes that represents client data structure needed to
 ## API
 See the generated ./docs
 
+## Validation
+The library provides a set of validation methods that can be used to validate the client data structure. Validation requires the following peer dependecies to be installed:
+
+- ajv
+- ajv-formats
+- cdigit
+- ibantools
+- libphonenumber-js
+
 ### Data structure examples
 
 #### Person
