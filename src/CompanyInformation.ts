@@ -1,3 +1,4 @@
+import { AbstractBase, type JSONSchemaObject, type JSONSchema } from './AbstractBase'
 import { getInstanceOfClass, getStringOrNull } from './helpers'
 import { Representative, type RepresentativeInput, type RepresentativeOutput } from './Representative'
 
@@ -32,11 +33,23 @@ export interface CompanyInformationOutput {
     name: string | null
 }
 
+export interface CompanyInformationJSONSchema extends JSONSchemaObject {
+    type: 'object',
+    properties: {
+        ic: JSONSchema,
+        dic: JSONSchema,
+        lei: JSONSchema,
+        taxDomicile: JSONSchema,
+        representatives: JSONSchema,
+        name: JSONSchema
+    }
+    required: string[]
+}
 
 /**
  * Class that represents the company information and its representatives
  */
-export class CompanyInformation {
+export class CompanyInformation extends AbstractBase {
     readonly #ic: string | null = null
     readonly #dic: string | null = null
     readonly #lei: string | null = null
@@ -47,6 +60,7 @@ export class CompanyInformation {
     constructor (
         input: Partial<CompanyInformationInput> = {}
     ) {
+        super()
         const {
             ic,
             dic,
@@ -155,6 +169,44 @@ export class CompanyInformation {
             [PLAIN_OBJECT_KEY_REPRESENTATIVES]: this.representatives.map((entry) => entry.toJSON())
         }
         return plain
+    }
+
+    // eslint-disable-next-line @typescript-eslint/class-methods-use-this -- This method is required by the AbstractBase class
+    toJSONSchema (): CompanyInformationJSONSchema {
+        return {
+            type: 'object',
+            properties: {
+                [PLAIN_OBJECT_KEY_IC]: {
+                    type: 'string'
+                },
+                [PLAIN_OBJECT_KEY_DIC]: {
+                    type: 'string',
+                    nullable: true
+                },
+                [PLAIN_OBJECT_KEY_LEI]: {
+                    type: 'string',
+                    nullable: true
+                },
+                [PLAIN_OBJECT_KEY_NAME]: {
+                    type: 'string'
+                },
+                [PLAIN_OBJECT_KEY_TAX_DOMICILE]: {
+                    type: 'string'
+                },
+                [PLAIN_OBJECT_KEY_REPRESENTATIVES]: {
+                    type: 'array',
+                    items: Representative.prototype.toJSONSchema()
+                }
+            },
+            required: [
+                PLAIN_OBJECT_KEY_IC,
+                PLAIN_OBJECT_KEY_DIC,
+                PLAIN_OBJECT_KEY_LEI,
+                PLAIN_OBJECT_KEY_NAME,
+                PLAIN_OBJECT_KEY_TAX_DOMICILE,
+                PLAIN_OBJECT_KEY_REPRESENTATIVES
+            ]
+        }
     }
 
     /**

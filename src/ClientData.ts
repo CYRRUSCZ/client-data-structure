@@ -7,6 +7,7 @@ import { CompanyInformation, type CompanyInformationInput, type CompanyInformati
 import { BankAccount, type BankAccountInput, type BankAccountOutput } from './BankAccount'
 import { getInstanceOfClass } from './helpers'
 import { Address, type AddressInput } from '.'
+import { AbstractBase, type JSONSchema, type JSONSchemaObject } from './AbstractBase'
 
 export const PLAIN_OBJECT_KEY_CLIENT = 'client'
 export const PLAIN_OBJECT_KEY_PERSONAL = 'personal'
@@ -52,10 +53,24 @@ export interface ClientDataOutput {
     company: CompanyInformationOutput
 }
 
+export interface ClientDataJSONSchema extends JSONSchemaObject {
+    type: 'object'
+    properties: {
+        client: JSONSchema
+        personal: JSONSchema
+        idCard: JSONSchema
+        address: JSONSchema
+        contact: JSONSchema
+        bankAccounts: JSONSchema
+        company?: JSONSchema
+    }
+    required: string[]
+}
+
 /**
  * Class that represents the client data
  */
-export class ClientData {
+export class ClientData extends AbstractBase {
     readonly #client: ClientInformation = new ClientInformation()
     readonly #personal: PersonalInformation = new PersonalInformation()
     readonly #idCard: IdCardInformation = new IdCardInformation()
@@ -67,6 +82,7 @@ export class ClientData {
     constructor (
         input: Partial<ClientDataInput> = {}
     ) {
+        super()
         const {
             client,
             personal,
@@ -286,6 +302,52 @@ export class ClientData {
             company: this.company.toPlainObject()
         }
         return plainObject
+    }
+
+    // eslint-disable-next-line @typescript-eslint/class-methods-use-this -- This method is required by the AbstractBase class
+    toJSONSchema (): ClientDataJSONSchema {
+        return {
+            type: 'object',
+            properties: {
+                client: ClientInformation.prototype.toJSONSchema(),
+                personal: PersonalInformation.prototype.toJSONSchema(),
+                idCard: IdCardInformation.prototype.toJSONSchema(),
+                address: AddressInformation.prototype.toJSONSchema(),
+                contact: ContactInformation.prototype.toJSONSchema(),
+                bankAccounts: {
+                    type: 'array',
+                    items: BankAccount.prototype.toJSONSchema()
+                }
+            },
+            if: {
+                properties: {
+                    client: {
+                        type: 'object',
+                        properties: {
+                            type: {
+                                const: ClientInformation.CLIENT_TYPE_COMPANY
+                            }
+                        }
+                    }
+                }
+            },
+            then: {
+                properties: {
+                    company: CompanyInformation.prototype.toJSONSchema()
+                },
+                required: [
+                    PLAIN_OBJECT_KEY_COMPANY
+                ]
+            },
+            required: [
+                PLAIN_OBJECT_KEY_CLIENT,
+                PLAIN_OBJECT_KEY_PERSONAL,
+                PLAIN_OBJECT_KEY_ID_CARD,
+                PLAIN_OBJECT_KEY_ADDRESS,
+                PLAIN_OBJECT_KEY_CONTACT,
+                PLAIN_OBJECT_KEY_BANK_ACCOUNTS
+            ]
+        }
     }
 
     /**

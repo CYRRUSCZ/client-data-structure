@@ -1,4 +1,6 @@
-import { getNormalizedDate, getStringOrNull } from './helpers'
+import { AbstractBase, type JSONSchema, type JSONSchemaObject } from './AbstractBase'
+import { getNormalizedDate, getStringOrNull, transformDataBeforeValidation } from './helpers'
+import { mod11_10 as mod1110 } from 'cdigit'
 import { countries } from '@cyrrus/locale-utils'
 
 /**
@@ -39,10 +41,31 @@ export interface PersonalInformationOutput {
     politician: boolean
 }
 
+export interface PersonalInformationJSONSchema extends JSONSchemaObject {
+    type: 'object',
+    properties: {
+        prenominal: JSONSchema,
+        firstName: JSONSchema,
+        lastName: JSONSchema,
+        postnominal: JSONSchema,
+        birthNumber?: JSONSchema,
+        dateOfBirth: JSONSchema,
+        noBirthNumber: JSONSchema,
+        birthNumberCountry: JSONSchema,
+        taxDomicile: JSONSchema,
+        placeOfBirth: JSONSchema,
+        citizenship: JSONSchema,
+        gender: JSONSchema,
+        politician: JSONSchema
+    }
+
+    required: string[]
+}
+
 /**
  * Class that represents personal information of a person
  */
-export class PersonalInformation {
+export class PersonalInformation extends AbstractBase {
     readonly #prenominal: string | null = null
     readonly #firstName: string | null = null
     readonly #lastName: string | null = null
@@ -60,6 +83,7 @@ export class PersonalInformation {
     constructor (
         input: Partial<PersonalInformationInput> = {}
     ) {
+        super()
         const {
             prenominal,
             firstName,
@@ -272,6 +296,99 @@ export class PersonalInformation {
         return countries[this.#citizenship] ?? this.#citizenship
     }
 
+    validate (input?: Record<string, any>): boolean {
+        const validate = this.bootstrapValidator()
+        const dataToBeValidated = transformDataBeforeValidation(input ?? this.toJSON())
+
+        try {
+            PersonalInformation.validateBirthNumber(String(this.#birthNumber ?? ''), String(this.#birthNumberCountry ?? ''))
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : 'Invalid birth number'
+            const errorObject = {
+                instancePath: '/birthNumber',
+                keyword: 'birthNumber',
+                schemaPath: '',
+                params: {},
+                message: errorMessage
+            }
+            this._errors.push(errorObject)
+
+            throw new Error(errorMessage, { cause: this._errors })
+        }
+
+        const isValid = validate(dataToBeValidated)
+        if (!isValid) {
+            const { errors } = validate
+            let errorsAsString = ''
+            if (errors && errors.length > 0) {
+                errorsAsString = errors.map((error) => `${error.instancePath} ${error.message}`).join('\n')
+                this._errors.push(...errors)
+            }
+
+            throw new Error(errorsAsString, { cause: this._errors })
+        }
+
+        return isValid
+    }
+
+    static validateBirthNumber (birthNumber: string, birthNumberCountryCode: string): boolean {
+        if (birthNumberCountryCode === 'HRV') {
+            const numericValue = birthNumber.replace(/\D/ig, '')
+            const isOIBValid = mod1110.validate(numericValue)
+            if (numericValue.length === 11 && !isOIBValid) {
+                throw new Error('Invalid HRV birth number')
+            }
+
+            return true
+        }
+
+        if (birthNumberCountryCode === 'CZE' || birthNumberCountryCode === 'SVK') {
+            if (birthNumber === '') {
+                throw new Error('Invalid CZE/SVK birth number')
+            }
+
+            const numericValue = birthNumber.replace(/\D/ig, '')
+            if (numericValue.length < 9) {
+                throw new Error('Invalid CZE/SVK birth number')
+            }
+            let year = parseInt(numericValue.substring(0, 2))
+            let month = parseInt(numericValue.substring(2, 4))
+            const day = parseInt(numericValue.substring(4, 6))
+            const c = (numericValue.length === 9) ? null : parseInt(numericValue.substring(numericValue.length - 1))
+
+            if (c === null) {
+                year += year < 54 ? 1900 : 1800
+            } else {
+                let mod = parseInt(numericValue.substring(0, 9)) % 11
+                if (mod === 10) {
+                    mod = 0
+                }
+                if (mod !== c) {
+                    throw new Error('Invalid CZE/SVK birth number')
+                }
+
+                year += year < 54 ? 2000 : 1900
+            }
+
+            if (month > 70 && year > 2003) {
+                month -= 70
+            } else if (month > 50) {
+                month -= 50
+            } else if (month > 20 && year > 2003) {
+                month -= 20
+            }
+
+            const date = new Date(year, month - 1, day)
+            if (date.getFullYear() !== year || date.getMonth() + 1 !== month || date.getDate() !== day) {
+                throw new Error('Invalid CZE/SVK birth number')
+            }
+
+            return true
+        }
+
+        return true
+    }
+
     /**
      * Returns the personal information as a JSON object
      */
@@ -290,6 +407,102 @@ export class PersonalInformation {
             citizenship: this.#citizenship,
             gender: this.#gender,
             politician: this.#politician
+        }
+    }
+
+    // eslint-disable-next-line @typescript-eslint/class-methods-use-this -- This method is required by the AbstractBase class
+    toJSONSchema(): PersonalInformationJSONSchema {
+        return {
+            type: 'object',
+            properties: {
+                prenominal: {
+                    type: ['string', 'null']
+                },
+                firstName: {
+                    type: 'string'
+                },
+                lastName: {
+                    type: 'string'
+                },
+                postnominal: {
+                    type: ['string', 'null']
+                },
+                dateOfBirth: {
+                    type: 'string',
+                    format: 'date-time',
+                    description: 'Checks only if birth date is in the past',
+                    formatMaximum: (() => {
+                        const d = new Date()
+
+                        return new Date(d.getFullYear() - 1, d.getMonth(), d.getDate()).toISOString()
+                    })()
+                },
+                noBirthNumber: {
+                    type: 'boolean'
+                },
+                birthNumberCountry: {
+                    type: 'string'
+                },
+                taxDomicile: {
+                    type: 'string'
+                },
+                placeOfBirth: {
+                    type: 'string'
+                },
+                citizenship: {
+                    type: 'string'
+                },
+                gender: {
+                    type: 'string',
+                    enum: Object.keys(genderOptions)
+                },
+                politician: {
+                    type: 'boolean'
+                }
+            },
+            if: {
+                properties: {
+                    noBirthNumber: {
+                        const: false
+                    }
+                }
+            },
+            then: {
+                if: {
+                    properties: {
+                        birthNumberCountry: {
+                            const: 'HRV'
+                        }
+                    }
+                },
+                then: {
+                    properties: {
+                        birthNumber: {
+                            type: 'string',
+                            pattern: '^\\d{11}$'
+                        }
+                    }
+                },
+                else: {
+                    properties: {
+                        birthNumber: {
+                            type: 'string',
+                            pattern: '^\\s*\\d{6}[ /]*\\d{3,4}\\s*$'
+                        }
+                    }
+                },
+                required: ['birthNumber']
+            },
+            required: [
+                'firstName',
+                'lastName',
+                'dateOfBirth',
+                'birthNumberCountry',
+                'taxDomicile',
+                'citizenship',
+                'placeOfBirth',
+                'gender'
+            ]
         }
     }
 

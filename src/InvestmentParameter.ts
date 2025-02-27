@@ -1,3 +1,4 @@
+import { AbstractBase, type JSONSchema, type JSONSchemaObject } from './AbstractBase'
 import { getStringOrNull, getValidDate } from './helpers'
 
 /**
@@ -24,10 +25,23 @@ export interface InvestmentParameterOutput {
     isInvestmentCategory: boolean
 }
 
+export interface InvestmentParameterJSONSchema extends JSONSchemaObject {
+    type: 'object'
+    properties: {
+        version: JSONSchema
+        uid: JSONSchema
+        name: JSONSchema
+        added: JSONSchema
+        value: JSONSchema
+        isInvestmentCategory: JSONSchema
+    }
+    required: string[]
+}
+
 /**
  * Class that represents an investment parameter
  */
-export class InvestmentParameter {
+export class InvestmentParameter extends AbstractBase {
     readonly #version: string | null = null
     readonly #uid: string | null = null
     readonly #name: string | null = null
@@ -36,6 +50,7 @@ export class InvestmentParameter {
     readonly #isInvestmentCategory: boolean
 
     constructor (input: Partial<InvestmentParameterInput> = {}) {
+        super()
         const {
             version,
             uid,
@@ -136,6 +151,22 @@ export class InvestmentParameter {
             isInvestmentCategory: this.isInvestmentCategory
         }
         return plainObject
+    }
+
+    // eslint-disable-next-line @typescript-eslint/class-methods-use-this -- This method is required by the AbstractBase class
+    toJSONSchema (): InvestmentParameterJSONSchema {
+        return {
+            type: 'object',
+            properties: {
+                version: { type: 'string' },
+                uid: { type: 'string' },
+                name: { type: 'string' },
+                added: { type: 'string', format: 'date-time' },
+                value: { type: 'string' },
+                isInvestmentCategory: { type: 'boolean' }
+            },
+            required: ['version', 'uid', 'name', 'added', 'value', 'isInvestmentCategory']
+        }
     }
 
     /**

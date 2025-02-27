@@ -1,5 +1,6 @@
-const { Address, AddressInformation, ClientData } = require('../dist/client-data-structure.cjs.js')
+const { Address, AddressInformation, ClientData } = require('../dist/client-data-structure.cjs')
 const clientDataset = require('./mock/clientDataset.js')
+const { expectErrorsTestCases, expectPojoErrorsTestCases, testCasesValidData } = require('./mock/addressInformationValidations.js')
 
 const regularAddress = new Address(
     clientDataset[ClientData.PLAIN_OBJECT_KEY_ADDRESS][ClientData.ADDRESS_TYPE_REGULAR]
@@ -65,5 +66,48 @@ describe('AddressInformation', () => {
             false
         )
         expect(fromCreate.toJSON().useMailingAddress).toBe(false)
+    })
+})
+
+describe('Address information validations', () => {
+    it('Expect valid Address', () => {
+        for (const testCase of testCasesValidData) {
+            const addressInformation = new AddressInformation(testCase.data)
+            expect(addressInformation.validate()).toBe(true)
+        }
+    })
+
+    it('Expect address validation throws exceptions', () => {
+        for (const testCase of expectErrorsTestCases) {
+            const addressInformation = new AddressInformation(testCase.data)
+            try {
+                addressInformation.validate()
+            } catch (error) {
+                const errors = addressInformation.getValidationErrors()
+                const validationErrors = errors.map(error => `${error.instancePath ? `${error.instancePath} `: ''}${error.message}`)
+                if (Array.isArray(testCase.expected)) {
+                    expect(validationErrors.sort()).toEqual(testCase.expected.sort())
+                } else {
+                    expect(error.message).toBe(testCase.expected)
+                }
+            }
+        }
+    })
+
+    it('Expect address validation throws exceptions when POJO directly passed to validate()', () => {
+        for (const testCase of expectPojoErrorsTestCases) {
+            const addressInformation = new AddressInformation()
+            try {
+                addressInformation.validate(testCase.data)
+            } catch (error) {
+                const errors = addressInformation.getValidationErrors()
+                const validationErrors = errors.map(error => `${error.instancePath ? `${error.instancePath} `: ''}${error.message}`)
+                if (Array.isArray(testCase.expected)) {
+                    expect(validationErrors.sort()).toEqual(testCase.expected.sort())
+                } else {
+                    expect(error.message).toBe(testCase.expected)
+                }
+            }
+        }
     })
 })

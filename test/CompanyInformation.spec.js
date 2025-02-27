@@ -1,5 +1,6 @@
-const { CompanyInformation } = require('../dist/client-data-structure.cjs.js')
+const { CompanyInformation } = require('../dist/client-data-structure.cjs')
 const clientDataset = require('./mock/clientDataset.js')
+const { expectErrorsTestCases, expectPojoErrorsTestCases, testCasesValidData } = require('./mock/companyInformationValidations.js')
 
 const companyInformation = new CompanyInformation(clientDataset.company)
 
@@ -41,5 +42,48 @@ describe('CompanyInformation', () => {
         expect(plain.representatives[0]).toHaveProperty('personal')
         expect(plain.representatives[0].personal).toHaveProperty('lastName')
         expect(plain).toHaveProperty('name')
+    })
+})
+
+describe('CompanyInformation validations', () => {
+    it('Expect valid CompanyInformation', () => {
+        for (const testCase of testCasesValidData) {
+            const companyInformation = new CompanyInformation(testCase.data)
+            expect(companyInformation.validate()).toBe(true)
+        }
+    })
+
+    it('Expect CompanyInformation validations throws exceptions', () => {
+        for (const testCase of expectErrorsTestCases) {
+            const companyInformation = new CompanyInformation(testCase.data)
+            try {
+                companyInformation.validate()
+            } catch (error) {
+                const errors = companyInformation.getValidationErrors()
+                const validationErrors = errors.map(error => `${error.instancePath ? `${error.instancePath} `: ''}${error.message}`)
+                if (Array.isArray(testCase.expected)) {
+                    expect(validationErrors.sort()).toEqual(testCase.expected.sort())
+                } else {
+                    expect(error.message).toBe(testCase.expected)
+                }
+            }
+        }
+    })
+
+    it('Expect CompanyInformation validations throws exceptions when POJO directly passed to validate()', () => {
+        for (const testCase of expectPojoErrorsTestCases) {
+            const companyInformation = new CompanyInformation()
+            try {
+                companyInformation.validate(testCase.data)
+            } catch (error) {
+                const errors = companyInformation.getValidationErrors()
+                const validationErrors = errors.map(error => `${error.instancePath ? `${error.instancePath} `: ''}${error.message}`)
+                if (Array.isArray(testCase.expected)) {
+                    expect(validationErrors.sort()).toEqual(testCase.expected.sort())
+                } else {
+                    expect(error.message).toBe(testCase.expected)
+                }
+            }
+        }
     })
 })

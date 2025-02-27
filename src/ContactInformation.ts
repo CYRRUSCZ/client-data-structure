@@ -1,4 +1,6 @@
-import { getStringOrNull } from './helpers'
+import { AbstractBase, type JSONSchema, type JSONSchemaObject } from './AbstractBase'
+import { getStringOrNull, transformDataBeforeValidation } from './helpers'
+import { parsePhoneNumberFromString } from 'libphonenumber-js'
 
 /**
  * Input of the ContactInformation class that is used to create the object
@@ -18,10 +20,21 @@ export interface ContactInformationOutput {
     phonePassword: string | null
 }
 
+export interface ContactInformationJSONSchema extends JSONSchemaObject {
+    type: 'object',
+    properties: {
+        email: JSONSchema,
+        phoneNumber: JSONSchema,
+        phonePassword: JSONSchema
+    }
+
+    required: string[]
+}
+
 /**
  * Class that represents a contact information
  */
-export class ContactInformation {
+export class ContactInformation extends AbstractBase {
     readonly #email: string | null = null
     readonly #phoneNumber: string | null = null
     readonly #phonePassword: string | null = null
@@ -29,6 +42,7 @@ export class ContactInformation {
     constructor (
         input: Partial<ContactInformationInput> = {}
     ) {
+        super()
         const {
             email,
             phoneNumber,
@@ -80,6 +94,62 @@ export class ContactInformation {
         return this.#phonePassword
     }
 
+    validate (input?: Record<string, any>): boolean {
+        const validate = this.bootstrapValidator()
+        const dataToBeValidated = transformDataBeforeValidation(input ?? this.toJSON())
+
+        try {
+            ContactInformation.validatePhoneNumber(String(dataToBeValidated.phoneNumber ?? ''))
+        } catch (error) {
+            const message = error instanceof Error ? error.message : 'Invalid phone number'
+            const errorObject = {
+                keyword: 'phoneNumber',
+                instancePath: '/phoneNumber',
+                schemaPath: '#/properties/phoneNumber/pattern',
+                params: {},
+                message
+            }
+            this._errors.push(errorObject)
+
+            throw new Error(errorObject.message, { cause: this._errors })
+        }
+
+        const isValid = validate(dataToBeValidated)
+        if (!isValid) {
+            const { errors } = validate
+            let errorsAsString = ''
+            if (errors && errors.length > 0) {
+                errorsAsString = errors.map((error) => `${error.instancePath} ${error.message}`).join('\n')
+                this._errors.push(...errors)
+            }
+
+            throw new Error(errorsAsString, { cause: this._errors })
+        }
+
+        return isValid
+    }
+
+    /**
+     * Validate the phone number
+     *
+     * @param {string} phoneNumber The phone number to validate
+     *
+     * @throws {Error} If the phone number is not valid
+     * @returns true if the phone number is valid
+     */
+    static validatePhoneNumber (phoneNumber: string): boolean {
+        if (!phoneNumber) {
+            throw new Error('Phone number is required')
+        }
+
+        const number = parsePhoneNumberFromString(phoneNumber)
+        if (!number?.isValid()) {
+            throw new Error('Invalid phone number')
+        }
+
+        return true
+    }
+
     /**
      * Serialize the object to JSON
      */
@@ -88,6 +158,29 @@ export class ContactInformation {
             email: this.#email,
             phoneNumber: this.#phoneNumber,
             phonePassword: this.#phonePassword
+        }
+    }
+
+    // eslint-disable-next-line @typescript-eslint/class-methods-use-this -- This method is required by the AbstractBase class
+    toJSONSchema (): ContactInformationJSONSchema {
+        return {
+            type: 'object',
+            properties: {
+                email: {
+                    type: 'string',
+                    format: 'email'
+                },
+                phoneNumber: {
+                    type: 'string',
+                    description: 'The phone number, must be provided with international prefix',
+                    pattern: '^(\\()?\\+[0-9\\s]+(\\))?[0-9\\s]+$'
+                },
+                phonePassword: {
+                    type: 'string',
+                    maxLength: 20
+                }
+            },
+            required: ['email', 'phoneNumber', 'phonePassword']
         }
     }
 

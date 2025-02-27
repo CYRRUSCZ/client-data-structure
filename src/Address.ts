@@ -1,5 +1,6 @@
 import { type AvailableLanguages, getStringOrNull } from './helpers'
 import { countriesLocalized } from '@cyrrus/locale-utils'
+import { AbstractBase, type JSONSchema, type JSONSchemaObject } from './AbstractBase'
 
 /**
  * Input of the Address class that is used to create the object
@@ -36,10 +37,22 @@ export interface AddressOutput extends AddressInput {
     postalCode: string | null
 }
 
+export interface AddressJSONSchema extends JSONSchemaObject {
+    properties: {
+        recipient: JSONSchema
+        street: JSONSchema
+        streetNumber: JSONSchema
+        city: JSONSchema
+        country: JSONSchema
+        postalCode: JSONSchema
+    },
+    required: string[]
+}
+
 /**
  * Address class that represents a postal or residency address
  */
-export class Address {
+export class Address extends AbstractBase {
     readonly #recipient: string | null = null
     readonly #street: string | null = null
     readonly #streetNumber: string | null = null
@@ -53,6 +66,7 @@ export class Address {
      * @param input object that is used to create the Address object
      */
     constructor (input: Partial<AddressInput> = {}) {
+        super()
         const {
             recipient,
             street,
@@ -201,6 +215,41 @@ export class Address {
             city: this.#city,
             country: this.#country,
             postalCode: this.#postalCode
+        }
+    }
+
+    // eslint-disable-next-line @typescript-eslint/class-methods-use-this -- This method is required by the AbstractBase class
+    toJSONSchema (): AddressJSONSchema {
+        return {
+            type: 'object',
+            properties: {
+                recipient: {
+                    type: 'string'
+                },
+                street: {
+                    type: 'string'
+                },
+                streetNumber: {
+                    type: 'string'
+                },
+                city: {
+                    type: 'string'
+                },
+                country: {
+                    type: 'string'
+                },
+                postalCode: {
+                    type: 'string'
+                }
+            },
+            required: [
+                'recipient',
+                'street',
+                'streetNumber',
+                'city',
+                'country',
+                'postalCode'
+            ]
         }
     }
 

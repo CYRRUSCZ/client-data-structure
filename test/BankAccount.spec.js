@@ -1,5 +1,6 @@
-const { BankAccount, ClientData } = require('../dist/client-data-structure.cjs.js')
+const { BankAccount, ClientData } = require('../dist/client-data-structure.cjs')
 const clientDataset = require('./mock/clientDataset.js')
+const { expectErrorsTestCases, expectPojoErrorsTestCases, testCasesValidData } = require('./mock/bankAccountValidations.js')
 
 const bankingInformation = [...(new ClientData(
     clientDataset
@@ -23,5 +24,48 @@ describe('BankingInformation', () => {
 
     it('foreign account is created', () => {
         expect(bankingInformation[2].bankNameAddress).toBe(clientDataset.bankAccounts[2].bankNameAddress)
+    })
+})
+
+describe('BankAccount validations', () => {
+    it('Expect valid BankAccount', () => {
+        for (const testCase of testCasesValidData) {
+            const bankAccount = new BankAccount(testCase.data)
+            expect(bankAccount.validate()).toBe(true)
+        }
+    })
+
+    it('Expect BankAccount validations throws exceptions', () => {
+        for (const testCase of expectErrorsTestCases) {
+            const bankAccount = new BankAccount(testCase.data)
+            try {
+                bankAccount.validate()
+            } catch (error) {
+                const errors = bankAccount.getValidationErrors()
+                const validationErrors = errors.map(error => `${error.instancePath ? `${error.instancePath} `: ''}${error.message}`)
+                if (Array.isArray(testCase.expected)) {
+                    expect(validationErrors.sort()).toEqual(testCase.expected.sort())
+                } else {
+                    expect(error.message).toBe(testCase.expected)
+                }
+            }
+        }
+    })
+
+    it('Expect BankAccount validations throws exceptions when POJO directly passed to validate()', () => {
+        for (const testCase of expectPojoErrorsTestCases) {
+            const bankAccount = new BankAccount()
+            try {
+                bankAccount.validate(testCase.data)
+            } catch (error) {
+                const errors = bankAccount.getValidationErrors()
+                const validationErrors = errors.map(error => `${error.instancePath ? `${error.instancePath} `: ''}${error.message}`)
+                if (Array.isArray(testCase.expected)) {
+                    expect(validationErrors.sort()).toEqual(testCase.expected.sort())
+                } else {
+                    expect(error.message).toBe(testCase.expected)
+                }
+            }
+        }
     })
 })

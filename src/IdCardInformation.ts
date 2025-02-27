@@ -1,3 +1,4 @@
+import { AbstractBase, type JSONSchema, type JSONSchemaObject } from './AbstractBase'
 import { getStringOrNull, getNormalizedDate } from './helpers'
 import { countries } from '@cyrrus/locale-utils'
 
@@ -25,10 +26,23 @@ export interface IdCardInformationOutput {
     scanNotAllowed: boolean
 }
 
+export interface IdCardInformationJSONSchema extends JSONSchemaObject {
+    type: 'object'
+    properties: {
+        number: JSONSchema,
+        issuedBy: JSONSchema,
+        country: JSONSchema,
+        validity: JSONSchema,
+        type: JSONSchema,
+        scanNotAllowed: JSONSchema
+    },
+    required: string[]
+}
+
 /**
  * Class that represents an identification card information
  */
-export class IdCardInformation {
+export class IdCardInformation extends AbstractBase {
     readonly #number: string | null = null
     readonly #issuedBy: string | null = null
     readonly #country: string | null = null
@@ -39,6 +53,7 @@ export class IdCardInformation {
     constructor (
         input: Partial<IdCardInformationInput> = {}
     ) {
+        super()
         const {
             number,
             issuedBy,
@@ -147,6 +162,41 @@ export class IdCardInformation {
             validity: this.#validity,
             type: this.#type,
             scanNotAllowed: this.#scanNotAllowed
+        }
+    }
+
+    // eslint-disable-next-line @typescript-eslint/class-methods-use-this -- This method is required by the AbstractBase class
+    toJSONSchema(): IdCardInformationJSONSchema {
+        return {
+            type: 'object',
+            properties: {
+                number: {
+                    type: 'string',
+                    minLength: 5
+                },
+                issuedBy: {
+                    type: 'string'
+                },
+                country: {
+                    type: 'string'
+                },
+                validity: {
+                    type: 'string',
+                    format: 'date-time',
+                    formatMinimum: new Date().toISOString()
+                },
+                type: {
+                    type: 'string',
+                    enum: ['OP', 'Pas']
+                },
+                scanNotAllowed: {
+                    type: 'boolean'
+                }
+            },
+            required: [
+                'number', 'issuedBy', 'country',
+                'validity', 'type', 'scanNotAllowed'
+            ]
         }
     }
 

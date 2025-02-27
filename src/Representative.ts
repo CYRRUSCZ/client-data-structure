@@ -1,9 +1,10 @@
 import { getInstanceOfClass, getStringOrNull } from './helpers'
-import { Address, type AddressInput, type AddressOutput } from './Address'
-import { IdCardInformation, type IdCardInformationInput, type IdCardInformationOutput } from './IdCardInformation'
-import { PersonalInformation, type PersonalInformationInput, type PersonalInformationOutput } from './PersonalInformation'
-import { ContactInformation, type ContactInformationInput, type ContactInformationOutput } from './ContactInformation'
+import { Address, type AddressJSONSchema, type AddressInput, type AddressOutput } from './Address'
+import { IdCardInformation, type IdCardInformationJSONSchema, type IdCardInformationInput, type IdCardInformationOutput } from './IdCardInformation'
+import { PersonalInformation, type PersonalInformationJSONSchema, type PersonalInformationInput, type PersonalInformationOutput } from './PersonalInformation'
+import { ContactInformation, type ContactInformationJSONSchema, type ContactInformationInput, type ContactInformationOutput } from './ContactInformation'
 import { ClientData } from './ClientData'
+import { AbstractBase, type JSONSchema, type JSONSchemaObject } from './AbstractBase'
 
 export const PLAIN_OBJECT_KEY_POSITION = 'position'
 export const PLAIN_OBJECT_KEY_ID = 'id'
@@ -47,10 +48,29 @@ export interface RepresentativeOutput {
     hasPowerOfAttorney: boolean
 }
 
+export interface RepresentativeJSONSchema extends JSONSchemaObject {
+    type: 'object',
+    properties: {
+        personal: PersonalInformationJSONSchema,
+        position: JSONSchema,
+        address: AddressJSONSchema,
+        idCard: IdCardInformationJSONSchema,
+        id: JSONSchema,
+        contact: ContactInformationJSONSchema,
+        isRepresentative: JSONSchema,
+        isRealOwner: JSONSchema,
+        realOwnerReasonChar?: JSONSchema,
+        realOwnerReasonNumber?: JSONSchema,
+        hasPowerOfAttorney: JSONSchema
+    }
+
+    required: string[]
+}
+
 /**
  * Class that represents a representative of a company
  */
-export class Representative {
+export class Representative extends AbstractBase {
 
     readonly #personal: PersonalInformation = new PersonalInformation()
     readonly #position: string | null = null
@@ -69,6 +89,7 @@ export class Representative {
     constructor (
         input: Partial<RepresentativeInput> = {}
     ) {
+        super()
         const {
             personal,
             position,
@@ -262,6 +283,48 @@ export class Representative {
             [ClientData.PLAIN_OBJECT_KEY_CONTACT]: this.contact.toJSON()
         }
         return plain
+    }
+
+    // eslint-disable-next-line @typescript-eslint/class-methods-use-this -- This method is required by the AbstractBase class
+    toJSONSchema(): RepresentativeJSONSchema {
+        return {
+            type: 'object',
+            properties: {
+                id: { type: 'string', nullable: true },
+                isRepresentative: { type: 'boolean' },
+                isRealOwner: { type: 'boolean' },
+                hasPowerOfAttorney: { type: 'boolean' },
+                position: { type: 'string' },
+                personal: PersonalInformation.prototype.toJSONSchema(),
+                address: Address.prototype.toJSONSchema(),
+                idCard: IdCardInformation.prototype.toJSONSchema(),
+                contact: ContactInformation.prototype.toJSONSchema()
+            },
+            if: {
+                properties: {
+                    isRealOwner: {
+                        const: true
+                    }
+                }
+            },
+            then: {
+                properties: {
+                    realOwnerReasonChar: { type: 'string' },
+                    realOwnerReasonNumber: { type: 'string' }
+                },
+                required: ['realOwnerReasonChar', 'realOwnerReasonNumber']
+            },
+            required: [
+                'id',
+                'personal',
+                'address',
+                'idCard',
+                'contact',
+                'isRepresentative',
+                'isRealOwner',
+                'hasPowerOfAttorney'
+            ]
+        }
     }
 
     /**
