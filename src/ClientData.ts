@@ -57,12 +57,32 @@ export interface ClientDataJSONSchema extends JSONSchemaObject {
     type: 'object'
     properties: {
         client: JSONSchema
-        personal: JSONSchema
-        idCard: JSONSchema
         address: JSONSchema
         contact: JSONSchema
         bankAccounts: JSONSchema
-        company?: JSONSchema
+    }
+    if: {
+        properties: {
+            client: {
+                type: 'object',
+                properties: {
+                    type: JSONSchema
+                }
+            }
+        }
+    }
+    then: JSONSchema & {
+        properties: {
+            company: JSONSchema
+        },
+        required: string[]
+    }
+    else: JSONSchema & {
+        properties: {
+            personal: JSONSchema
+            idCard: JSONSchema
+        },
+        required: string[]
     }
     required: string[]
 }
@@ -310,8 +330,6 @@ export class ClientData extends AbstractBase {
             type: 'object',
             properties: {
                 client: ClientInformation.prototype.toJSONSchema(),
-                personal: PersonalInformation.prototype.toJSONSchema(),
-                idCard: IdCardInformation.prototype.toJSONSchema(),
                 address: AddressInformation.prototype.toJSONSchema(),
                 contact: ContactInformation.prototype.toJSONSchema(),
                 bankAccounts: {
@@ -339,10 +357,18 @@ export class ClientData extends AbstractBase {
                     PLAIN_OBJECT_KEY_COMPANY
                 ]
             },
+            else: {
+                properties: {
+                    personal: PersonalInformation.prototype.toJSONSchema(),
+                    idCard: IdCardInformation.prototype.toJSONSchema(),
+                },
+                required: [
+                    PLAIN_OBJECT_KEY_PERSONAL,
+                    PLAIN_OBJECT_KEY_ID_CARD
+                ]
+            },
             required: [
                 PLAIN_OBJECT_KEY_CLIENT,
-                PLAIN_OBJECT_KEY_PERSONAL,
-                PLAIN_OBJECT_KEY_ID_CARD,
                 PLAIN_OBJECT_KEY_ADDRESS,
                 PLAIN_OBJECT_KEY_CONTACT,
                 PLAIN_OBJECT_KEY_BANK_ACCOUNTS

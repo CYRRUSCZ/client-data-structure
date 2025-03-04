@@ -21,7 +21,7 @@
         "build": "node ./build.mjs",
         "lint": "eslint ./src",
         "postbuild": "tsc --emitDeclarationOnly --declaration",
-        "test": "jest",
+        "test": "node ./testBuild.mjs && jest",
         "docs": "typedoc --out docs src"
     },
     "repository": {

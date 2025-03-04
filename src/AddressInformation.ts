@@ -39,11 +39,22 @@ export interface AddressInformationOutput {
 }
 
 export interface AddressInformationJSONSchema extends JSONSchemaObject {
-    type: 'object',
+    type: 'object'
     properties: {
-        address: AddressJSONSchema,
-        mailingAddress?: JSONSchema,
-        useMailingAddress: JSONSchema,
+        address: AddressJSONSchema
+        mailingAddress?: JSONSchema
+        useMailingAddress: JSONSchema
+    }
+    if: {
+        properties: {
+            useMailingAddress: JSONSchema
+        }
+    }
+    then: JSONSchema & {
+        properties: {
+            mailingAddress: JSONSchema
+        },
+        required: string[]
     }
     required: string[]
 }

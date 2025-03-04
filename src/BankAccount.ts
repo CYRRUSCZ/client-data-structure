@@ -39,19 +39,33 @@ export interface BankAccountOutput {
 }
 
 export interface BankAccountJSONSchema extends JSONSchemaObject {
-    type: 'object',
+    type: 'object'
     properties: {
-        foreign: JSONSchema,
-        currency: JSONSchema,
-        prefix?: JSONSchema,
-        account?: JSONSchema,
-        code?: JSONSchema,
-        iban?: JSONSchema,
-        swift?: JSONSchema,
-        bankNameAddress?: JSONSchema,
-        accountName?: JSONSchema
+        foreign: JSONSchema
+        currency: JSONSchema
     }
-
+    if: {
+        properties: {
+            foreign: JSONSchema
+        }
+    }
+    then: {
+        properties: {
+            iban: JSONSchema
+            swift: JSONSchema
+            bankNameAddress: JSONSchema
+            accountName: JSONSchema
+        }
+        required: string[]
+    }
+    else: {
+        properties: {
+            prefix: JSONSchema
+            account: JSONSchema
+            code: JSONSchema
+        }
+        required: string[]
+    }
     required: string[]
 }
 

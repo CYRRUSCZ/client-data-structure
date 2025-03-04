@@ -1,4 +1,4 @@
-const { helpers, ClientData } = require('../dist/client-data-structure.cjs')
+const { helpers, ClientData } = require('./client-data-structure.cjs')
 const clientDataset = require('./mock/clientDataset.js')
 
 describe('helpers', () => {

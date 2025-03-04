@@ -5,3 +5,4 @@ _old
 .npmrc
 docs
 .history
+test/client-data-structure.cjs
