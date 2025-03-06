@@ -2,7 +2,7 @@ const {
     ClientData, AddressInformation, BankAccount,
     ContactInformation, IdCardInformation, PersonalInformation,
     ClientInformation, CompanyInformation
-} = require('../dist/client-data-structure.cjs')
+} = require('./client-data-structure.cjs')
 const clientDataset = require('./mock/clientDataset.js')
 const { expectErrorsTestCases, expectPojoErrorsTestCases, testCasesValidData } = require('./mock/clientDataValidations.js')
 

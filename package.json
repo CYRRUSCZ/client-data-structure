@@ -7,11 +7,13 @@
     "exports": {
         ".": {
             "import": "./dist/client-data-structure.esm.js",
-            "require": "./dist/client-data-structure.cjs"
+            "require": "./dist/client-data-structure.cjs",
+            "types": "./dist/types/index.d.ts"
         },
         "./dist/client-data-structure": {
             "import": "./dist/client-data-structure.esm.js",
-            "require": "./dist/client-data-structure.cjs"
+            "require": "./dist/client-data-structure.cjs",
+            "types": "./dist/types/index.d.ts"
         },
         "./package.json": "./package.json"
     },
@@ -21,7 +23,7 @@
         "build": "node ./build.mjs",
         "lint": "eslint ./src",
         "postbuild": "tsc --emitDeclarationOnly --declaration",
-        "test": "jest",
+        "test": "node ./testBuild.mjs && jest",
         "docs": "typedoc --out docs src"
     },
     "repository": {

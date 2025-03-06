@@ -15,6 +15,7 @@ module.exports = {
         {
             data: {},
             expected: [
+                'must match \"else\" schema',
                 '/address/address/city must be string',
                 '/address/address/country must be string',
                 '/address/address/postalCode must be string',
@@ -44,7 +45,7 @@ module.exports = {
                 '/personal/gender must be string',
                 '/personal/lastName must be string',
                 '/personal/placeOfBirth must be string',
-                '/personal/taxDomicile must be string',
+                '/personal/taxDomicile must be string'
             ]
         },
         {
@@ -66,6 +67,7 @@ module.exports = {
                 },
             },
             expected: [
+                'must match \"else\" schema',
                 '/address/address/city must be string',
                 '/address/address/country must be string',
                 '/address/address/postalCode must be string',
@@ -124,6 +126,7 @@ module.exports = {
                 },
             },
             expected: [
+                'must match \"else\" schema',
                 '/client/economicalSectorCode must be string',
                 '/client/legislation must be string',
                 '/client/type must be equal to one of the allowed values',
@@ -164,7 +167,6 @@ module.exports = {
                 'must have required property \'client\'',
                 'must have required property \'company\'',
                 'must have required property \'contact\'',
-                'must have required property \'idCard\'',
                 'must match "then" schema',
             ]
         },
@@ -210,7 +212,6 @@ module.exports = {
                 'must have required property \'client\'',
                 'must have required property \'company\'',
                 'must have required property \'contact\'',
-                'must have required property \'idCard\'',
                 'must match "then" schema',
             ]
         }
@@ -309,6 +310,82 @@ module.exports = {
                 },
                 bankAccounts: [],
                 company: {}
+            }
+        },
+        {
+            data: {
+                client: {
+                    type: 'company',
+                    economicalSectorCode: '2002212',
+                    legislation: 'cs_CZ',
+                    investmentProfiles: [
+                        {
+                            version: 'foo-version',
+                            uid: 'uid',
+                            name: 'Foo super risky',
+                            added: new Date('2019-02-14T12:00:00.000Z'),
+                            groupUid: 'foo',
+                            services: [
+                                {
+                                    uid: 'fooService',
+                                    name: 'Foo service',
+                                    added: new Date('2019-02-14T12:00:00.000Z')
+                                }
+                            ],
+                            weight: 1
+                        },
+                        {
+                            version: 'bar-version',
+                            uid: 'baruid',
+                            name: 'Bar extreme risky',
+                            added: new Date('2019-02-14T12:00:00.000Z'),
+                            groupUid: 'bar',
+                            services: [],
+                            weight: 2
+                        }
+                    ],
+                    investmentParameters: [
+                        {
+                            version: 'foo-version',
+                            uid: 'parFoo',
+                            name: 'Foo super risky',
+                            added: new Date('2019-02-14T12:00:00.000Z'),
+                            value: 1,
+                            isInvestmentCategory: true
+                        }
+                    ],
+                    residency: false
+                },
+                address: {
+                    address: {
+                        recipient: 'První firma a.s.',
+                        street: 'Příčná',
+                        streetNumber: '554/6a',
+                        city: 'Brno',
+                        postalCode: '66609',
+                        country: 'CZE'
+                    },
+                    mailingAddress: {
+                        recipient: 'Milada Rudá',
+                        street: 'U hroudy',
+                        streetNumber: '15',
+                        city: 'Brno',
+                        postalCode: '668 02',
+                        country: 'CZE'
+                    },
+                    useMailingAddress: true
+                },
+                contact: {
+                    email: 'email@somewhere.com',
+                    phoneNumber: '+420123456789',
+                    phonePassword: 'FooBarBaz'
+                },
+                bankAccounts: [],
+                company: {
+                    name: 'První firma a.s.',
+                    ic: '12345678',
+                    taxDomicile: 'CZE'
+                }
             }
         }
     ]

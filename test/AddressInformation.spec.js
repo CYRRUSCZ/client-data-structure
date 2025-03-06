@@ -1,4 +1,4 @@
-const { Address, AddressInformation, ClientData } = require('../dist/client-data-structure.cjs')
+const { Address, AddressInformation, ClientData } = require('./client-data-structure.cjs')
 const clientDataset = require('./mock/clientDataset.js')
 const { expectErrorsTestCases, expectPojoErrorsTestCases, testCasesValidData } = require('./mock/addressInformationValidations.js')
 

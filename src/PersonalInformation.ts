@@ -42,23 +42,45 @@ export interface PersonalInformationOutput {
 }
 
 export interface PersonalInformationJSONSchema extends JSONSchemaObject {
-    type: 'object',
+    type: 'object'
     properties: {
-        prenominal: JSONSchema,
-        firstName: JSONSchema,
-        lastName: JSONSchema,
-        postnominal: JSONSchema,
-        birthNumber?: JSONSchema,
-        dateOfBirth: JSONSchema,
-        noBirthNumber: JSONSchema,
-        birthNumberCountry: JSONSchema,
-        taxDomicile: JSONSchema,
-        placeOfBirth: JSONSchema,
-        citizenship: JSONSchema,
-        gender: JSONSchema,
+        prenominal: JSONSchema
+        firstName: JSONSchema
+        lastName: JSONSchema
+        postnominal: JSONSchema
+        birthNumber?: JSONSchema
+        dateOfBirth: JSONSchema
+        noBirthNumber: JSONSchema
+        birthNumberCountry: JSONSchema
+        taxDomicile: JSONSchema
+        placeOfBirth: JSONSchema
+        citizenship: JSONSchema
+        gender: JSONSchema
         politician: JSONSchema
     }
-
+    if: {
+        properties: {
+            noBirthNumber: JSONSchema
+        }
+    }
+    then: {
+        if: {
+            properties: {
+                birthNumberCountry: JSONSchema
+            }
+        }
+        then: {
+            properties: {
+                birthNumber: JSONSchema
+            }
+        }
+        else: {
+            properties: {
+                birthNumber: JSONSchema
+            }
+        }
+        required: string[]
+    }
     required: string[]
 }
 

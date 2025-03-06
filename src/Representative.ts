@@ -49,21 +49,32 @@ export interface RepresentativeOutput {
 }
 
 export interface RepresentativeJSONSchema extends JSONSchemaObject {
-    type: 'object',
+    type: 'object'
     properties: {
-        personal: PersonalInformationJSONSchema,
-        position: JSONSchema,
-        address: AddressJSONSchema,
-        idCard: IdCardInformationJSONSchema,
-        id: JSONSchema,
-        contact: ContactInformationJSONSchema,
-        isRepresentative: JSONSchema,
-        isRealOwner: JSONSchema,
-        realOwnerReasonChar?: JSONSchema,
-        realOwnerReasonNumber?: JSONSchema,
+        personal: PersonalInformationJSONSchema
+        position: JSONSchema
+        address: AddressJSONSchema
+        idCard: IdCardInformationJSONSchema
+        id: JSONSchema
+        contact: ContactInformationJSONSchema
+        isRepresentative: JSONSchema
+        isRealOwner: JSONSchema
         hasPowerOfAttorney: JSONSchema
     }
-
+    if: {
+        properties: {
+            isRealOwner: {
+                const: true
+            }
+        }
+    }
+    then: {
+        properties: {
+            realOwnerReasonChar: JSONSchema
+            realOwnerReasonNumber: JSONSchema
+        }
+        required: string[]
+    }
     required: string[]
 }
 

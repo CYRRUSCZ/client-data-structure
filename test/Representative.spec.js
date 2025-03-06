@@ -1,4 +1,4 @@
-const { Representative } = require('../dist/client-data-structure.cjs')
+const { Representative } = require('./client-data-structure.cjs')
 const clientDataset = require('./mock/clientDataset.js')
 const { expectErrorsTestCases, expectPojoErrorsTestCases, testCasesValidData } = require('./mock/representativeValidations.js')
 
