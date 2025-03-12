@@ -18,10 +18,21 @@ await esbuild.build({
 await esbuild.build({
     entryPoints: ['src/index.ts'],
     bundle: true,
+    platform: 'browser',
+    format: 'esm',
+    outfile: 'dist/client-data-structure.browser.esm.js',
+    external,
+    minify: true,
+    sourcemap: true
+})
+
+await esbuild.build({
+    entryPoints: ['src/index.ts'],
+    bundle: true,
     platform: 'node',
     format: 'cjs',
-    outfile: 'dist/client-data-structure.cjs',
-    external,
+    outfile: 'dist/client-data-structure.bundle.cjs',
+    external: [],
     minify: true,
     sourcemap: true
 })
