@@ -9,6 +9,7 @@ import { AbstractBase, type JSONSchema, type JSONSchemaObject } from './Abstract
 export const PLAIN_OBJECT_KEY_POSITION = 'position'
 export const PLAIN_OBJECT_KEY_ID = 'id'
 
+
 /**
  * Input of the Representative class that is used to create the object
  */

@@ -13,4 +13,3 @@ export * from './helpers'
 export * as helpers from './helpers'
 export * from './InvestmentParameter'
 export * from './ClientData'
-
