@@ -1,37 +1,26 @@
 {
     "name": "@cyrrus/clientdatastructure",
-    "version": "8.1.4",
+    "version": "8.2.0",
     "description": "A common structure for CYRRUS client data as used in DocHub and other integrations",
     "type": "module",
-    "types": "dist/types/index.d.ts",
-    "module": "dist/client-data-structure.esm.js",
-    "browser": "dist/client-data-structure.browser.esm.js",
-    "main": "dist/client-data-structure.bundle.cjs",
+    "types": "./dist/index.d.ts",
+    "module": "./dist/index.js",
+    "main": "./dist/index.cjs",
     "exports": {
         ".": {
-            "types": "./dist/types/index.d.ts",
-            "browser": "./dist/client-data-structure.browser.esm.js",
-            "import": "./dist/client-data-structure.esm.js",
-            "require": "./dist/client-data-structure.bundle.cjs"
+            "import": "./dist/index.js",
+            "require": "./dist/index.cjs"
         },
         "./*": {
-            "types": "./dist/types/*.d.ts",
-            "browser": "./dist/client-data-structure.browser.esm.js",
-            "import": "./dist/client-data-structure.esm.js",
-            "require": "./dist/client-data-structure.bundle.cjs"
-        },
-        "./dist/client-data-structure": {
-            "types": "./dist/types/index.d.ts",
-            "browser": "./dist/client-data-structure.browser.esm.js",
-            "import": "./dist/client-data-structure.esm.js",
-            "require": "./dist/client-data-structure.bundle.cjs"
+            "types": "./dist/*.d.ts",
+            "import": "./dist/*.js",
+            "require": "./dist/*.cjs"
         },
         "./package.json": "./package.json"
     },
     "scripts": {
-        "build": "node ./build.mjs",
+        "build": "tsup",
         "lint": "eslint ./src",
-        "postbuild": "tsc --emitDeclarationOnly --declaration",
         "test": "node ./testBuild.mjs && jest",
         "docs": "typedoc --out docs src"
     },
@@ -52,19 +41,20 @@
     "devDependencies": {
         "@typescript-eslint/eslint-plugin": "^8.19.1",
         "@typescript-eslint/parser": "^8.19.1",
+        "ajv": "^8.17.1",
+        "ajv-formats": "^3.0.1",
+        "cdigit": "^4.0.2",
         "esbuild": "0.24.2",
         "eslint": "^9.17.0",
         "eslint-config-love": "^114.0.0",
         "eslint-config-prettier": "^9.1.0",
-        "jest": "^29.7.0",
-        "prettier": "^3.4.2",
-        "typedoc": "^0.27.6",
-        "typescript": "^5.7.2",
-        "ajv": "^8.17.1",
-        "ajv-formats": "^3.0.1",
-        "cdigit": "^4.0.2",
         "ibantools": "^4.5.1",
-        "libphonenumber-js": "^1.11.20"
+        "jest": "^29.7.0",
+        "libphonenumber-js": "^1.11.20",
+        "prettier": "^3.4.2",
+        "tsup": "^8.4.0",
+        "typedoc": "^0.27.6",
+        "typescript": "^5.7.2"
     },
     "publishConfig": {
         "registry": "https://vrdc.cyrrus.cz"
