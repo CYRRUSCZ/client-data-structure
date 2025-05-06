@@ -147,8 +147,7 @@ module.exports = {
                         },
                         contact: {
                             phoneNumber: '+420728796525',
-                            email: 'tomas@valiasek.cz',
-                            phonePassword: 'jemuhodne'
+                            email: 'tomas@valiasek.cz'
                         }
                     }
                 ]

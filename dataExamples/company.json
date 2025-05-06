@@ -224,8 +224,7 @@
                 },
                 "contact": {
                     "email": "foo.bar@seznam.cz",
-                    "phoneNumber": "+420724360712",
-                    "phonePassword": null
+                    "phoneNumber": "+420724360712"
                 },
                 "isRepresentative": true,
                 "isRealOwner": true,
@@ -271,8 +270,7 @@
                 },
                 "contact": {
                     "email": "foo.bar@seznam.cz",
-                    "phoneNumber": "+420602761672",
-                    "phonePassword": null
+                    "phoneNumber": "+420602761672"
                 },
                 "isRepresentative": true,
                 "isRealOwner": true,

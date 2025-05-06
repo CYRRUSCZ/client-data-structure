@@ -176,8 +176,7 @@ module.exports = {
                 },
                 contact: {
                     phoneNumber: '728796525',
-                    email: 'tomas@valiasek.cz',
-                    phonePassword: null
+                    email: 'tomas@valiasek.cz'
                 }
             }
         ]

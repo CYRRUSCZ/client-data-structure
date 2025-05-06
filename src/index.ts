@@ -1,5 +1,6 @@
 export * from './AddressInformation'
 export * from './ContactInformation'
+export * from './RepresentativeContactInformation'
 export * from './PersonalInformation'
 export * from './ClientInformation'
 export * from './IdCardInformation'

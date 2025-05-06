@@ -2,7 +2,7 @@ import { getInstanceOfClass, getStringOrNull } from './helpers'
 import { Address, type AddressJSONSchema, type AddressInput, type AddressOutput } from './Address'
 import { IdCardInformation, type IdCardInformationJSONSchema, type IdCardInformationInput, type IdCardInformationOutput } from './IdCardInformation'
 import { PersonalInformation, type PersonalInformationJSONSchema, type PersonalInformationInput, type PersonalInformationOutput } from './PersonalInformation'
-import { ContactInformation, type ContactInformationJSONSchema, type ContactInformationInput, type ContactInformationOutput } from './ContactInformation'
+import { RepresentativeContactInformation, RepresentativeContactInformationInput, RepresentativeContactInformationJSONSchema, RepresentativeContactInformationOutput } from './RepresentativeContactInformation'
 import { ClientData } from './ClientData'
 import { AbstractBase, type JSONSchema, type JSONSchemaObject } from './AbstractBase'
 
@@ -19,7 +19,7 @@ export interface RepresentativeInput {
     address: Partial<AddressInput>,
     idCard: Partial<IdCardInformationInput>,
     id: string | null,
-    contact: Partial<ContactInformationInput>,
+    contact: Partial<RepresentativeContactInformationInput>,
     isRepresentative?: boolean,
     isRealOwner?: boolean,
     realOwnerReasonChar?: string | null,
@@ -39,7 +39,7 @@ export interface RepresentativeOutput {
     address: AddressOutput,
     idCard: IdCardInformationOutput,
     id: string | null,
-    contact: ContactInformationOutput,
+    contact: RepresentativeContactInformationOutput,
     isRepresentative: boolean,
     isRealOwner: boolean,
     realOwnerReasonChar: string | null,
@@ -57,7 +57,7 @@ export interface RepresentativeJSONSchema extends JSONSchemaObject {
         address: AddressJSONSchema
         idCard: IdCardInformationJSONSchema
         id: JSONSchema
-        contact: ContactInformationJSONSchema
+        contact: RepresentativeContactInformationJSONSchema
         isRepresentative: JSONSchema
         isRealOwner: JSONSchema
         hasPowerOfAttorney: JSONSchema
@@ -89,7 +89,7 @@ export class Representative extends AbstractBase {
     readonly #address: Address = new Address()
     readonly #idCard: IdCardInformation = new IdCardInformation()
     readonly #id: string | null = null
-    readonly #contact: ContactInformation = new ContactInformation()
+    readonly #contact: RepresentativeContactInformation = new RepresentativeContactInformation()
     readonly #isRepresentative: boolean = false
     readonly #isRealOwner: boolean = false
     readonly #realOwnerReasonChar: string | null = null
@@ -122,7 +122,7 @@ export class Representative extends AbstractBase {
         this.#position = getStringOrNull(position)
         this.#address = getInstanceOfClass<Address>(address, Address)
         this.#idCard = getInstanceOfClass<IdCardInformation>(idCard, IdCardInformation)
-        this.#contact = getInstanceOfClass<ContactInformation>(contact, ContactInformation)
+        this.#contact = getInstanceOfClass<RepresentativeContactInformation>(contact, RepresentativeContactInformation)
         this.#id = (id) ? getStringOrNull(id) : getStringOrNull(_id)
         this.#isRealOwner = isRealOwner === true
         this.#realOwnerReasonChar = realOwnerReasonChar ?? null
@@ -156,7 +156,7 @@ export class Representative extends AbstractBase {
         address: Partial<AddressInput> | undefined,
         idCard: Partial<IdCardInformationInput> | undefined,
         id: string | null | undefined,
-        contact: Partial<ContactInformationInput> | undefined,
+        contact: Partial<RepresentativeContactInformationInput> | undefined,
         isRepresentative: boolean | undefined = true,
         isRealOwner: boolean | undefined = false,
         realOwnerReasonChar: string | null | undefined = null,
@@ -222,7 +222,7 @@ export class Representative extends AbstractBase {
     /**
      * Get the contact information of the representative
      */
-    get contact (): ContactInformation {
+    get contact (): RepresentativeContactInformation {
         return this.#contact
     }
 
@@ -310,7 +310,7 @@ export class Representative extends AbstractBase {
                 personal: PersonalInformation.prototype.toJSONSchema(),
                 address: Address.prototype.toJSONSchema(),
                 idCard: IdCardInformation.prototype.toJSONSchema(),
-                contact: ContactInformation.prototype.toJSONSchema()
+                contact: RepresentativeContactInformation.prototype.toJSONSchema()
             },
             if: {
                 properties: {
