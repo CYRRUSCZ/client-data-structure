@@ -50,8 +50,7 @@ module.exports = {
                 },
                 contact: {
                     phoneNumber: '+420 777 908 902',
-                    email: 'tomas@valiasek.cz',
-                    phonePassword: 'jemuhodne'
+                    email: 'tomas@valiasek.cz'
                 }
             },
             expected: [
@@ -79,8 +78,7 @@ module.exports = {
                 },
                 contact: {
                     phoneNumber: '+420 777 908 902',
-                    email: 'tomas@valiasek.cz',
-                    phonePassword: 'jemuhodne'
+                    email: 'tomas@valiasek.cz'
                 }
             },
             expected: [
@@ -126,8 +124,7 @@ module.exports = {
                 },
                 contact: {
                     phoneNumber: '+420 777 908 902',
-                    email: 'tomas@valiasek.cz',
-                    phonePassword: 'jemuhodne'
+                    email: 'tomas@valiasek.cz'
                 }
             },
             expected: [
@@ -170,8 +167,7 @@ module.exports = {
                 },
                 contact: {
                     phoneNumber: '+420 777 908 902',
-                    email: 'tomas@valiasek.cz',
-                    phonePassword: 'jemuhodne'
+                    email: 'tomas@valiasek.cz'
                 }
             },
             expected: [
@@ -219,8 +215,7 @@ module.exports = {
             },
             expected: [
                 '/contact/email must be string',
-                '/contact/phoneNumber must be string',
-                '/contact/phonePassword must be string',
+                '/contact/phoneNumber must be string'
             ]
         },
     ],
@@ -261,8 +256,7 @@ module.exports = {
                 },
                 contact: {
                     phoneNumber: '+420 777 908 902',
-                    email: 'tomas@valiasek.cz',
-                    phonePassword: 'jemuhodne'
+                    email: 'tomas@valiasek.cz'
                 }
             },
             expected: [
@@ -297,8 +291,7 @@ module.exports = {
                 },
                 contact: {
                     phoneNumber: '+420 777 908 902',
-                    email: 'tomas@valiasek.cz',
-                    phonePassword: 'jemuhodne'
+                    email: 'tomas@valiasek.cz'
                 },
                 hasPowerOfAttorney: true,
                 isRealOwner: true,
@@ -324,8 +317,7 @@ module.exports = {
                 },
                 contact: {
                     phoneNumber: '+420 777 908 902',
-                    email: 'tomas@valiasek.cz',
-                    phonePassword: 'jemuhodne'
+                    email: 'tomas@valiasek.cz'
                 },
                 hasPowerOfAttorney: true,
                 isRealOwner: true,
@@ -377,8 +369,7 @@ module.exports = {
                 },
                 contact: {
                     phoneNumber: '+420 777 908 902',
-                    email: 'tomas@valiasek.cz',
-                    phonePassword: 'jemuhodne'
+                    email: 'tomas@valiasek.cz'
                 }
             }
         }

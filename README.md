@@ -283,8 +283,7 @@ The library provides a set of validation methods that can be used to validate th
                 },
                 contact: {
                     email: 'foo.bar@seznam.cz', // the email address
-                    phoneNumber: '+420724360712', // the phone number
-                    phonePassword: null // the phone password
+                    phoneNumber: '+420724360712' // the phone number
                 },
                 isRepresentative: true, // flag indicating if the person is a representative
                 isRealOwner: true, // flag indicating if the person is a real owner

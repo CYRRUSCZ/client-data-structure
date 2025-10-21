@@ -1,4 +1,4 @@
-import type { InvestmentProfile, ContactInformation, IdCardInformation, PersonalInformation, Representative, AddressInformation, Address, CompanyInformation, ClientInformation, BankAccount, InvestmentParameter } from "./index"
+import type { InvestmentProfile, ContactInformation, IdCardInformation, PersonalInformation, Representative, AddressInformation, Address, CompanyInformation, ClientInformation, BankAccount, InvestmentParameter, RepresentativeContactInformation } from "./index"
 
 export function getValidDate (inputDate: Date | string | null | undefined, throwInvalid = false): Date {
     if (inputDate instanceof Date) {
@@ -58,7 +58,7 @@ export function isESClass (input: unknown): boolean {
     )
 }
 
-export type SupportedClasses = Address | AddressInformation | ContactInformation | IdCardInformation | PersonalInformation | Representative | CompanyInformation | ClientInformation | BankAccount | InvestmentParameter | InvestmentProfile
+export type SupportedClasses = Address | AddressInformation | ContactInformation | RepresentativeContactInformation | IdCardInformation | PersonalInformation | Representative | CompanyInformation | ClientInformation | BankAccount | InvestmentParameter | InvestmentProfile
 
 export function getInstanceOfClass<T extends SupportedClasses> (input: unknown, ClassInstancePrototype: any): T {
     if (input === undefined || input === null) {
