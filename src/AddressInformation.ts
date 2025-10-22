@@ -53,7 +53,7 @@ export interface AddressInformationJSONSchema extends JSONSchemaObject {
     then: JSONSchema & {
         properties: {
             mailingAddress: JSONSchema
-        },
+        }
         required: string[]
     }
     required: string[]
@@ -70,7 +70,7 @@ export class AddressInformation extends AbstractBase {
     readonly #mailingAddress: Address
     readonly #useMailingAddress: boolean
 
-    constructor (input: Partial<AddressInformationInput> = {}) {
+    constructor(input: Partial<AddressInformationInput> = {}) {
         super()
         const {
             address,
@@ -89,7 +89,7 @@ export class AddressInformation extends AbstractBase {
      * @param mailingAddress mailing address information
      * @param useMailingAddress flag that indicates if the mailing address should be used as the postal address
      */
-    static create (
+    static create(
         address: Address | Partial<AddressInput> | null | undefined,
         mailingAddress: Address | Partial<AddressInput> | null | undefined,
         useMailingAddress = false
@@ -105,28 +105,28 @@ export class AddressInformation extends AbstractBase {
     /**
      * The residency address
      */
-    get address (): Address {
+    get address(): Address {
         return this.#address
     }
 
     /**
      * The mailing address
      */
-    get mailingAddress (): Address {
+    get mailingAddress(): Address {
         return this.#mailingAddress
     }
 
     /**
      * Flag that indicates if the mailing address should be used as the postal address
      */
-    get useMailingAddress (): boolean {
+    get useMailingAddress(): boolean {
         return this.#useMailingAddress
     }
 
     /**
      * Converts the AddressInformation object to a plain object
      */
-    toJSON (): AddressInformationOutput {
+    toJSON(): AddressInformationOutput {
         const plainObject: AddressInformationOutput = {
             [ADDRESS_TYPE_REGULAR]: this.address.toPlainObject(),
             [ADDRESS_TYPE_MAILING]: this.mailingAddress.toPlainObject(),
@@ -135,7 +135,6 @@ export class AddressInformation extends AbstractBase {
         return plainObject
     }
 
-    // eslint-disable-next-line @typescript-eslint/class-methods-use-this -- This method is required by the AbstractBase class
     toJSONSchema(): AddressInformationJSONSchema {
         return {
             type: 'object',
@@ -169,7 +168,7 @@ export class AddressInformation extends AbstractBase {
     /**
      * Converts a plain object to an AddressInformation object
      */
-    toPlainObject (): AddressInformationOutput {
+    toPlainObject(): AddressInformationOutput {
         return this.toJSON()
     }
 
@@ -178,19 +177,19 @@ export class AddressInformation extends AbstractBase {
      *
      * @param plainObject the plain object that is used to create the AddressInformation object
      */
-    static fromPlainObject (plainObject: Partial<AddressInformationOutput>): AddressInformation {
+    static fromPlainObject(plainObject: Partial<AddressInformationOutput>): AddressInformation {
         return new AddressInformation(plainObject)
     }
 
-    static get ADDRESS_TYPE_REGULAR (): 'address' {
+    static get ADDRESS_TYPE_REGULAR(): 'address' {
         return ADDRESS_TYPE_REGULAR
     }
 
-    static get ADDRESS_TYPE_MAILING (): 'mailingAddress' {
+    static get ADDRESS_TYPE_MAILING(): 'mailingAddress' {
         return ADDRESS_TYPE_MAILING
     }
 
-    static get PLAIN_OBJECT_ADDRESS_TYPES (): ['address', 'mailingAddress'] {
+    static get PLAIN_OBJECT_ADDRESS_TYPES(): ['address', 'mailingAddress'] {
         return [
             AddressInformation.ADDRESS_TYPE_REGULAR,
             AddressInformation.ADDRESS_TYPE_MAILING

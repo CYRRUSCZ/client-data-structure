@@ -16,9 +16,10 @@ export interface BankAccountInput {
     swift: string | null
     bankNameAddress: string | null
     accountName: string | null
-    foreign?: boolean
-    capitolId?: string | number | null
+    isForeign?: boolean
+    cytronId?: string | number | null
     _id?: string | null
+    isConfirmedByAffidavit?: boolean | null
 }
 
 /**
@@ -34,19 +35,21 @@ export interface BankAccountOutput {
     swift: string | null
     bankNameAddress: string | null
     accountName: string | null
-    foreign: boolean
-    capitolId: string | number | null
+    isForeign: boolean
+    cytronId: string | number | null
+    isConfirmedByAffidavit: boolean | null
 }
 
 export interface BankAccountJSONSchema extends JSONSchemaObject {
     type: 'object'
     properties: {
-        foreign: JSONSchema
+        isForeign: JSONSchema
         currency: JSONSchema
+        isConfirmedByAffidavit: JSONSchema
     }
     if: {
         properties: {
-            foreign: JSONSchema
+            isForeign: JSONSchema
         }
     }
     then: {
@@ -82,10 +85,11 @@ export class BankAccount extends AbstractBase {
     readonly #swift: string | null = null
     readonly #bankNameAddress: string | null = null
     readonly #accountName: string | null = null
-    readonly #foreign: boolean = false
-    readonly #capitolId: string | number | null = null
+    readonly #isForeign: boolean = false
+    readonly #cytronId: string | number | null = null
+    readonly #isConfirmedByAffidavit: boolean | null = null
 
-    constructor (input: Partial<BankAccountInput> = {}) {
+    constructor(input: Partial<BankAccountInput> = {}) {
         super()
         const {
             id,
@@ -97,8 +101,9 @@ export class BankAccount extends AbstractBase {
             swift,
             bankNameAddress,
             accountName,
-            foreign,
-            capitolId,
+            isForeign,
+            cytronId,
+            isConfirmedByAffidavit,
             _id
         } = input
         this.#prefix = getStringOrNull(prefix)
@@ -109,9 +114,10 @@ export class BankAccount extends AbstractBase {
         this.#swift = getStringOrNull(swift)
         this.#bankNameAddress = getStringOrNull(bankNameAddress)
         this.#accountName = getStringOrNull(accountName)
-        this.#foreign = (foreign === true)
+        this.#isForeign = (isForeign === true)
         this.#id = (id !== undefined && id !== null) ? getStringOrNull(id) : getStringOrNull(_id)
-        this.#capitolId = capitolId ?? null
+        this.#cytronId = cytronId ?? null
+        this.#isConfirmedByAffidavit = isConfirmedByAffidavit ?? null
     }
 
     /**
@@ -122,14 +128,15 @@ export class BankAccount extends AbstractBase {
      * @param account bank account number
      * @param code bank code
      * @param currency currency of the bank account
-     * @param iban iban of the bank account if the bank account is foreign
-     * @param swift swift code of the bank account if the bank account is foreign
-     * @param bankNameAddress bank name and address if the bank account is foreign
-     * @param accountName name of the account holder if the bank account is foreign
-     * @param foreign flag that indicates if the bank account is foreign
-     * @param capitolId id of the capitol bank account record
+     * @param iban iban of the bank account if the bank account is isForeign
+     * @param swift swift code of the bank account if the bank account is isForeign
+     * @param bankNameAddress bank name and address if the bank account is isForeign
+     * @param accountName name of the account holder if the bank account is isForeign
+     * @param isForeign flag that indicates if the bank account is isForeign
+     * @param cytronId id of the capitol bank account record
+     * @param isConfirmedByAffidavit flag that indicates if the bank account is confirmed by affidavit
      */
-    static create (
+    static create(
         id: string | number | null | undefined,
         prefix: string | null | undefined,
         account: string | null | undefined,
@@ -139,8 +146,9 @@ export class BankAccount extends AbstractBase {
         swift: string | null | undefined,
         bankNameAddress: string | null | undefined,
         accountName: string | null | undefined,
-        foreign: boolean | undefined = false,
-        capitolId: string | number | null | undefined = null
+        isForeign: boolean | undefined = false,
+        cytronId: string | number | null | undefined = null,
+        isConfirmedByAffidavit: boolean | null | undefined = null
     ): BankAccount {
         const plain: Partial<BankAccountInput> = {
             id,
@@ -152,8 +160,9 @@ export class BankAccount extends AbstractBase {
             swift,
             bankNameAddress,
             accountName,
-            foreign,
-            capitolId
+            isForeign,
+            cytronId,
+            isConfirmedByAffidavit
         }
         return new BankAccount(plain)
     }
@@ -161,35 +170,35 @@ export class BankAccount extends AbstractBase {
     /**
      * The internal id of the bank account
      */
-    get id (): string | null {
+    get id(): string | null {
         return this.#id
     }
 
     /**
      * The prefix of the bank account
      */
-    get prefix (): string | null {
+    get prefix(): string | null {
         return this.#prefix
     }
 
     /**
      * The account number
      */
-    get account (): string | null {
+    get account(): string | null {
         return this.#account
     }
 
     /**
      * The bank code
      */
-    get code (): string | null {
+    get code(): string | null {
         return this.#code
     }
 
     /**
      * The name of the bank based on the bank code
      */
-    get bankNameFromCode (): string | null {
+    get bankNameFromCode(): string | null {
         if (this.#code === null) {
             return null
         }
@@ -199,103 +208,104 @@ export class BankAccount extends AbstractBase {
     /**
      * The currency of the bank account
      */
-    get currency (): string | null {
+    get currency(): string | null {
         return this.#currency
     }
 
     /**
-     * The iban of the foreign bank account
+     * The iban of the isForeign bank account
      */
-    get iban (): string | null {
+    get iban(): string | null {
         return this.#iban
     }
 
     /**
-     * The swift code of the foreign bank account
+     * The swift code of the isForeign bank account
      */
-    get swift (): string | null {
+    get swift(): string | null {
         return this.#swift
     }
 
     /**
-     * The name and address of the bank for foreign bank accounts
+     * The name and address of the bank for isForeign bank accounts
      */
-    get bankNameAddress (): string | null {
+    get bankNameAddress(): string | null {
         return this.#bankNameAddress
     }
 
     /**
-     * The name of the account holder for foreign bank accounts
+     * The name of the account holder for isForeign bank accounts
      */
-    get accountName (): string | null {
+    get accountName(): string | null {
         return this.#accountName
     }
 
     /**
-     * Flag that indicates if the bank account is foreign
+     * Flag that indicates if the bank account is isForeign
      */
-    get foreign (): boolean {
-        return this.#foreign
+    get isForeign(): boolean {
+        return this.#isForeign
     }
 
     /**
      * The id of the capitol bank account record
      */
-    get capitolId (): string | number | null {
-        return this.#capitolId
+    get cytronId(): string | number | null {
+        return this.#cytronId
     }
 
-    validate (input?: Record<string, unknown>): boolean {
+    /**
+     * Flag that indicates if the bank account is confirmed by affidavit
+     */
+    get isConfirmedByAffidavit(): boolean | null {
+        return this.#isConfirmedByAffidavit
+    }
+
+    validate(input?: Record<string, unknown>): boolean {
+        // Reset previous errors (bug 4)
+        this._errors = []
         const validate = this.bootstrapValidator()
         const dataToBeValidated = transformDataBeforeValidation(input ?? this.toJSON())
 
-        if (dataToBeValidated.foreign) {
+        if (dataToBeValidated.isForeign) {
             try {
                 BankAccount.validateIBAN(String(dataToBeValidated.iban ?? ''))
             } catch (error) {
                 const errorMessage = error instanceof Error ? error.message : 'Invalid IBAN'
-                const errorObject = {
+                this._errors.push({
                     instancePath: '/iban',
-                    keyword: 'foreign',
+                    keyword: 'isForeign',
                     schemaPath: '#/then/required',
                     params: {},
                     message: errorMessage
-                }
-                this._errors.push(errorObject)
-
-                throw new Error(errorMessage, { cause: this._errors })
+                })
             }
 
             try {
                 BankAccount.validateSWIFT(String(dataToBeValidated.swift ?? ''))
             } catch (error) {
                 const errorMessage = error instanceof Error ? error.message : 'Invalid SWIFT/BIC'
-                const errorObject = {
+                this._errors.push({
                     instancePath: '/swift',
-                    keyword: 'foreign',
+                    keyword: 'isForeign',
                     schemaPath: '#/then/required',
                     params: {},
                     message: errorMessage
-                }
-                this._errors.push(errorObject)
-
-                throw new Error(errorMessage, { cause: this._errors })
+                })
             }
         }
 
         const isValid = validate(dataToBeValidated)
-        if (!isValid) {
-            const { errors } = validate
-            let errorsAsString = ''
-            if (errors && errors.length > 0) {
-                errorsAsString = errors.map((error) => `${error.instancePath} ${error.message}`).join('\n')
-                this._errors.push(...errors)
-            }
-
-            throw new Error(errorsAsString, { cause: this._errors })
+        if (!isValid && validate.errors) {
+            this._errors.push(...validate.errors)
         }
 
-        return isValid
+        if (this._errors.length > 0) {
+            const msg = this._errors.map(e => `${e.instancePath} ${e.message}`).join('\n')
+            throw new Error(msg, { cause: this._errors })
+        }
+
+        return true
     }
 
     /**
@@ -306,7 +316,7 @@ export class BankAccount extends AbstractBase {
      * @throws {Error} if the IBAN is invalid
      * @returns true if the IBAN is valid
      */
-    static validateIBAN (iban: string): boolean {
+    static validateIBAN(iban: string): boolean {
         const ibanFormatted = electronicFormatIBAN(iban)
         if (!ibanFormatted || ibanFormatted.length === 0) {
             throw new Error('Invalid IBAN')
@@ -327,7 +337,7 @@ export class BankAccount extends AbstractBase {
      * @throws {Error} if the SWIFT/BIC is invalid
      * @returns true if the SWIFT/BIC is valid
      */
-    static validateSWIFT (swift: string): boolean {
+    static validateSWIFT(swift: string): boolean {
         if (!isValidBIC(swift)) {
             throw new Error('Invalid SWIFT/BIC')
         }
@@ -338,7 +348,7 @@ export class BankAccount extends AbstractBase {
     /**
      * Converts the BankAccount object to a plain object
      */
-    toJSON (): BankAccountOutput {
+    toJSON(): BankAccountOutput {
         return {
             id: this.#id,
             prefix: this.#prefix,
@@ -349,35 +359,37 @@ export class BankAccount extends AbstractBase {
             swift: this.#swift,
             bankNameAddress: this.#bankNameAddress,
             accountName: this.#accountName,
-            foreign: this.#foreign,
-            capitolId: this.#capitolId
+            isForeign: this.#isForeign,
+            cytronId: this.#cytronId,
+            isConfirmedByAffidavit: this.#isConfirmedByAffidavit
         }
     }
 
-    // eslint-disable-next-line @typescript-eslint/class-methods-use-this -- This method is required by the AbstractBase class
-    toJSONSchema (): BankAccountJSONSchema {
+    toJSONSchema(): BankAccountJSONSchema {
         return {
             type: 'object',
             properties: {
                 currency: { type: 'string', enum: Object.values(currencies) },
-                foreign: { type: 'boolean' }
+                isForeign: { type: 'boolean' },
+                isConfirmedByAffidavit: { type: 'boolean', nullable: true }
             },
             if: {
                 properties: {
-                    foreign: {
+                    isForeign: {
                         const: true
                     }
                 }
             },
+            // oxlint-disable-next-line no-thenable
             then: {
                 properties: {
                     iban: {
                         type: 'string',
-                        pattern: '^[A-Z]{2}\\d{2}[\\s0-9A-Z]{1,35}$',
+                        pattern: '^[A-Z]{2}\\d{2}[\\s0-9A-Z]{1,35}$'
                     },
                     swift: {
                         type: 'string',
-                        pattern: '^\\w{4}[A-Z]{2}\\w{2}(\\w{3})?$',
+                        pattern: '^[A-Z]{4}[A-Z]{2}[A-Z0-9]{2}([A-Z0-9]{3})?$'
                     },
                     bankNameAddress: { type: 'string' },
                     accountName: { type: 'string' }
@@ -402,14 +414,14 @@ export class BankAccount extends AbstractBase {
                     code: {
                         type: 'string',
                         pattern: '^[0-9]{4}$'
-                    },
+                    }
                 },
                 required: [
                     'account', 'code'
                 ]
             },
             required: [
-                'foreign', 'currency'
+                'isForeign', 'currency', 'isConfirmedByAffidavit'
             ]
         }
     }
@@ -417,7 +429,7 @@ export class BankAccount extends AbstractBase {
     /**
      * Converts the BankAccount object to a plain object
      */
-    toPlainObject (): BankAccountOutput {
+    toPlainObject(): BankAccountOutput {
         return this.toJSON()
     }
 
@@ -426,7 +438,7 @@ export class BankAccount extends AbstractBase {
      *
      * @param plainObject the plain object that is used to create the BankAccount object
      */
-    static fromPlainObject (plainObject: Partial<BankAccountInput>): BankAccount {
+    static fromPlainObject(plainObject: Partial<BankAccountInput>): BankAccount {
         return new BankAccount(plainObject)
     }
 }

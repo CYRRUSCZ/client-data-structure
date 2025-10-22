@@ -6,3 +6,4 @@ _old
 docs
 .history
 test/client-data-structure.cjs
+.qodo

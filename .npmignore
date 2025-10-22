@@ -6,3 +6,6 @@ test
 tsconfig.*
 .history
 dataExamples
+.github
+.qodo
+./*.mjs

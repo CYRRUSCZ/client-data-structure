@@ -2,6 +2,7 @@ import { AbstractBase, type JSONSchema, type JSONSchemaObject } from './Abstract
 import { getNormalizedDate, getStringOrNull, transformDataBeforeValidation } from './helpers'
 import { mod11_10 as mod1110 } from 'cdigit'
 import { countries } from '@cyrrus/locale-utils'
+import { SupportedGenderOptions } from './enums'
 
 /**
  * Input of the PersonalInformation class that is used to create the object
@@ -19,7 +20,6 @@ export interface PersonalInformationInput {
     placeOfBirth: string | null
     citizenship: string | null
     gender: string | null
-    politician: boolean | undefined
 }
 
 /**
@@ -38,7 +38,6 @@ export interface PersonalInformationOutput {
     placeOfBirth: string | null
     citizenship: string | null
     gender: string | null
-    politician: boolean
 }
 
 export interface PersonalInformationJSONSchema extends JSONSchemaObject {
@@ -56,7 +55,6 @@ export interface PersonalInformationJSONSchema extends JSONSchemaObject {
         placeOfBirth: JSONSchema
         citizenship: JSONSchema
         gender: JSONSchema
-        politician: JSONSchema
     }
     if: {
         properties: {
@@ -100,9 +98,8 @@ export class PersonalInformation extends AbstractBase {
     readonly #placeOfBirth: string | null = null
     readonly #citizenship: string | null = null
     readonly #gender: string | null = null
-    readonly #politician: boolean = false
 
-    constructor (
+    constructor(
         input: Partial<PersonalInformationInput> = {}
     ) {
         super()
@@ -118,8 +115,7 @@ export class PersonalInformation extends AbstractBase {
             taxDomicile,
             placeOfBirth,
             citizenship,
-            gender,
-            politician
+            gender
         } = input
         this.#prenominal = getStringOrNull(prenominal)
         this.#firstName = getStringOrNull(firstName)
@@ -133,7 +129,6 @@ export class PersonalInformation extends AbstractBase {
         this.#placeOfBirth = getStringOrNull(placeOfBirth)
         this.#citizenship = getStringOrNull(citizenship)
         this.#gender = getStringOrNull(gender)
-        this.#politician = politician === true
     }
 
     /**
@@ -151,7 +146,7 @@ export class PersonalInformation extends AbstractBase {
      * @param placeOfBirth place of birth of the person
      * @param citizenship country of the citizenship
      */
-    static create (
+    static create(
         prenominal: string | null | undefined,
         firstName: string | null | undefined,
         lastName: string | null | undefined,
@@ -163,8 +158,7 @@ export class PersonalInformation extends AbstractBase {
         taxDomicile: string | null | undefined,
         placeOfBirth: string | null | undefined,
         citizenship: string | null | undefined,
-        gender: string | null | undefined,
-        politician: boolean | undefined
+        gender: string | null | undefined
     ): PersonalInformation {
         const plain: Partial<PersonalInformationInput> = {
             prenominal,
@@ -178,8 +172,7 @@ export class PersonalInformation extends AbstractBase {
             taxDomicile,
             placeOfBirth,
             citizenship,
-            gender,
-            politician
+            gender
         }
         return new PersonalInformation(plain)
     }
@@ -187,7 +180,7 @@ export class PersonalInformation extends AbstractBase {
     /**
      * Full name of the person
      */
-    get fullName (): string {
+    get fullName(): string {
         const parts = [
             this.prenominal,
             this.firstName,
@@ -200,77 +193,70 @@ export class PersonalInformation extends AbstractBase {
     /**
      * Prenominal title of the person
      */
-    get prenominal (): string | null {
+    get prenominal(): string | null {
         return this.#prenominal
     }
 
     /**
      * First name of the person
      */
-    get firstName (): string | null {
+    get firstName(): string | null {
         return this.#firstName
     }
 
     /**
      * Last name of the person
      */
-    get lastName (): string | null {
+    get lastName(): string | null {
         return this.#lastName
     }
 
     /**
      * Postnominal title of the person
      */
-    get gender (): string | null {
+    get gender(): string | null {
         return this.#gender
     }
 
     /**
      * Postnominal title of the person
      */
-    get postnominal (): string | null {
+    get postnominal(): string | null {
         return this.#postnominal
     }
 
     /**
      * Birth number of the person
      */
-    get birthNumber (): string | null {
+    get birthNumber(): string | null {
         return this.#birthNumber
     }
 
     /**
      * Date of birth of the person
      */
-    get dateOfBirth (): Date | null {
+    get dateOfBirth(): Date | null {
         return this.#dateOfBirth
     }
 
     /**
      * Flag that indicates if the birth number is not available
      */
-    get noBirthNumber (): boolean {
+    get noBirthNumber(): boolean {
         return this.#noBirthNumber
-    }
-
-    /**
-     * Flag that indicates if the person is a politician
-     */
-    get politician (): boolean {
-        return this.#politician
     }
 
     /**
      * Country of the birth number
      */
-    get birthNumberCountry (): string | null {
+    get birthNumberCountry(): string | null {
         return this.#birthNumberCountry
     }
 
     /**
      * Country of the birth number
      */
-    get birthNumberCountryName (): string | null {
+    get birthNumberCountryName(): string | null {
         if (this.#birthNumberCountry === null) {
             return null
         }
@@ -280,14 +266,14 @@ export class PersonalInformation extends AbstractBase {
     /**
      * Country of the tax domicile
      */
-    get taxDomicile (): string | null {
+    get taxDomicile(): string | null {
         return this.#taxDomicile
     }
 
     /**
      * Country of the tax domicile
      */
-    get taxDomicileCountryName (): string | null {
+    get taxDomicileCountryName(): string | null {
         if (this.#taxDomicile === null) {
             return null
         }
@@ -297,28 +283,30 @@ export class PersonalInformation extends AbstractBase {
     /**
      * Place of birth of the person
      */
-    get placeOfBirth (): string | null {
+    get placeOfBirth(): string | null {
         return this.#placeOfBirth
     }
 
     /**
      * Country of the citizenship
      */
-    get citizenship (): string | null {
+    get citizenship(): string | null {
         return this.#citizenship
     }
 
     /**
      * Country of the citizenship
      */
-    get citizenshipCountryName (): string | null {
+    get citizenshipCountryName(): string | null {
         if (this.#citizenship === null) {
             return null
         }
         return countries[this.#citizenship] ?? this.#citizenship
     }
 
-    validate (input?: Record<string, any>): boolean {
+    validate(input?: Record<string, any>): boolean {
+        // Reset previous errors before validation
+        this._errors = []
         const validate = this.bootstrapValidator()
         const dataToBeValidated = transformDataBeforeValidation(input ?? this.toJSON())
 
@@ -343,7 +331,7 @@ export class PersonalInformation extends AbstractBase {
             const { errors } = validate
             let errorsAsString = ''
             if (errors && errors.length > 0) {
-                errorsAsString = errors.map((error) => `${error.instancePath} ${error.message}`).join('\n')
+                errorsAsString = errors.map(error => `${error.instancePath} ${error.message}`).join('\n')
                 this._errors.push(...errors)
             }
 
@@ -353,12 +341,16 @@ export class PersonalInformation extends AbstractBase {
         return isValid
     }
 
-    static validateBirthNumber (birthNumber: string, birthNumberCountryCode: string): boolean {
+    static validateBirthNumber(birthNumber: string, birthNumberCountryCode: string): boolean {
         if (birthNumberCountryCode === 'HRV') {
             const numericValue = birthNumber.replace(/\D/ig, '')
+            // HRV OIB must be exactly 11 digits
+            if (numericValue.length !== 11) {
+                throw new Error('Invalid HRV birth number - must be 11 digits')
+            }
             const isOIBValid = mod1110.validate(numericValue)
-            if (numericValue.length === 11 && !isOIBValid) {
-                throw new Error('Invalid HRV birth number')
+            if (!isOIBValid) {
+                throw new Error('Invalid HRV birth number - checksum failed')
             }
 
             return true
@@ -414,7 +406,7 @@ export class PersonalInformation extends AbstractBase {
     /**
      * Returns the personal information as a JSON object
      */
-    toJSON (): PersonalInformationOutput {
+    toJSON(): PersonalInformationOutput {
         return {
             prenominal: this.#prenominal,
             firstName: this.#firstName,
@@ -427,12 +419,10 @@ export class PersonalInformation extends AbstractBase {
             taxDomicile: this.#taxDomicile,
             placeOfBirth: this.#placeOfBirth,
             citizenship: this.#citizenship,
-            gender: this.#gender,
-            politician: this.#politician
+            gender: this.#gender
         }
     }
 
-    // eslint-disable-next-line @typescript-eslint/class-methods-use-this -- This method is required by the AbstractBase class
     toJSONSchema(): PersonalInformationJSONSchema {
         return {
             type: 'object',
@@ -476,10 +466,7 @@ export class PersonalInformation extends AbstractBase {
                 },
                 gender: {
                     type: 'string',
-                    enum: Object.keys(genderOptions)
-                },
-                politician: {
-                    type: 'boolean'
+                    enum: Object.values(SupportedGenderOptions)
                 }
             },
             if: {
@@ -489,6 +476,7 @@ export class PersonalInformation extends AbstractBase {
                     }
                 }
             },
+            // oxlint-disable-next-line no-thenable
             then: {
                 if: {
                     properties: {
@@ -497,6 +485,7 @@ export class PersonalInformation extends AbstractBase {
                         }
                     }
                 },
+                // oxlint-disable-next-line no-thenable
                 then: {
                     properties: {
                         birthNumber: {
@@ -531,20 +520,14 @@ export class PersonalInformation extends AbstractBase {
     /**
      * Converts the personal information to a plain object
      */
-    toPlainObject (): PersonalInformationOutput {
+    toPlainObject(): PersonalInformationOutput {
         return this.toJSON()
     }
 
     /**
      * Converts a plain object to a PersonalInformation instance
      */
-    static fromPlainObject (plainObject: Partial<PersonalInformationInput> = {}): PersonalInformation {
+    static fromPlainObject(plainObject: Partial<PersonalInformationInput> = {}): PersonalInformation {
         return new PersonalInformation(plainObject)
     }
-}
-
-export const genderOptions = {
-    male: 'Muž',
-    female: 'Žena',
-    other: 'Neuvádět'
 }

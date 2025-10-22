@@ -13,11 +13,11 @@ export const PLAIN_OBJECT_KEY_TAX_DOMICILE = 'taxDomicile'
  * Input of the CompanyInformation class that is used to create the object
  */
 export interface CompanyInformationInput {
-    ic: string | null,
-    dic: string | null,
-    lei: string | null,
-    taxDomicile: string | null,
-    representatives: Array<Partial<RepresentativeInput>>,
+    ic: string | null
+    dic: string | null
+    lei: string | null
+    taxDomicile: string | null
+    representatives: Array<Partial<RepresentativeInput>>
     name: string | null
 }
 
@@ -25,22 +25,22 @@ export interface CompanyInformationInput {
  * Output of the CompanyInformation class that is used to serialize the object to JSON
  */
 export interface CompanyInformationOutput {
-    ic: string | null,
-    dic: string | null,
-    lei: string | null,
-    taxDomicile: string | null,
-    representatives: RepresentativeOutput[],
+    ic: string | null
+    dic: string | null
+    lei: string | null
+    taxDomicile: string | null
+    representatives: RepresentativeOutput[]
     name: string | null
 }
 
 export interface CompanyInformationJSONSchema extends JSONSchemaObject {
-    type: 'object',
+    type: 'object'
     properties: {
-        ic: JSONSchema,
-        dic: JSONSchema,
-        lei: JSONSchema,
-        taxDomicile: JSONSchema,
-        representatives: JSONSchema,
+        ic: JSONSchema
+        dic: JSONSchema
+        lei: JSONSchema
+        taxDomicile: JSONSchema
+        representatives: JSONSchema
         name: JSONSchema
     }
     required: string[]
@@ -57,7 +57,7 @@ export class CompanyInformation extends AbstractBase {
     readonly #taxDomicile: string | null = null
     readonly #representatives: Representative[] = []
 
-    constructor (
+    constructor(
         input: Partial<CompanyInformationInput> = {}
     ) {
         super()
@@ -94,7 +94,7 @@ export class CompanyInformation extends AbstractBase {
      * @param representatives list of representatives
      * @param name name of the company
      */
-    static create (
+    static create(
         ic: string | null | undefined,
         dic: string | null | undefined,
         lei: string | null | undefined,
@@ -117,62 +117,61 @@ export class CompanyInformation extends AbstractBase {
     /**
      * company identification number
      */
-    get ic (): string | null {
+    get ic(): string | null {
         return this.#ic
     }
 
     /**
      * VAT identification number
      */
-    get dic (): string | null {
+    get dic(): string | null {
         return this.#dic
     }
 
     /**
      * LEI idenfication number
      */
-    get lei (): string | null {
+    get lei(): string | null {
         return this.#lei
     }
 
     /**
      * country of tax domicile
      */
-    get taxDomicile (): string | null {
+    get taxDomicile(): string | null {
         return this.#taxDomicile
     }
 
     /**
      * list of representatives
      */
-    get representatives (): Representative[] {
+    get representatives(): Representative[] {
         return this.#representatives
     }
 
     /**
      * name of the company
      */
-    get name (): string | null {
+    get name(): string | null {
         return this.#name
     }
 
     /**
      * Convert the class to plain object
      */
-    toJSON (): CompanyInformationOutput {
+    toJSON(): CompanyInformationOutput {
         const plain: CompanyInformationOutput = {
             [PLAIN_OBJECT_KEY_IC]: this.ic,
             [PLAIN_OBJECT_KEY_DIC]: this.dic,
             [PLAIN_OBJECT_KEY_LEI]: this.lei,
             [PLAIN_OBJECT_KEY_NAME]: this.name,
             [PLAIN_OBJECT_KEY_TAX_DOMICILE]: this.taxDomicile,
-            [PLAIN_OBJECT_KEY_REPRESENTATIVES]: this.representatives.map((entry) => entry.toJSON())
+            [PLAIN_OBJECT_KEY_REPRESENTATIVES]: this.representatives.map(entry => entry.toJSON())
         }
         return plain
     }
 
-    // eslint-disable-next-line @typescript-eslint/class-methods-use-this -- This method is required by the AbstractBase class
-    toJSONSchema (): CompanyInformationJSONSchema {
+    toJSONSchema(): CompanyInformationJSONSchema {
         return {
             type: 'object',
             properties: {
@@ -212,14 +211,14 @@ export class CompanyInformation extends AbstractBase {
     /**
      * Convert the class to plain object
      */
-    toPlainObject (): CompanyInformationOutput {
+    toPlainObject(): CompanyInformationOutput {
         return this.toJSON()
     }
 
     /**
      * Create a new instance of the CompanyInformation class from a plain object
      */
-    static fromPlainObject (plainObject: Partial<CompanyInformationInput>): CompanyInformation {
+    static fromPlainObject(plainObject: Partial<CompanyInformationInput>): CompanyInformation {
         return new CompanyInformation(plainObject)
     }
 }

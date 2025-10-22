@@ -1,6 +1,6 @@
-import type { InvestmentProfile, ContactInformation, IdCardInformation, PersonalInformation, Representative, AddressInformation, Address, CompanyInformation, ClientInformation, BankAccount, InvestmentParameter, RepresentativeContactInformation } from "./index"
+import type { ContactInformation, IdCardInformation, PersonalInformation, Representative, AddressInformation, Address, CompanyInformation, ClientInformation, BankAccount, InvestmentParameter } from './index'
 
-export function getValidDate (inputDate: Date | string | null | undefined, throwInvalid = false): Date {
+export function getValidDate(inputDate: Date | string | null | undefined, throwInvalid = false): Date {
     if (inputDate instanceof Date) {
         return inputDate
     } else if (typeof inputDate === 'string') {
@@ -15,7 +15,7 @@ export function getValidDate (inputDate: Date | string | null | undefined, throw
     return new Date()
 }
 
-export function getNormalizedDate (inputDate: Date | string | null | undefined, throwInvalid = false): Date {
+export function getNormalizedDate(inputDate: Date | string | null | undefined, throwInvalid = false): Date {
     if (inputDate instanceof Date) {
         return new Date(`${inputDate.getFullYear()}-${inputDate.getMonth() + 1 < 10 ? '0' : ''}${inputDate.getMonth() + 1}-${inputDate.getDate() < 10 ? '0' : ''}${inputDate.getDate()}T12:00:00.000Z`)
     } else if (typeof inputDate === 'string') {
@@ -36,7 +36,7 @@ export function getNormalizedDate (inputDate: Date | string | null | undefined, 
     return new Date()
 }
 
-export function getStringOrNull (input: unknown): string | null {
+export function getStringOrNull(input: unknown): string | null {
     if (input === undefined || input === null) {
         return null
     }
@@ -51,16 +51,16 @@ export function getStringOrNull (input: unknown): string | null {
     return (output.length > 0) ? output : null
 }
 
-export function isESClass (input: unknown): boolean {
+export function isESClass(input: unknown): boolean {
     return (
-        (typeof input === 'function') &&
-        (typeof input.constructor === 'function')
+        (typeof input === 'function')
+        && (typeof input.constructor === 'function')
     )
 }
 
-export type SupportedClasses = Address | AddressInformation | ContactInformation | RepresentativeContactInformation | IdCardInformation | PersonalInformation | Representative | CompanyInformation | ClientInformation | BankAccount | InvestmentParameter | InvestmentProfile
+export type SupportedClasses = Address | AddressInformation | ContactInformation | IdCardInformation | PersonalInformation | Representative | CompanyInformation | ClientInformation | BankAccount | InvestmentParameter
 
-export function getInstanceOfClass<T extends SupportedClasses> (input: unknown, ClassInstancePrototype: any): T {
+export function getInstanceOfClass<T extends SupportedClasses>(input: unknown, ClassInstancePrototype: any): T {
     if (input === undefined || input === null) {
         return new ClassInstancePrototype() as T
     }
@@ -77,7 +77,7 @@ export function getInstanceOfClass<T extends SupportedClasses> (input: unknown, 
     return new ClassInstancePrototype(input)
 }
 
-export function transformDataBeforeValidation (data: Record<string, any>): Record<string, any> {
+export function transformDataBeforeValidation(data: Record<string, any>): Record<string, any> {
     return Object
         .entries(data)
         .reduce<Record<string, unknown>>((acc, [key, value]: [string, unknown]) => {
@@ -105,11 +105,4 @@ export function transformDataBeforeValidation (data: Record<string, any>): Recor
 
             return Object.assign(acc, { [key]: value })
         }, {})
-}
-
-export enum AvailableLanguages {
-    cs_CZ = 'cs_CZ',
-    sk_SK = 'sk_SK',
-    en_US = 'en_US',
-    hr_HR = 'hr_HR'
 }

@@ -1,0 +1,285 @@
+{
+    "client": {
+        "type": "company",
+        "dataOrigin": "internal",
+        "dataOriginId": "6756ed16be89f26259a6b49f",
+        "capitolId": "2000041908",
+        "crmId": null,
+        "investmentProfiles": [],
+        "residency": true,
+        "economicalSectorCode": "1100200",
+        "brokerId": "780",
+        "externalBrokerCapitolId": null,
+        "externalBrokerAgentCapitolId": null,
+        "legislation": null,
+        "investmentParameters": [
+            {
+                "version": "20230210",
+                "uid": "parInvCatBonds",
+                "name": "bonds",
+                "added": "2024-12-11T09:26:52.173Z",
+                "value": "1",
+                "isInvestmentCategory": true
+            },
+            {
+                "version": "20230210",
+                "uid": "parInvCatCurrencyForwards",
+                "name": "currencyForwards",
+                "added": "2024-12-11T09:26:52.173Z",
+                "value": "1",
+                "isInvestmentCategory": true
+            },
+            {
+                "version": "20230210",
+                "uid": "parInvCatDerivates",
+                "name": "derivates",
+                "added": "2024-12-11T09:26:52.173Z",
+                "value": "1",
+                "isInvestmentCategory": true
+            },
+            {
+                "version": "20230210",
+                "uid": "parInvCatETF",
+                "name": "etf",
+                "added": "2024-12-11T09:26:52.173Z",
+                "value": "1",
+                "isInvestmentCategory": true
+            },
+            {
+                "version": "20230210",
+                "uid": "parInvCatFki",
+                "name": "fki",
+                "added": "2024-12-11T09:26:52.173Z",
+                "value": "1",
+                "isInvestmentCategory": true
+            },
+            {
+                "version": "20230210",
+                "uid": "parInvCatFunds",
+                "name": "funds",
+                "added": "2024-12-11T09:26:52.173Z",
+                "value": "1",
+                "isInvestmentCategory": true
+            },
+            {
+                "version": "20230210",
+                "uid": "parInvestmentKnowledge",
+                "name": "parInvestmentKnowledge",
+                "added": "2024-12-11T09:26:52.173Z",
+                "value": "3",
+                "isInvestmentCategory": false
+            },
+            {
+                "version": "20230210",
+                "uid": "parInvestmentTarget",
+                "name": "parInvestmentTarget",
+                "added": "2024-12-11T09:26:52.173Z",
+                "value": "3",
+                "isInvestmentCategory": false
+            },
+            {
+                "version": "20230210",
+                "uid": "parInvCatLeveragedProducts",
+                "name": "leveragedProducts",
+                "added": "2024-12-11T09:26:52.173Z",
+                "value": "1",
+                "isInvestmentCategory": true
+            },
+            {
+                "version": "20230210",
+                "uid": "parLossAcceptance",
+                "name": "parLossAcceptance",
+                "added": "2024-12-11T09:26:52.173Z",
+                "value": "3",
+                "isInvestmentCategory": false
+            },
+            {
+                "version": "20230210",
+                "uid": "parInvCatStocks",
+                "name": "stocks",
+                "added": "2024-12-11T09:26:52.173Z",
+                "value": "1",
+                "isInvestmentCategory": true
+            },
+            {
+                "version": "20230210",
+                "uid": "parSri",
+                "name": "parSri",
+                "added": "2024-12-11T09:26:52.173Z",
+                "value": "6",
+                "isInvestmentCategory": false
+            },
+            {
+                "version": "20230210",
+                "uid": "parEsgProfile",
+                "name": "parEsgProfile",
+                "added": "2024-12-11T09:26:52.173Z",
+                "value": "0",
+                "isInvestmentCategory": false
+            }
+        ],
+        "bankAccountsConfirmedByAffidavit": true
+    },
+    "personal": {
+        "prenominal": null,
+        "firstName": null,
+        "lastName": null,
+        "postnominal": null,
+        "birthNumber": null,
+        "dateOfBirth": "2024-12-09T12:00:00.000Z",
+        "noBirthNumber": false,
+        "birthNumberCountry": null,
+        "taxDomicile": null,
+        "placeOfBirth": null,
+        "citizenship": null,
+        "politician": false
+    },
+    "idCard": {
+        "number": null,
+        "issuedBy": null,
+        "country": null,
+        "validity": "2024-12-09T12:00:00.000Z",
+        "type": null,
+        "scanNotAllowed": false
+    },
+    "address": {
+        "useMailingAddress": true,
+        "address": {
+            "recipient": "Foo Property s.r.o.",
+            "street": "FooBarová",
+            "streetNumber": "140/20",
+            "city": "Praha",
+            "country": "CZE",
+            "postalCode": "12000"
+        },
+        "mailingAddress": {
+            "recipient": "Michal Foo",
+            "street": "FooBarová",
+            "streetNumber": "249/46",
+            "city": "Praha",
+            "country": "CZE",
+            "postalCode": "18600"
+        }
+    },
+    "contact": {
+        "email": "foo.bar@seznam.cz",
+        "phoneNumber": "+420722360712",
+        "phonePassword": "Foo"
+    },
+    "bankAccounts": [
+        {
+            "id": "6756ed16be89f26259a6b4a0",
+            "iban": null,
+            "swift": null,
+            "bankNameAddress": null,
+            "accountName": null,
+            "prefix": "000000",
+            "account": "0805643104",
+            "code": "2700",
+            "currency": "CZK",
+            "foreign": false,
+            "capitolId": null
+        }
+    ],
+    "company": {
+        "ic": "27663681",
+        "dic": "CZ27463981",
+        "lei": "314700GBP90UUSQ15U27",
+        "name": "Foo Property s.r.o.",
+        "taxDomicile": "CZE",
+        "representatives": [
+            {
+                "id": "6756ed16be89f26259a6b4a1",
+                "personal": {
+                    "prenominal": "Ing.",
+                    "firstName": "Michal",
+                    "lastName": "Foo",
+                    "postnominal": null,
+                    "birthNumber": "690511/1368",
+                    "dateOfBirth": "1969-05-11T12:00:00.000Z",
+                    "noBirthNumber": false,
+                    "birthNumberCountry": "CZE",
+                    "taxDomicile": "CZE",
+                    "placeOfBirth": "Pardubice",
+                    "citizenship": "CZE",
+                    "gender": "male",
+                    "politician": false
+                },
+                "position": "Jednatel",
+                "address": {
+                    "recipient": "Ing. Michal Foo",
+                    "street": "FooBarová",
+                    "streetNumber": "813/72",
+                    "city": "Praha",
+                    "postalCode": "16900",
+                    "country": "CZE"
+                },
+                "idCard": {
+                    "number": "235471587",
+                    "issuedBy": "ÚMČ Praha 6",
+                    "country": "CZE",
+                    "validity": "2033-03-07T12:00:00.000Z",
+                    "type": "OP",
+                    "scanNotAllowed": true
+                },
+                "contact": {
+                    "email": "foo.bar@seznam.cz",
+                    "phoneNumber": "+420724360712"
+                },
+                "isRepresentative": true,
+                "isRealOwner": true,
+                "hasPowerOfAttorney": false,
+                "realOwnerReasonNumber": "1",
+                "realOwnerReasonChar": "a",
+                "capitolId": null,
+                "capitolContactId": null
+            },
+            {
+                "id": "675959e846a02ccb168f41bf",
+                "personal": {
+                    "prenominal": null,
+                    "firstName": "Daniela",
+                    "lastName": "Foo",
+                    "postnominal": null,
+                    "birthNumber": "795407/4938",
+                    "dateOfBirth": "1979-04-07T12:00:00.000Z",
+                    "noBirthNumber": false,
+                    "birthNumberCountry": "CZE",
+                    "taxDomicile": "CZE",
+                    "placeOfBirth": "Frýdek místek",
+                    "citizenship": "CZE",
+                    "gender": "female",
+                    "politician": false
+                },
+                "position": "Jednatel",
+                "address": {
+                    "recipient": "Daniela Foo",
+                    "street": "FooBarová",
+                    "streetNumber": "813/72",
+                    "city": "Praha",
+                    "postalCode": "16900",
+                    "country": "CZE"
+                },
+                "idCard": {
+                    "number": "286266233",
+                    "issuedBy": "ÚMČ Praha 6",
+                    "country": "CZE",
+                    "validity": "2033-09-14T12:00:00.000Z",
+                    "type": "OP",
+                    "scanNotAllowed": true
+                },
+                "contact": {
+                    "email": "foo.bar@seznam.cz",
+                    "phoneNumber": "+420602761672"
+                },
+                "isRepresentative": true,
+                "isRealOwner": true,
+                "hasPowerOfAttorney": false,
+                "realOwnerReasonNumber": "1",
+                "realOwnerReasonChar": "a",
+                "capitolId": null,
+                "capitolContactId": null
+            }
+        ]
+    }
+}

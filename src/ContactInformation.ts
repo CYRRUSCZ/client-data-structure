@@ -8,7 +8,6 @@ import { parsePhoneNumberFromString } from 'libphonenumber-js'
 export interface ContactInformationInput {
     email: string | null
     phoneNumber: string | null
-    phonePassword: string | null
 }
 
 /**
@@ -17,15 +16,13 @@ export interface ContactInformationInput {
 export interface ContactInformationOutput {
     email: string | null
     phoneNumber: string | null
-    phonePassword: string | null
 }
 
 export interface ContactInformationJSONSchema extends JSONSchemaObject {
-    type: 'object',
+    type: 'object'
     properties: {
-        email: JSONSchema,
-        phoneNumber: JSONSchema,
-        phonePassword: JSONSchema
+        email: JSONSchema
+        phoneNumber: JSONSchema
     }
 
     required: string[]
@@ -37,20 +34,17 @@ export interface ContactInformationJSONSchema extends JSONSchemaObject {
 export class ContactInformation extends AbstractBase {
     readonly #email: string | null = null
     readonly #phoneNumber: string | null = null
-    readonly #phonePassword: string | null = null
 
-    constructor (
+    constructor(
         input: Partial<ContactInformationInput> = {}
     ) {
         super()
         const {
             email,
-            phoneNumber,
-            phonePassword
+            phoneNumber
         } = input
         this.#email = getStringOrNull(email)
         this.#phoneNumber = getStringOrNull(phoneNumber)
-        this.#phonePassword = getStringOrNull(phonePassword)
     }
 
     /**
@@ -58,17 +52,14 @@ export class ContactInformation extends AbstractBase {
      *
      * @param email The email address
      * @param phoneNumber The phone number
-     * @param phonePassword The phone password
      */
-    static create (
+    static create(
         email: string | null | undefined,
-        phoneNumber: string | null | undefined,
-        phonePassword: string | null | undefined
+        phoneNumber: string | null | undefined
     ): ContactInformation {
         const plain: Partial<ContactInformationInput> = {
             email,
-            phoneNumber,
-            phonePassword
+            phoneNumber
         }
         return new ContactInformation(plain)
     }
@@ -76,57 +67,51 @@ export class ContactInformation extends AbstractBase {
     /**
      * The primary email address
      */
-    get email (): string | null {
+    get email(): string | null {
         return this.#email
     }
 
     /**
      * The primary phone number
      */
-    get phoneNumber (): string | null {
+    get phoneNumber(): string | null {
         return this.#phoneNumber
     }
 
-    /**
-     * The phone password
-     */
-    get phonePassword (): string | null {
-        return this.#phonePassword
-    }
-
-    validate (input?: Record<string, any>): boolean {
+    validate(input?: Record<string, any>): boolean {
+        // Reset previous errors (bug 4)
+        this._errors = []
         const validate = this.bootstrapValidator()
         const dataToBeValidated = transformDataBeforeValidation(input ?? this.toJSON())
 
-        try {
-            ContactInformation.validatePhoneNumber(String(dataToBeValidated.phoneNumber ?? ''))
-        } catch (error) {
-            const message = error instanceof Error ? error.message : 'Invalid phone number'
-            const errorObject = {
-                keyword: 'phoneNumber',
-                instancePath: '/phoneNumber',
-                schemaPath: '#/properties/phoneNumber/pattern',
-                params: {},
-                message
+        // Only validate phone number format if present (bug 7)
+        if (dataToBeValidated.phoneNumber !== null && dataToBeValidated.phoneNumber !== undefined && dataToBeValidated.phoneNumber !== '') {
+            try {
+                ContactInformation.validatePhoneNumber(String(dataToBeValidated.phoneNumber))
+            } catch (error) {
+                const message = error instanceof Error ? error.message : 'Invalid phone number'
+                const errorObject = {
+                    keyword: 'phoneNumber',
+                    instancePath: '/phoneNumber',
+                    schemaPath: '#/properties/phoneNumber/pattern',
+                    params: {},
+                    message
+                }
+                this._errors.push(errorObject)
             }
-            this._errors.push(errorObject)
-
-            throw new Error(errorObject.message, { cause: this._errors })
         }
 
         const isValid = validate(dataToBeValidated)
-        if (!isValid) {
-            const { errors } = validate
-            let errorsAsString = ''
-            if (errors && errors.length > 0) {
-                errorsAsString = errors.map((error) => `${error.instancePath} ${error.message}`).join('\n')
-                this._errors.push(...errors)
-            }
-
-            throw new Error(errorsAsString, { cause: this._errors })
+        if (!isValid && validate.errors) {
+            this._errors.push(...validate.errors)
         }
 
-        return isValid
+        if (this._errors.length > 0) {
+            const msg = this._errors.map(e => `${e.instancePath} ${e.message}`).join('\n')
+            throw new Error(msg, { cause: this._errors })
+        }
+
+        return true
     }
 
     /**
@@ -137,7 +122,7 @@ export class ContactInformation extends AbstractBase {
      * @throws {Error} If the phone number is not valid
      * @returns true if the phone number is valid
      */
-    static validatePhoneNumber (phoneNumber: string): boolean {
+    static validatePhoneNumber(phoneNumber: string): boolean {
         if (!phoneNumber) {
             throw new Error('Phone number is required')
         }
@@ -153,16 +138,14 @@ export class ContactInformation extends AbstractBase {
     /**
      * Serialize the object to JSON
      */
-    toJSON (): ContactInformationOutput {
+    toJSON(): ContactInformationOutput {
         return {
             email: this.#email,
-            phoneNumber: this.#phoneNumber,
-            phonePassword: this.#phonePassword
+            phoneNumber: this.#phoneNumber
         }
     }
 
-    // eslint-disable-next-line @typescript-eslint/class-methods-use-this -- This method is required by the AbstractBase class
-    toJSONSchema (): ContactInformationJSONSchema {
+    toJSONSchema(): ContactInformationJSONSchema {
         return {
             type: 'object',
             properties: {
@@ -174,27 +157,24 @@ export class ContactInformation extends AbstractBase {
                     type: 'string',
                     description: 'The phone number, must be provided with international prefix',
                     pattern: '^(\\()?\\+[0-9\\s]+(\\))?[0-9\\s]+$'
-                },
-                phonePassword: {
-                    type: 'string',
-                    maxLength: 20
                 }
             },
-            required: ['email', 'phoneNumber', 'phonePassword']
+            // Removed non-existent 'phonePassword' from required (bug 2)
+            required: ['email', 'phoneNumber']
         }
     }
 
     /**
      * Serialize the object to a plain object
      */
-    toPlainObject (): ContactInformationOutput {
+    toPlainObject(): ContactInformationOutput {
         return this.toJSON()
     }
 
     /**
      * Create a new instance of the ContactInformation class from a plain object
      */
-    static fromPlainObject (plainObject: Partial<ContactInformationOutput>): ContactInformation {
+    static fromPlainObject(plainObject: Partial<ContactInformationOutput>): ContactInformation {
         return new ContactInformation(plainObject)
     }
 }

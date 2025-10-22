@@ -20,7 +20,9 @@ export interface JSONSchemaObject extends JSONSchema {
 export abstract class AbstractBase implements ValidationAware, JSONSchemaAware {
     _errors: ErrorObject[] = []
 
-    validate (input?: Record<string, any>): boolean {
+    validate(input?: Record<string, any>): boolean {
+        // Reset previously collected errors before every validation run (bug fix: accumulate errors across calls)
+        this._errors = []
         const validate = this.bootstrapValidator()
         const dataToBeValidated = transformDataBeforeValidation(input ?? this.toJSON())
         const isValid = validate(dataToBeValidated)
@@ -28,7 +30,7 @@ export abstract class AbstractBase implements ValidationAware, JSONSchemaAware {
             const { errors } = validate
             let errorsAsString = ''
             if (errors && errors.length > 0) {
-                errorsAsString = errors.map((error) => `${error.instancePath} ${error.message}`).join('\n')
+                errorsAsString = errors.map(error => `${error.instancePath} ${error.message}`).join('\n')
                 this._errors.push(...errors)
             }
 
@@ -38,7 +40,7 @@ export abstract class AbstractBase implements ValidationAware, JSONSchemaAware {
         return isValid
     }
 
-    protected bootstrapValidator (): ValidateFunction {
+    protected bootstrapValidator(): ValidateFunction {
         const schema = this.toJSONSchema()
         const ajv = new Ajv({ allErrors: true, strict: true })
         addFormats(ajv, { formats: ['date', 'date-time', 'time', 'email'], keywords: true })
@@ -47,11 +49,11 @@ export abstract class AbstractBase implements ValidationAware, JSONSchemaAware {
         return validate
     }
 
-    getValidationErrors (): ErrorObject[] {
+    getValidationErrors(): ErrorObject[] {
         return this._errors
     }
 
-    abstract toJSON (): Record<string, any>
+    abstract toJSON(): Record<string, any>
 
-    abstract toJSONSchema (): JSONSchemaObject
+    abstract toJSONSchema(): JSONSchemaObject
 }

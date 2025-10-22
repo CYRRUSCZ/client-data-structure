@@ -64,7 +64,7 @@ export interface ClientDataJSONSchema extends JSONSchemaObject {
     if: {
         properties: {
             client: {
-                type: 'object',
+                type: 'object'
                 properties: {
                     type: JSONSchema
                 }
@@ -74,14 +74,14 @@ export interface ClientDataJSONSchema extends JSONSchemaObject {
     then: JSONSchema & {
         properties: {
             company: JSONSchema
-        },
+        }
         required: string[]
     }
     else: JSONSchema & {
         properties: {
             personal: JSONSchema
             idCard: JSONSchema
-        },
+        }
         required: string[]
     }
     required: string[]
@@ -99,7 +99,7 @@ export class ClientData extends AbstractBase {
     readonly #bankAccounts: BankAccount[] = []
     readonly #company: CompanyInformation = new CompanyInformation()
 
-    constructor (
+    constructor(
         input: Partial<ClientDataInput> = {}
     ) {
         super()
@@ -140,7 +140,7 @@ export class ClientData extends AbstractBase {
      * @param regularAddress client's regular address
      * @param mailingAddress client's mailing address
      */
-    static create (
+    static create(
         client: Partial<ClientInformationInput> | undefined,
         personal: Partial<PersonalInformationInput> | undefined,
         idCard: Partial<IdCardInformationInput> | undefined,
@@ -176,156 +176,146 @@ export class ClientData extends AbstractBase {
     /**
      * The system information about the client
      */
-    get client (): ClientInformation {
+    get client(): ClientInformation {
         return this.#client
     }
 
     /**
      * The personal information of the client like the name, birth date, etc.
      */
-    get personal (): PersonalInformation {
+    get personal(): PersonalInformation {
         return this.#personal
     }
 
     /**
      * Information about the client's identification card
      */
-    get idCard (): IdCardInformation {
+    get idCard(): IdCardInformation {
         return this.#idCard
     }
 
     /**
      * Information about the client's postal and residency address
      */
-    get address (): AddressInformation {
+    get address(): AddressInformation {
         return this.#address
     }
 
     /**
      * Information about the client's contact details, like email, phone number, etc.
      */
-    get contact (): ContactInformation {
+    get contact(): ContactInformation {
         return this.#contact
     }
 
     /**
      * Information about the client's company and its representatives
      */
-    get company (): CompanyInformation {
+    get company(): CompanyInformation {
         return this.#company
     }
 
     /**
      * List of bank accounts of the client
      */
-    get bankAccounts (): BankAccount[] {
+    get bankAccounts(): BankAccount[] {
         return this.#bankAccounts
     }
 
     /**
      * The full address of the client, respects the useMailingAddress flag
      */
-    get fullAddress (): string {
+    get fullAddress(): string {
         return this.address.useMailingAddress ? this.address.mailingAddress.fullAddress : this.address.address.fullAddress
     }
 
     /**
      * The contact email address of the client
      */
-    get email (): string | null {
+    get email(): string | null {
         return this.contact.email
     }
 
     /**
      * Name of the client, respects the client type and returns the company name if the client is a company
      */
-    get fullName (): string | null {
+    get fullName(): string | null {
         return (this.client.type !== ClientInformation.CLIENT_TYPE_COMPANY) ? this.personal.fullName : this.company.name
     }
 
     /**
      * name of the company
      */
-    get companyName (): string | null {
+    get companyName(): string | null {
         return this.company.name
     }
 
     /**
      * name of the data origin
-     * @deprecated
      */
-    get dataOriginName (): string | null {
-        return this.client.dataOriginName
-    }
-
-    /**
-     * name of the data origin
-     */
-    get typeName (): string | null {
+    get typeName(): string | null {
         return this.client.typeName
     }
 
     /**
      * internal id of the client
      */
-    get dataOriginId (): string | null {
-        return this.client.dataOriginId
+    get internalId(): string | null {
+        return this.client.internalId
     }
 
     /**
      * data origin key of the client
-     * @deprecated
      */
-    get dataOrigin (): string | null {
+    get dataOrigin(): string | null {
         return this.client.dataOrigin
     }
 
     /**
      * type key of the client
      */
-    get type (): string | null {
+    get type(): string | null {
         return this.client.type
     }
 
     /**
      * flag indicating if the client is a company
      */
-    get isCompany (): boolean {
+    get isCompany(): boolean {
         return this.client.type === ClientInformation.CLIENT_TYPE_COMPANY
     }
 
     /**
      * flag indicating if the client is a person
      */
-    get isPerson (): boolean {
+    get isPerson(): boolean {
         return this.client.type === ClientInformation.CLIENT_TYPE_PERSON
     }
 
     /**
      * flag indicating if the client is self-employed
      */
-    get isSelfemployed (): boolean {
+    get isSelfemployed(): boolean {
         return this.client.type === ClientInformation.CLIENT_TYPE_SELFEMPLOYED
     }
 
     /**
      * converts the ClientData class to a plain object
      */
-    toJSON (): ClientDataOutput {
+    toJSON(): ClientDataOutput {
         const plainObject: ClientDataOutput = {
             client: this.client.toPlainObject(),
             personal: this.personal.toPlainObject(),
             idCard: this.idCard.toPlainObject(),
             address: this.address.toPlainObject(),
             contact: this.contact.toPlainObject(),
-            bankAccounts: this.bankAccounts.map((account) => account.toPlainObject()),
+            bankAccounts: this.bankAccounts.map(account => account.toPlainObject()),
             company: this.company.toPlainObject()
         }
         return plainObject
     }
 
-    // eslint-disable-next-line @typescript-eslint/class-methods-use-this -- This method is required by the AbstractBase class
-    toJSONSchema (): ClientDataJSONSchema {
+    toJSONSchema(): ClientDataJSONSchema {
         return {
             type: 'object',
             properties: {
@@ -360,7 +350,7 @@ export class ClientData extends AbstractBase {
             else: {
                 properties: {
                     personal: PersonalInformation.prototype.toJSONSchema(),
-                    idCard: IdCardInformation.prototype.toJSONSchema(),
+                    idCard: IdCardInformation.prototype.toJSONSchema()
                 },
                 required: [
                     PLAIN_OBJECT_KEY_PERSONAL,
@@ -379,145 +369,105 @@ export class ClientData extends AbstractBase {
     /**
      * converts the ClientData class to a plain object
      */
-    toPlainObject (): ClientDataOutput {
+    toPlainObject(): ClientDataOutput {
         return this.toJSON()
     }
 
     /**
      * Create a new instance of the ClientData class from a plain object
      */
-    static fromPlainObject (plainObject: Partial<ClientDataInput>): ClientData {
+    static fromPlainObject(plainObject: Partial<ClientDataInput>): ClientData {
         return new ClientData(plainObject)
     }
 
     /**
      * The key of the client object in the plain object
      */
-    static get PLAIN_OBJECT_KEY_CLIENT (): 'client' {
+    static get PLAIN_OBJECT_KEY_CLIENT(): 'client' {
         return PLAIN_OBJECT_KEY_CLIENT
     }
 
     /**
      * The key of the personal object in the plain object
      */
-    static get PLAIN_OBJECT_KEY_PERSONAL (): 'personal' {
+    static get PLAIN_OBJECT_KEY_PERSONAL(): 'personal' {
         return PLAIN_OBJECT_KEY_PERSONAL
     }
 
     /**
      * The key of the id card object in the plain object
      */
-    static get PLAIN_OBJECT_KEY_ID_CARD (): 'idCard' {
+    static get PLAIN_OBJECT_KEY_ID_CARD(): 'idCard' {
         return PLAIN_OBJECT_KEY_ID_CARD
     }
 
     /**
      * The key of the contact object in the plain object
      */
-    static get PLAIN_OBJECT_KEY_CONTACT (): 'contact' {
+    static get PLAIN_OBJECT_KEY_CONTACT(): 'contact' {
         return PLAIN_OBJECT_KEY_CONTACT
     }
 
     /**
      * The key of the bank accounts object in the plain object
      */
-    static get PLAIN_OBJECT_KEY_BANK_ACCOUNTS (): 'bankAccounts' {
+    static get PLAIN_OBJECT_KEY_BANK_ACCOUNTS(): 'bankAccounts' {
         return PLAIN_OBJECT_KEY_BANK_ACCOUNTS
     }
 
     /**
      * The key of the address object in the plain object
      */
-    static get PLAIN_OBJECT_KEY_ADDRESS (): 'address' {
+    static get PLAIN_OBJECT_KEY_ADDRESS(): 'address' {
         return PLAIN_OBJECT_KEY_ADDRESS
     }
 
     /**
      * The key of the company object in the plain object
      */
-    static get PLAIN_OBJECT_KEY_COMPANY (): 'company' {
+    static get PLAIN_OBJECT_KEY_COMPANY(): 'company' {
         return PLAIN_OBJECT_KEY_COMPANY
     }
 
     /**
      * The key of the postal address object in the plain object
      */
-    static get ADDRESS_TYPE_MAILING (): 'mailingAddress' {
+    static get ADDRESS_TYPE_MAILING(): 'mailingAddress' {
         return AddressInformation.ADDRESS_TYPE_MAILING
     }
 
     /**
      * The key of the residency address object in the plain object
      */
-    static get ADDRESS_TYPE_REGULAR (): 'address' {
+    static get ADDRESS_TYPE_REGULAR(): 'address' {
         return AddressInformation.ADDRESS_TYPE_REGULAR
     }
 
     /**
      * The type key of the person
      */
-    static get CLIENT_TYPE_PERSON (): 'person' {
+    static get CLIENT_TYPE_PERSON(): 'person' {
         return ClientInformation.CLIENT_TYPE_PERSON
     }
 
     /**
      * The type key of the company
      */
-    static get CLIENT_TYPE_COMPANY (): 'company' {
+    static get CLIENT_TYPE_COMPANY(): 'company' {
         return ClientInformation.CLIENT_TYPE_COMPANY
     }
 
     /**
      * The type key of the self-employed
      */
-    static get CLIENT_TYPE_SELFEMPLOYED (): 'osvc' {
+    static get CLIENT_TYPE_SELFEMPLOYED(): 'selfemployed' {
         return ClientInformation.CLIENT_TYPE_SELFEMPLOYED
-    }
-
-    /**
-     * The origin key of the internal client
-     * @deprecated
-     */
-    static get CLIENT_ORIGIN_INTERNAL (): string {
-        return ClientInformation.CLIENT_ORIGIN_INTERNAL
-    }
-
-    /**
-     * The origin key of the capitol client
-     * @deprecated
-     */
-    static get CLIENT_ORIGIN_CAPITOL (): string {
-        return ClientInformation.CLIENT_ORIGIN_CAPITOL
-    }
-
-    /**
-     * The origin key of the crm client
-     * @deprecated
-     */
-    static get CLIENT_ORIGIN_CRM (): string {
-        return ClientInformation.CLIENT_ORIGIN_CRM
-    }
-
-    /**
-     * The origin key of the web client
-     * @deprecated
-     */
-    static get CLIENT_ORIGIN_WEB (): string {
-        return ClientInformation.CLIENT_ORIGIN_WEB
     }
 
     /**
      * The list of client types
      */
-    static get CLIENT_TYPES (): string[] {
+    static get CLIENT_TYPES(): string[] {
         return ClientInformation.CLIENT_TYPES
-    }
-
-    /**
-     * The list of client origins
-     * @deprecated
-     */
-    static get CLIENT_ORIGINS (): string[] {
-        return ClientInformation.CLIENT_ORIGINS
     }
 }

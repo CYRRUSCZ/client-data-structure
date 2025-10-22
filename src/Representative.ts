@@ -2,30 +2,27 @@ import { getInstanceOfClass, getStringOrNull } from './helpers'
 import { Address, type AddressJSONSchema, type AddressInput, type AddressOutput } from './Address'
 import { IdCardInformation, type IdCardInformationJSONSchema, type IdCardInformationInput, type IdCardInformationOutput } from './IdCardInformation'
 import { PersonalInformation, type PersonalInformationJSONSchema, type PersonalInformationInput, type PersonalInformationOutput } from './PersonalInformation'
-import { RepresentativeContactInformation, RepresentativeContactInformationInput, RepresentativeContactInformationJSONSchema, RepresentativeContactInformationOutput } from './RepresentativeContactInformation'
 import { ClientData } from './ClientData'
 import { AbstractBase, type JSONSchema, type JSONSchemaObject } from './AbstractBase'
+import { ContactInformation, ContactInformationInput, ContactInformationJSONSchema, ContactInformationOutput } from './ContactInformation'
 
-export const PLAIN_OBJECT_KEY_POSITION = 'position'
 export const PLAIN_OBJECT_KEY_ID = 'id'
-
 
 /**
  * Input of the Representative class that is used to create the object
  */
 export interface RepresentativeInput {
-    personal: Partial<PersonalInformationInput>,
-    position: string | null,
-    address: Partial<AddressInput>,
-    idCard: Partial<IdCardInformationInput>,
-    id: string | null,
-    contact: Partial<RepresentativeContactInformationInput>,
-    isRepresentative?: boolean,
-    isRealOwner?: boolean,
-    realOwnerReasonChar?: string | null,
-    realOwnerReasonNumber?: string | null,
-    capitolId?: string | null,
-    capitolContactId?: string | null,
+    personal: Partial<PersonalInformationInput>
+    address: Partial<AddressInput>
+    idCard: Partial<IdCardInformationInput>
+    id: string | null
+    contact: Partial<ContactInformationInput>
+    isRepresentative?: boolean
+    isRealOwner?: boolean
+    realOwnerReasonChar?: string | null
+    realOwnerReasonNumber?: string | null
+    cytronId?: string | null
+    contactId?: string | null
     hasPowerOfAttorney?: boolean
     _id?: string | null
 }
@@ -34,18 +31,17 @@ export interface RepresentativeInput {
  * Output of the Representative class that is used to serialize the object to JSON
  */
 export interface RepresentativeOutput {
-    personal: PersonalInformationOutput,
-    position: string | null,
-    address: AddressOutput,
-    idCard: IdCardInformationOutput,
-    id: string | null,
-    contact: RepresentativeContactInformationOutput,
-    isRepresentative: boolean,
-    isRealOwner: boolean,
-    realOwnerReasonChar: string | null,
-    realOwnerReasonNumber: string | null,
-    capitolId: string | null,
-    capitolContactId: string | null,
+    personal: PersonalInformationOutput
+    address: AddressOutput
+    idCard: IdCardInformationOutput
+    id: string | null
+    contact: ContactInformationOutput
+    isRepresentative: boolean
+    isRealOwner: boolean
+    realOwnerReasonChar: string | null
+    realOwnerReasonNumber: string | null
+    cytronId: string | null
+    contactId: string | null
     hasPowerOfAttorney: boolean
 }
 
@@ -53,11 +49,10 @@ export interface RepresentativeJSONSchema extends JSONSchemaObject {
     type: 'object'
     properties: {
         personal: PersonalInformationJSONSchema
-        position: JSONSchema
         address: AddressJSONSchema
         idCard: IdCardInformationJSONSchema
         id: JSONSchema
-        contact: RepresentativeContactInformationJSONSchema
+        contact: ContactInformationJSONSchema
         isRepresentative: JSONSchema
         isRealOwner: JSONSchema
         hasPowerOfAttorney: JSONSchema
@@ -83,28 +78,25 @@ export interface RepresentativeJSONSchema extends JSONSchemaObject {
  * Class that represents a representative of a company
  */
 export class Representative extends AbstractBase {
-
     readonly #personal: PersonalInformation = new PersonalInformation()
-    readonly #position: string | null = null
     readonly #address: Address = new Address()
     readonly #idCard: IdCardInformation = new IdCardInformation()
     readonly #id: string | null = null
-    readonly #contact: RepresentativeContactInformation = new RepresentativeContactInformation()
+    readonly #contact: ContactInformation = new ContactInformation()
     readonly #isRepresentative: boolean = false
     readonly #isRealOwner: boolean = false
     readonly #realOwnerReasonChar: string | null = null
     readonly #realOwnerReasonNumber: string | null = null
-    readonly #capitolId: string | null = null
-    readonly #capitolContactId: string | null = null
+    readonly #cytronId: string | null = null
+    readonly #contactId: string | null = null
     readonly #hasPowerOfAttorney: boolean = false
 
-    constructor (
+    constructor(
         input: Partial<RepresentativeInput> = {}
     ) {
         super()
         const {
             personal,
-            position,
             address,
             idCard,
             id,
@@ -113,31 +105,29 @@ export class Representative extends AbstractBase {
             isRealOwner,
             realOwnerReasonChar,
             realOwnerReasonNumber,
-            capitolId,
-            capitolContactId,
+            cytronId,
+            contactId,
             hasPowerOfAttorney,
             _id
         } = input
         this.#personal = getInstanceOfClass<PersonalInformation>(personal, PersonalInformation)
-        this.#position = getStringOrNull(position)
         this.#address = getInstanceOfClass<Address>(address, Address)
         this.#idCard = getInstanceOfClass<IdCardInformation>(idCard, IdCardInformation)
-        this.#contact = getInstanceOfClass<RepresentativeContactInformation>(contact, RepresentativeContactInformation)
+        this.#contact = getInstanceOfClass<ContactInformation>(contact, ContactInformation)
         this.#id = (id) ? getStringOrNull(id) : getStringOrNull(_id)
         this.#isRealOwner = isRealOwner === true
         this.#realOwnerReasonChar = realOwnerReasonChar ?? null
         this.#realOwnerReasonNumber = realOwnerReasonNumber ?? null
-        this.#capitolId = capitolId ?? null
+        this.#cytronId = cytronId ?? null
         this.#isRepresentative = isRepresentative === true
         this.#hasPowerOfAttorney = hasPowerOfAttorney === true
-        this.#capitolContactId = getStringOrNull(capitolContactId)
+        this.#contactId = getStringOrNull(contactId)
     }
 
     /**
      * Create a new instance of the Representative class using positional arguments
      *
      * @param personal personal information of the representative
-     * @param position name of the position of the representative
      * @param address address of the representative
      * @param idCard id card information of the representative
      * @param id internal id of the representative
@@ -146,23 +136,22 @@ export class Representative extends AbstractBase {
      * @param isRealOwner flag indicating that the representative is a real owner of the company
      * @param realOwnerReasonChar paragraph character of the real owner reason
      * @param realOwnerReasonNumber paragraph number of the real owner reason
-     * @param capitolId internal capitol id of the representative
-     * @param capitolContactId internal capitol contact id of the representative
+     * @param cytronId internal cytron id of the representative
+     * @param contactId internal cytron contact id of the representative
      * @param hasPowerOfAttorney flag indicating that the representative has a power of attorney
      */
-    static create (
+    static create(
         personal: Partial<PersonalInformationInput> | undefined,
-        position: string | null | undefined,
         address: Partial<AddressInput> | undefined,
         idCard: Partial<IdCardInformationInput> | undefined,
         id: string | null | undefined,
-        contact: Partial<RepresentativeContactInformationInput> | undefined,
+        contact: Partial<ContactInformationInput> | undefined,
         isRepresentative: boolean | undefined = true,
         isRealOwner: boolean | undefined = false,
         realOwnerReasonChar: string | null | undefined = null,
         realOwnerReasonNumber: string | null | undefined = null,
-        capitolId: string | null | undefined = null,
-        capitolContactId: string | null | undefined = null,
+        cytronId: string | null | undefined = null,
+        contactId: string | null | undefined = null,
         hasPowerOfAttorney: boolean | undefined = false
     ): Representative {
         const plain: Partial<RepresentativeInput> = {
@@ -170,15 +159,14 @@ export class Representative extends AbstractBase {
             isRealOwner,
             realOwnerReasonChar,
             realOwnerReasonNumber,
-            capitolId,
-            capitolContactId,
+            cytronId,
+            contactId,
             hasPowerOfAttorney,
             [ClientData.PLAIN_OBJECT_KEY_PERSONAL]: personal,
-            [PLAIN_OBJECT_KEY_POSITION]: position,
             [ClientData.PLAIN_OBJECT_KEY_ID_CARD]: idCard,
             [ClientData.PLAIN_OBJECT_KEY_ADDRESS]: address,
             [PLAIN_OBJECT_KEY_ID]: id,
-            [ClientData.PLAIN_OBJECT_KEY_CONTACT]: contact,
+            [ClientData.PLAIN_OBJECT_KEY_CONTACT]: contact
         }
 
         return new Representative(plain)
@@ -187,108 +175,100 @@ export class Representative extends AbstractBase {
     /**
      * Get the personal information of the representative
      */
-    get personal (): PersonalInformation {
+    get personal(): PersonalInformation {
         return this.#personal
-    }
-
-    /**
-     * Get the position of the representative
-     */
-    get position (): string | null {
-        return this.#position
     }
 
     /**
      * Get the address of the representative
      */
-    get idCard (): IdCardInformation {
+    get idCard(): IdCardInformation {
         return this.#idCard
     }
 
     /**
      * Get the id of the representative
      */
-    get id (): string | null {
+    get id(): string | null {
         return this.#id
     }
 
     /**
      * Get the address information of the representative
      */
-    get address (): Address {
+    get address(): Address {
         return this.#address
     }
 
     /**
      * Get the contact information of the representative
      */
-    get contact (): RepresentativeContactInformation {
+    get contact(): ContactInformation {
         return this.#contact
     }
 
     /**
      * Flag indicating that the representative is a real owner of the company
      */
-    get isRealOwner (): boolean {
+    get isRealOwner(): boolean {
         return this.#isRealOwner
     }
 
     /**
      * Get the paragraph character of the real owner reason
      */
-    get realOwnerReasonChar (): string | null {
+    get realOwnerReasonChar(): string | null {
         return this.#realOwnerReasonChar
     }
 
     /**
      * Get the paragraph number of the real owner reason
      */
-    get realOwnerReasonNumber (): string | null {
+    get realOwnerReasonNumber(): string | null {
         return this.#realOwnerReasonNumber
     }
 
     /**
-     * Get the internal capitol id of the representative
+     * Get the internal cytron id of the representative
      */
-    get capitolId (): string | null {
-        return this.#capitolId
+    get cytronId(): string | null {
+        return this.#cytronId
     }
 
     /**
-     * Get the internal capitol contact id of the representative
+     * Get the internal cytron contact id of the representative
      */
-    get capitolContactId (): string | null {
-        return this.#capitolContactId
+    get contactId(): string | null {
+        return this.#contactId
     }
 
     /**
      * Flag indicating that the representative is a representative of the company
      */
-    get isRepresentative (): boolean {
+    get isRepresentative(): boolean {
         return this.#isRepresentative
     }
 
     /**
      * Flag indicating that the representative has a power of attorney
      */
-    get hasPowerOfAttorney (): boolean {
+    get hasPowerOfAttorney(): boolean {
         return this.#hasPowerOfAttorney
     }
 
     /**
      * Converts the class to a plain object
      */
-    toJSON (): RepresentativeOutput {
+    toJSON(): RepresentativeOutput {
         const plain: RepresentativeOutput = {
             isRepresentative: this.#isRepresentative,
             isRealOwner: this.#isRealOwner,
             realOwnerReasonChar: this.#realOwnerReasonChar,
             realOwnerReasonNumber: this.#realOwnerReasonNumber,
-            capitolId: this.#capitolId,
-            capitolContactId: this.#capitolContactId,
+            cytronId: this.#cytronId,
+            contactId: this.#contactId,
             hasPowerOfAttorney: this.#hasPowerOfAttorney,
             [ClientData.PLAIN_OBJECT_KEY_PERSONAL]: this.personal.toJSON(),
-            [PLAIN_OBJECT_KEY_POSITION]: this.position,
             [ClientData.PLAIN_OBJECT_KEY_ID_CARD]: this.idCard.toJSON(),
             [ClientData.PLAIN_OBJECT_KEY_ADDRESS]: this.address.toJSON(),
             [PLAIN_OBJECT_KEY_ID]: this.id,
@@ -297,7 +277,6 @@ export class Representative extends AbstractBase {
         return plain
     }
 
-    // eslint-disable-next-line @typescript-eslint/class-methods-use-this -- This method is required by the AbstractBase class
     toJSONSchema(): RepresentativeJSONSchema {
         return {
             type: 'object',
@@ -306,11 +285,10 @@ export class Representative extends AbstractBase {
                 isRepresentative: { type: 'boolean' },
                 isRealOwner: { type: 'boolean' },
                 hasPowerOfAttorney: { type: 'boolean' },
-                position: { type: 'string' },
                 personal: PersonalInformation.prototype.toJSONSchema(),
                 address: Address.prototype.toJSONSchema(),
                 idCard: IdCardInformation.prototype.toJSONSchema(),
-                contact: RepresentativeContactInformation.prototype.toJSONSchema()
+                contact: ContactInformation.prototype.toJSONSchema()
             },
             if: {
                 properties: {
@@ -342,14 +320,14 @@ export class Representative extends AbstractBase {
     /**
      * Converts the class to a plain object
      */
-    toPlainObject (): RepresentativeOutput {
+    toPlainObject(): RepresentativeOutput {
         return this.toJSON()
     }
 
     /**
      * Create a new instance of the Representative class from a plain object
      */
-    static fromPlainObject (plainObject: Partial<RepresentativeInput>): Representative {
+    static fromPlainObject(plainObject: Partial<RepresentativeInput>): Representative {
         return new Representative(plainObject)
     }
 }

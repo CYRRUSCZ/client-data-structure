@@ -1,4 +1,5 @@
 import { AbstractBase, type JSONSchema, type JSONSchemaObject } from './AbstractBase'
+import { SupportedIdCardTypes } from './enums'
 import { getStringOrNull, getNormalizedDate } from './helpers'
 import { countries } from '@cyrrus/locale-utils'
 
@@ -29,13 +30,13 @@ export interface IdCardInformationOutput {
 export interface IdCardInformationJSONSchema extends JSONSchemaObject {
     type: 'object'
     properties: {
-        number: JSONSchema,
-        issuedBy: JSONSchema,
-        country: JSONSchema,
-        validity: JSONSchema,
-        type: JSONSchema,
+        number: JSONSchema
+        issuedBy: JSONSchema
+        country: JSONSchema
+        validity: JSONSchema
+        type: JSONSchema
         scanNotAllowed: JSONSchema
-    },
+    }
     required: string[]
 }
 
@@ -50,7 +51,7 @@ export class IdCardInformation extends AbstractBase {
     readonly #type: string | null = null
     readonly #scanNotAllowed: boolean = false
 
-    constructor (
+    constructor(
         input: Partial<IdCardInformationInput> = {}
     ) {
         super()
@@ -80,7 +81,7 @@ export class IdCardInformation extends AbstractBase {
      * @param type the type of the identification card
      * @param scanNotAllowed if the identification card cannot be scanned
      */
-    static create (
+    static create(
         number: string | null | undefined,
         issuedBy: string | null | undefined,
         country: string | null | undefined,
@@ -102,28 +103,28 @@ export class IdCardInformation extends AbstractBase {
     /**
      * Identification card number
      */
-    get number (): string | null {
+    get number(): string | null {
         return this.#number
     }
 
     /**
      * The authority that issued the identification card
      */
-    get issuedBy (): string | null {
+    get issuedBy(): string | null {
         return this.#issuedBy
     }
 
     /**
      * The country code of the identification card
      */
-    get country (): string | null {
+    get country(): string | null {
         return this.#country
     }
 
     /**
      * The validity of the identification card
      */
-    get countryName (): string | null {
+    get countryName(): string | null {
         if (this.#country === null) {
             return null
         }
@@ -133,28 +134,28 @@ export class IdCardInformation extends AbstractBase {
     /**
      * The validity of the identification card
      */
-    get validity (): Date | null {
+    get validity(): Date | null {
         return this.#validity
     }
 
     /**
      * The type of the identification card
      */
-    get type (): string | null {
+    get type(): string | null {
         return this.#type
     }
 
     /**
      * Flag indicating that identification card cannot be scanned
      */
-    get scanNotAllowed (): boolean {
+    get scanNotAllowed(): boolean {
         return this.#scanNotAllowed
     }
 
     /**
      * Converts the IdCardInformation object to a plain object
      */
-    toJSON (): IdCardInformationOutput {
+    toJSON(): IdCardInformationOutput {
         return {
             number: this.#number,
             issuedBy: this.#issuedBy,
@@ -165,7 +166,6 @@ export class IdCardInformation extends AbstractBase {
         }
     }
 
-    // eslint-disable-next-line @typescript-eslint/class-methods-use-this -- This method is required by the AbstractBase class
     toJSONSchema(): IdCardInformationJSONSchema {
         return {
             type: 'object',
@@ -187,7 +187,7 @@ export class IdCardInformation extends AbstractBase {
                 },
                 type: {
                     type: 'string',
-                    enum: ['OP', 'Pas']
+                    enum: Object.values(SupportedIdCardTypes)
                 },
                 scanNotAllowed: {
                     type: 'boolean'
@@ -203,14 +203,14 @@ export class IdCardInformation extends AbstractBase {
     /**
      * Converts the IdCardInformation object to a plain object
      */
-    toPlainObject (): IdCardInformationOutput {
+    toPlainObject(): IdCardInformationOutput {
         return this.toJSON()
     }
 
     /**
      * Converts a plain object to an IdCardInformation object
      */
-    static fromPlainObject (plainObject: Partial<IdCardInformationOutput>): IdCardInformation {
+    static fromPlainObject(plainObject: Partial<IdCardInformationOutput>): IdCardInformation {
         return new IdCardInformation(plainObject)
     }
 }

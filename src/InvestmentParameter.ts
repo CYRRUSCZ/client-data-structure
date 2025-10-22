@@ -8,7 +8,7 @@ export interface InvestmentParameterInput {
     version: string | null
     uid: string | null
     name: string | null
-    added: Date | string | null
+    addedAt: Date | string | null
     value: string | null
     isInvestmentCategory: boolean
 }
@@ -20,7 +20,7 @@ export interface InvestmentParameterOutput {
     version: string | null
     uid: string | null
     name: string | null
-    added: Date | null
+    addedAt: Date | null
     value: string | null
     isInvestmentCategory: boolean
 }
@@ -31,7 +31,7 @@ export interface InvestmentParameterJSONSchema extends JSONSchemaObject {
         version: JSONSchema
         uid: JSONSchema
         name: JSONSchema
-        added: JSONSchema
+        addedAt: JSONSchema
         value: JSONSchema
         isInvestmentCategory: JSONSchema
     }
@@ -45,24 +45,24 @@ export class InvestmentParameter extends AbstractBase {
     readonly #version: string | null = null
     readonly #uid: string | null = null
     readonly #name: string | null = null
-    readonly #added: Date = new Date()
+    readonly #addedAt: Date = new Date()
     readonly #value: string | null = null
     readonly #isInvestmentCategory: boolean
 
-    constructor (input: Partial<InvestmentParameterInput> = {}) {
+    constructor(input: Partial<InvestmentParameterInput> = {}) {
         super()
         const {
             version,
             uid,
             name,
-            added,
+            addedAt,
             value,
             isInvestmentCategory
         } = input
         this.#version = getStringOrNull(version)
         this.#uid = getStringOrNull(uid)
         this.#name = getStringOrNull(name)
-        this.#added = getValidDate(added)
+        this.#addedAt = getValidDate(addedAt)
         this.#value = getStringOrNull(value)
         this.#isInvestmentCategory = isInvestmentCategory === true
     }
@@ -73,15 +73,15 @@ export class InvestmentParameter extends AbstractBase {
      * @param version version of the investment questionaire evaluator
      * @param uid unique identifier of the investment parameter in the context of the version
      * @param name name of the investment parameter
-     * @param added date of the investment parameter addition
+     * @param addedAt date of the investment parameter addition
      * @param value value of the investment parameter
      * @param isInvestmentCategory flag that indicates if the parameter is an investment category
      */
-    static create (
+    static create(
         version: string | null | undefined,
         uid: string | null | undefined,
         name: string | null | undefined,
-        added: Date | string | null | undefined,
+        addedAt: Date | string | null | undefined,
         value: string | null | undefined,
         isInvestmentCategory: boolean | undefined
     ): InvestmentParameter {
@@ -89,7 +89,7 @@ export class InvestmentParameter extends AbstractBase {
             version,
             uid,
             name,
-            added,
+            addedAt,
             value,
             isInvestmentCategory
         }
@@ -99,87 +99,86 @@ export class InvestmentParameter extends AbstractBase {
     /**
      * Unique identifier of the investment parameter
      */
-    get uid (): string | null {
+    get uid(): string | null {
         return this.#uid
     }
 
     /**
      * Version of the investment questionaire evaluator
      */
-    get version (): string | null {
+    get version(): string | null {
         return this.#version
     }
 
     /**
      * Name of the investment parameter
      */
-    get name (): string | null {
+    get name(): string | null {
         return this.#name
     }
 
     /**
      * Date of the investment parameter addition
      */
-    get added (): Date {
-        return this.#added
+    get addedAt(): Date {
+        return this.#addedAt
     }
 
     /**
      * Value of the investment parameter
      */
-    get value (): string | null {
+    get value(): string | null {
         return this.#value
     }
 
     /**
      * Flag that indicates if the parameter is an investment category
      */
-    get isInvestmentCategory (): boolean {
+    get isInvestmentCategory(): boolean {
         return this.#isInvestmentCategory
     }
 
     /**
      * Converts the InvestmentParameter object to a plain object
      */
-    toJSON (): InvestmentParameterOutput {
+    toJSON(): InvestmentParameterOutput {
         const plainObject = {
             version: this.version,
             uid: this.uid,
             name: this.name,
-            added: this.added,
+            addedAt: this.addedAt,
             value: this.value,
             isInvestmentCategory: this.isInvestmentCategory
         }
         return plainObject
     }
 
-    // eslint-disable-next-line @typescript-eslint/class-methods-use-this -- This method is required by the AbstractBase class
-    toJSONSchema (): InvestmentParameterJSONSchema {
+    toJSONSchema(): InvestmentParameterJSONSchema {
         return {
             type: 'object',
             properties: {
                 version: { type: 'string' },
                 uid: { type: 'string' },
                 name: { type: 'string' },
-                added: { type: 'string', format: 'date-time' },
+                addedAt: { type: 'string', format: 'date-time' },
                 value: { type: 'string' },
                 isInvestmentCategory: { type: 'boolean' }
             },
-            required: ['version', 'uid', 'name', 'added', 'value', 'isInvestmentCategory']
+            required: ['version', 'uid', 'name', 'addedAt', 'value', 'isInvestmentCategory']
         }
     }
 
     /**
      * Converts a plain object to an InvestmentParameter object
      */
-    toPlainObject (): InvestmentParameterOutput {
+    toPlainObject(): InvestmentParameterOutput {
         return this.toJSON()
     }
 
     /**
      * Creates an InvestmentParameter object from a plain object
      */
-    static fromPlainObject (plainObject: Partial<InvestmentParameterInput>): InvestmentParameter {
+    static fromPlainObject(plainObject: Partial<InvestmentParameterInput>): InvestmentParameter {
         return new InvestmentParameter(plainObject)
     }
 }

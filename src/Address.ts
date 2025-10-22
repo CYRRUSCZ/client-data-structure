@@ -1,13 +1,14 @@
-import { type AvailableLanguages, getStringOrNull } from './helpers'
+import { getStringOrNull } from './helpers'
 import { countriesLocalized } from '@cyrrus/locale-utils'
 import { AbstractBase, type JSONSchema, type JSONSchemaObject } from './AbstractBase'
+import { AvailableLanguages } from './enums'
 
 /**
  * Input of the Address class that is used to create the object
  */
 export interface AddressInput {
-    /** The name of the recipient */
-    recipient: string | null
+    /** The unique identifier for the address in cytron */
+    cytronId?: string | null
 
     /** The street name */
     street: string | null
@@ -39,13 +40,13 @@ export interface AddressOutput extends AddressInput {
 
 export interface AddressJSONSchema extends JSONSchemaObject {
     properties: {
-        recipient: JSONSchema
+        cytronId: JSONSchema
         street: JSONSchema
         streetNumber: JSONSchema
         city: JSONSchema
         country: JSONSchema
         postalCode: JSONSchema
-    },
+    }
     required: string[]
 }
 
@@ -53,7 +54,7 @@ export interface AddressJSONSchema extends JSONSchemaObject {
  * Address class that represents a postal or residency address
  */
 export class Address extends AbstractBase {
-    readonly #recipient: string | null = null
+    readonly #cytronId: string | null = null
     readonly #street: string | null = null
     readonly #streetNumber: string | null = null
     readonly #city: string | null = null
@@ -65,17 +66,17 @@ export class Address extends AbstractBase {
      *
      * @param input object that is used to create the Address object
      */
-    constructor (input: Partial<AddressInput> = {}) {
+    constructor(input: Partial<AddressInput> = {}) {
         super()
         const {
-            recipient,
+            cytronId,
             street,
             streetNumber,
             city,
             country,
             postalCode
         } = input
-        this.#recipient = getStringOrNull(recipient)
+        this.#cytronId = getStringOrNull(cytronId)
         this.#street = getStringOrNull(street)
         this.#city = getStringOrNull(city)
         this.#country = getStringOrNull(country)
@@ -86,15 +87,15 @@ export class Address extends AbstractBase {
     /**
      * Static method that creates an Address object from positional parameters
      *
-     * @param recipient
+     * @param cytronId
      * @param street
      * @param streetNumber
      * @param city
      * @param country
      * @param postalCode
      */
-    static create (
-        recipient: string | null| undefined,
+    static create(
+        cytronId: string | null | undefined,
         street: string | null | undefined,
         streetNumber: string | number | null | undefined,
         city: string | null | undefined,
@@ -102,7 +103,7 @@ export class Address extends AbstractBase {
         postalCode: string | number | null | undefined
     ): Address {
         const plain: Partial<AddressInput> = {
-            recipient,
+            cytronId,
             street,
             streetNumber,
             city,
@@ -115,9 +116,8 @@ export class Address extends AbstractBase {
     /**
      * Getter that returns the full address as a string
      */
-    get fullAddress (): string {
+    get fullAddress(): string {
         const tmp = [
-            this.#recipient,
             [this.#street, this.#streetNumber].filter(entry => entry).join(' '),
             this.#city,
             this.countryName,
@@ -127,44 +127,44 @@ export class Address extends AbstractBase {
     }
 
     /**
-     * Getter that returns the recipient of the address
+     * Getter that returns the cytronId of the address
      */
-    get recipient (): string | null {
-        return this.#recipient
+    get cytronId(): string | null {
+        return this.#cytronId
     }
 
     /**
      * Getter that returns the street of the address
      */
-    get street (): string | null {
+    get street(): string | null {
         return this.#street
     }
 
     /**
      * Getter that returns the street number of the address
      */
-    get streetNumber (): string | null {
+    get streetNumber(): string | null {
         return this.#streetNumber
     }
 
     /**
      * Getter that returns the city of the address
      */
-    get city (): string | null {
+    get city(): string | null {
         return this.#city
     }
 
     /**
      * Getter that returns the country code of the address
      */
-    get country (): string | null {
+    get country(): string | null {
         return this.#country
     }
 
     /**
      * Getter that returns country name of the address in Czech
      */
-    get countryName (): string | null {
+    get countryName(): string | null {
         if (!this.#country) {
             return null
         }
@@ -174,7 +174,7 @@ export class Address extends AbstractBase {
     /**
      * Getter that returns the postal code of the address
      */
-    get postalCode (): string | null {
+    get postalCode(): string | null {
         return this.#postalCode
     }
 
@@ -182,7 +182,7 @@ export class Address extends AbstractBase {
      * Method that returns the postal code of the address in the specified locale
      * @param locale - string that represents the locale - e.g. 'cs_CZ', 'en_US'
      */
-    localizedCountryName (locale: AvailableLanguages): string | null {
+    localizedCountryName(locale: AvailableLanguages): string | null {
         if (!this.#country) {
             return null
         }
@@ -193,9 +193,8 @@ export class Address extends AbstractBase {
      * Method that returns the full address in the specified locale
      * @param locale string that represents the locale - e.g. 'cs_CZ', 'en_US'
      */
-    localizedFullAddress (locale: AvailableLanguages): string {
+    localizedFullAddress(locale: AvailableLanguages): string {
         const tmp = [
-            this.#recipient,
             [this.#street, this.#streetNumber].filter(entry => entry).join(' '),
             this.#city,
             this.localizedCountryName(locale),
@@ -207,9 +206,9 @@ export class Address extends AbstractBase {
     /**
      * Method that returns the address as a plain object
      */
-    toJSON (): AddressOutput {
+    toJSON(): AddressOutput {
         return {
-            recipient: this.#recipient,
+            cytronId: this.#cytronId,
             street: this.#street,
             streetNumber: this.#streetNumber,
             city: this.#city,
@@ -218,13 +217,13 @@ export class Address extends AbstractBase {
         }
     }
 
-    // eslint-disable-next-line @typescript-eslint/class-methods-use-this -- This method is required by the AbstractBase class
-    toJSONSchema (): AddressJSONSchema {
+    toJSONSchema(): AddressJSONSchema {
         return {
             type: 'object',
             properties: {
-                recipient: {
-                    type: 'string'
+                cytronId: {
+                    type: 'string',
+                    nullable: true
                 },
                 street: {
                     type: 'string'
@@ -243,7 +242,6 @@ export class Address extends AbstractBase {
                 }
             },
             required: [
-                'recipient',
                 'street',
                 'streetNumber',
                 'city',
@@ -256,7 +254,7 @@ export class Address extends AbstractBase {
     /**
      * Method that returns the address as a plain object
      */
-    toPlainObject (): AddressOutput {
+    toPlainObject(): AddressOutput {
         return this.toJSON()
     }
 
@@ -265,7 +263,7 @@ export class Address extends AbstractBase {
      *
      * @param plainObject - Partial<AddressInput> object that is used to create the Address instance
      */
-    static fromPlainObject (plainObject: Partial<AddressInput>): Address {
+    static fromPlainObject(plainObject: Partial<AddressInput>): Address {
         return new Address(plainObject)
     }
 }
