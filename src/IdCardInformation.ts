@@ -183,7 +183,13 @@ export class IdCardInformation extends AbstractBase {
                 validity: {
                     type: 'string',
                     format: 'date-time',
-                    formatMinimum: new Date().toISOString()
+                    formatMinimum: (() => {
+                        const now = new Date()
+                        const year = now.getUTCFullYear()
+                        const month = now.getUTCMonth()
+                        const day = now.getUTCDate()
+                        return new Date(Date.UTC(year, month, day, 12, 0, 0, 0)).toISOString()
+                    })()
                 },
                 type: {
                     type: 'string',

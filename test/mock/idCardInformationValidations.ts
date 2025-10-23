@@ -6,9 +6,11 @@ interface TestCase {
 }
 
 const validityValidDate = (() => {
-    const date = new Date()
-    date.setFullYear(date.getFullYear() + 1)
-    return date
+    const now = new Date()
+    const year = now.getUTCFullYear()
+    const month = now.getUTCMonth()
+    const day = now.getUTCDate()
+    return new Date(Date.UTC(year + 1, month, day, 12, 0, 0, 0))
 })()
 
 export const expectErrorsTestCases: TestCase[] = [
@@ -181,7 +183,7 @@ export const testCasesValidData: TestCase[] = [
             number: '123456789',
             issuedBy: 'Uncle Bob',
             country: 'CR',
-            validity: null,
+            validity: validityValidDate,
             type: 'id',
             scanNotAllowed: true,
         }

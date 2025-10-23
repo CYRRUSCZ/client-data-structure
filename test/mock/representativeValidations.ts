@@ -6,17 +6,19 @@ interface TestCase {
 }
 
 const validValidityDate = (() => {
-    const d = new Date()
-    const date = new Date()
-    date.setFullYear(d.getFullYear() + 1)
-
-    return date
+    const now = new Date()
+    const year = now.getUTCFullYear()
+    const month = now.getUTCMonth()
+    const day = now.getUTCDate()
+    return new Date(Date.UTC(year + 1, month, day, 12, 0, 0, 0))
 })()
 
 const maxDateOfBirth = (() => {
-    const d = new Date()
-
-    return new Date(d.getFullYear() - 1, d.getMonth(), d.getDate()).toISOString()
+    const now = new Date()
+    const year = now.getUTCFullYear()
+    const month = now.getUTCMonth()
+    const day = now.getUTCDate()
+    return new Date(Date.UTC(year - 1, month, day, 12, 0, 0, 0)).toISOString()
 })()
 
 
@@ -276,7 +278,7 @@ export const expectPojoErrorsTestCases: TestCase[] = [
                 number: '123456789',
                 issuedBy: 'Uncle Bob',
                 country: 'CR',
-                validity: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString(),
+                validity: validValidityDate.toISOString(),
                 type: 'id',
                 scanNotAllowed: true,
             },
@@ -301,7 +303,7 @@ export const expectPojoErrorsTestCases: TestCase[] = [
                 number: '123456789',
                 issuedBy: 'Uncle Bob',
                 country: 'CR',
-                validity: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString(),
+                validity: validValidityDate.toISOString(),
                 type: 'id',
                 scanNotAllowed: true,
             },

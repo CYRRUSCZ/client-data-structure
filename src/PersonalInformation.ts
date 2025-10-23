@@ -444,9 +444,11 @@ export class PersonalInformation extends AbstractBase {
                     format: 'date-time',
                     description: 'Checks only if birth date is in the past',
                     formatMaximum: (() => {
-                        const d = new Date()
-
-                        return new Date(d.getFullYear() - 1, d.getMonth(), d.getDate()).toISOString()
+                        const now = new Date()
+                        const year = now.getUTCFullYear() - 1
+                        const month = now.getUTCMonth()
+                        const day = now.getUTCDate()
+                        return new Date(Date.UTC(year, month, day, 12, 0, 0, 0)).toISOString()
                     })()
                 },
                 noBirthNumber: {

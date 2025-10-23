@@ -1,5 +1,13 @@
 import type { ClientDataInput } from '../../src/ClientData'
 
+const validValidityDate = (() => {
+    const now = new Date()
+    const year = now.getUTCFullYear()
+    const month = now.getUTCMonth()
+    const day = now.getUTCDate()
+    return new Date(Date.UTC(year + 1, month, day, 12, 0, 0, 0))
+})()
+
 const clientDataset: Partial<ClientDataInput> = {
     client: {
         type: 'person',
@@ -42,7 +50,7 @@ const clientDataset: Partial<ClientDataInput> = {
         number: '123456789',
         issuedBy: 'Brno',
         country: 'CZE',
-        validity: new Date('2021-02-14T12:00:00.000Z'),
+        validity: validValidityDate,
         type: 'id',
         scanNotAllowed: true
     },
@@ -146,9 +154,9 @@ const clientDataset: Partial<ClientDataInput> = {
                     number: '123456789',
                     issuedBy: 'Brno',
                     country: 'CZE',
-                    validity: new Date('2021-02-14T12:00:00.000Z'),
+                    validity: validValidityDate,
                     type: 'id',
-                    scanNotAllowed: false
+                    scanNotAllowed: true
                 },
                 contact: {
                     phoneNumber: '+420 728 796 525',
