@@ -2,6 +2,8 @@ import { getStringOrNull } from './helpers'
 import { countriesLocalized } from '@cyrrus/locale-utils'
 import { AbstractBase, type JSONSchema, type JSONSchemaObject } from './AbstractBase'
 import { AvailableLanguages } from './enums'
+import { ClientDataDifference } from './ClientData'
+import { PartialDeep } from 'type-fest'
 
 /**
  * Input of the Address class that is used to create the object
@@ -66,7 +68,7 @@ export class Address extends AbstractBase {
      *
      * @param input object that is used to create the Address object
      */
-    constructor(input: Partial<AddressInput> = {}) {
+    constructor(input: PartialDeep<AddressInput> = {}) {
         super()
         const {
             cytronId,
@@ -102,7 +104,7 @@ export class Address extends AbstractBase {
         country: string | null | undefined,
         postalCode: string | number | null | undefined
     ): Address {
-        const plain: Partial<AddressInput> = {
+        const plain: PartialDeep<AddressInput> = {
             cytronId,
             street,
             streetNumber,
@@ -217,6 +219,27 @@ export class Address extends AbstractBase {
         }
     }
 
+    compareWith(address: PartialDeep<AddressOutput>): ClientDataDifference[] {
+        const differences: ClientDataDifference[] = []
+        const ownKeys = Object.keys(this.toJSON())
+        const currentEntries = Object.entries(this.toJSON())
+        const passedEntries = Object.entries(address).filter(([key, value]) => value !== undefined && ownKeys.includes(key))
+        for (const [modifiedKey, modifiedValue] of passedEntries) {
+            const current = currentEntries.find(([currentKey]) => currentKey === modifiedKey)
+            if (current) {
+                const [, currentValue] = current
+                if (currentValue !== modifiedValue) {
+                    differences.push({
+                        path: modifiedKey,
+                        originalValue: currentValue,
+                        changedValue: modifiedValue
+                    })
+                }
+            }
+        }
+        return differences
+    }
+
     toJSONSchema(): AddressJSONSchema {
         return {
             type: 'object',
@@ -261,9 +284,9 @@ export class Address extends AbstractBase {
     /**
      * Static method that creates an Address object from a plain object
      *
-     * @param plainObject - Partial<AddressInput> object that is used to create the Address instance
+     * @param plainObject - PartialDeep<AddressInput> object that is used to create the Address instance
      */
-    static fromPlainObject(plainObject: Partial<AddressInput>): Address {
+    static fromPlainObject(plainObject: PartialDeep<AddressInput>): Address {
         return new Address(plainObject)
     }
 }

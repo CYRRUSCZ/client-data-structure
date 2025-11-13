@@ -1,4 +1,6 @@
+import { PartialDeep } from 'type-fest'
 import { AbstractBase, type JSONSchema, type JSONSchemaObject } from './AbstractBase'
+import { ClientDataDifference } from './ClientData'
 import { getStringOrNull, transformDataBeforeValidation } from './helpers'
 import { bankCodes, currencies } from '@cyrrus/locale-utils'
 import { electronicFormatIBAN, isValidBIC, isValidIBAN } from 'ibantools'
@@ -89,7 +91,7 @@ export class BankAccount extends AbstractBase {
     readonly #cytronId: string | number | null = null
     readonly #isConfirmedByAffidavit: boolean | null = null
 
-    constructor(input: Partial<BankAccountInput> = {}) {
+    constructor(input: PartialDeep<BankAccountInput> = {}) {
         super()
         const {
             id,
@@ -150,7 +152,7 @@ export class BankAccount extends AbstractBase {
         cytronId: string | number | null | undefined = null,
         isConfirmedByAffidavit: boolean | null | undefined = null
     ): BankAccount {
-        const plain: Partial<BankAccountInput> = {
+        const plain: PartialDeep<BankAccountInput> = {
             id,
             prefix,
             account,
@@ -365,6 +367,27 @@ export class BankAccount extends AbstractBase {
         }
     }
 
+    compareWith(bankAccount: PartialDeep<BankAccountOutput>): ClientDataDifference[] {
+        const differences: ClientDataDifference[] = []
+        const ownKeys = Object.keys(this.toJSON())
+        const currentEntries = Object.entries(this.toJSON())
+        const passedEntries = Object.entries(bankAccount).filter(([key, value]) => value !== undefined && ownKeys.includes(key))
+        for (const [modifiedKey, modifiedValue] of passedEntries) {
+            const current = currentEntries.find(([currentKey]) => currentKey === modifiedKey)
+            if (current) {
+                const [, currentValue] = current
+                if (currentValue !== modifiedValue) {
+                    differences.push({
+                        path: modifiedKey,
+                        originalValue: currentValue,
+                        changedValue: modifiedValue
+                    })
+                }
+            }
+        }
+        return differences
+    }
+
     toJSONSchema(): BankAccountJSONSchema {
         return {
             type: 'object',
@@ -438,7 +461,7 @@ export class BankAccount extends AbstractBase {
      *
      * @param plainObject the plain object that is used to create the BankAccount object
      */
-    static fromPlainObject(plainObject: Partial<BankAccountInput>): BankAccount {
+    static fromPlainObject(plainObject: PartialDeep<BankAccountInput>): BankAccount {
         return new BankAccount(plainObject)
     }
 }

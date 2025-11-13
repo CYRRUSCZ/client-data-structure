@@ -1,4 +1,6 @@
+import { PartialDeep } from 'type-fest'
 import { AbstractBase, type JSONSchema, type JSONSchemaObject } from './AbstractBase'
+import { ClientDataDifference } from './ClientData'
 import { getStringOrNull, getInstanceOfClass } from './helpers'
 import { type InvestmentParameterOutput, type InvestmentParameterInput, InvestmentParameter } from './InvestmentParameter'
 
@@ -33,7 +35,7 @@ export interface ClientInformationInput {
     externalBrokerAgentContactId: string | null | undefined
     legislation: string | null | undefined
     preferredLanguage: string | null | undefined
-    investmentParameters: Array<Partial<InvestmentParameterInput>> | undefined
+    investmentParameters: Array<PartialDeep<InvestmentParameterInput>> | undefined
 }
 
 /**
@@ -91,7 +93,7 @@ export class ClientInformation extends AbstractBase {
     #investmentParameters: InvestmentParameter[] = []
 
     constructor(
-        input: Partial<ClientInformationInput> = {}
+        input: PartialDeep<ClientInformationInput> = {}
     ) {
         super()
         const {
@@ -112,7 +114,6 @@ export class ClientInformation extends AbstractBase {
         this.#dataOrigin = getStringOrNull(dataOrigin)
         this.#internalId = getStringOrNull(internalId)
         this.#contactId = getStringOrNull(contactId)
-        // Removed duplicate assignment of #contactId (bug 3)
         this.#isResident = isResident === true
         this.#economicalSectorCode = getStringOrNull(economicalSectorCode)
         this.#brokerContactId = getStringOrNull(brokerContactId)
@@ -147,9 +148,9 @@ export class ClientInformation extends AbstractBase {
         externalBrokerAgentContactId: string | null | undefined,
         legislation: string | null | undefined,
         preferredLanguage: string | null | undefined,
-        investmentParameters: Array<Partial<InvestmentParameterInput>> | undefined = []
+        investmentParameters: Array<PartialDeep<InvestmentParameterInput>> | undefined = []
     ): ClientInformation {
-        const plain: Partial<ClientInformationInput> = {
+        const plain: PartialDeep<ClientInformationInput> = {
             type,
             dataOrigin,
             internalId,
@@ -323,7 +324,7 @@ export class ClientInformation extends AbstractBase {
     /**
      * remove specific investment parameter
      */
-    removeParameter(parameter: Partial<InvestmentParameterInput>): void {
+    removeParameter(parameter: PartialDeep<InvestmentParameterInput>): void {
         const parameterInstance = (!(parameter instanceof InvestmentParameter)) ? new InvestmentParameter(parameter) : parameter
         if (parameterInstance.uid === null) {
             throw new Error('Invalid investment parameter definition. Missing uid.')
@@ -334,7 +335,7 @@ export class ClientInformation extends AbstractBase {
     /**
      * add investment parameter
      */
-    addParameter(parameter: Partial<InvestmentParameterInput>): void {
+    addParameter(parameter: PartialDeep<InvestmentParameterInput>): void {
         const parameterInstance = (!(parameter instanceof InvestmentParameter)) ? new InvestmentParameter(parameter) : parameter
         if (parameterInstance.uid === null) {
             throw new Error('Invalid investment parameter definition. Missing uid.')
@@ -346,7 +347,7 @@ export class ClientInformation extends AbstractBase {
     /**
      * check if the client has specific investment parameter
      */
-    containsParameter(parameter: Partial<InvestmentParameterInput>): boolean {
+    containsParameter(parameter: PartialDeep<InvestmentParameterInput>): boolean {
         const parameterInstance = (!(parameter instanceof InvestmentParameter)) ? new InvestmentParameter(parameter) : parameter
         if (parameterInstance.uid === null) {
             throw new Error('Invalid investment parameter definition. Missing uid.')
@@ -362,7 +363,7 @@ export class ClientInformation extends AbstractBase {
     /**
      * create instance of the ClientInformation class from the output object
      */
-    static fromPlainObject(plainObject: Partial<ClientInformationInput>): ClientInformation {
+    static fromPlainObject(plainObject: PartialDeep<ClientInformationInput>): ClientInformation {
         return new ClientInformation(plainObject)
     }
 
@@ -392,5 +393,48 @@ export class ClientInformation extends AbstractBase {
      */
     static get CLIENT_TYPES(): string[] {
         return CLIENT_TYPES
+    }
+
+    compareWith(clientInformation: PartialDeep<ClientInformationOutput>): ClientDataDifference[] {
+        const differences: ClientDataDifference[] = []
+        const ownKeys = Object.keys(this.toJSON())
+        const currentEntries = Object.entries(this.toJSON())
+        const passedEntries = Object.entries(clientInformation).filter(([key, value]) => value !== undefined && ownKeys.includes(key))
+        for (const [modifiedKey, modifiedValue] of passedEntries) {
+            const current = currentEntries.find(([currentKey]) => currentKey === modifiedKey)
+            if (current) {
+                const [, currentValue] = current
+                if (modifiedKey === 'investmentParameters') {
+                    if (!Array.isArray(modifiedValue)) {
+                        continue
+                    }
+                    for (const param of modifiedValue) {
+                        const matchingParam = (currentValue as InvestmentParameterOutput[]).find(item => item.uid === param.uid)
+                        if (!matchingParam) {
+                            differences.push(...Object.entries(param).map(([key, value]) => ({
+                                path: `investmentParameters.[${param.uid}].${key}`,
+                                originalValue: null,
+                                changedValue: value,
+                                uniqueIdProp: 'uid'
+                            })))
+                        } else {
+                            differences.push(...new InvestmentParameter(matchingParam).compareWith(param).map(difference => ({
+                                ...difference,
+                                path: `investmentParameters.[${param.uid}].${difference.path}`
+                            })))
+                        }
+                    }
+                    continue
+                }
+                if (currentValue !== modifiedValue) {
+                    differences.push({
+                        path: modifiedKey,
+                        originalValue: currentValue,
+                        changedValue: modifiedValue
+                    })
+                }
+            }
+        }
+        return differences
     }
 }

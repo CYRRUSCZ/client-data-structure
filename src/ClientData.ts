@@ -8,6 +8,7 @@ import { BankAccount, type BankAccountInput, type BankAccountOutput } from './Ba
 import { getInstanceOfClass } from './helpers'
 import { Address, type AddressInput } from '.'
 import { AbstractBase, type JSONSchema, type JSONSchemaObject } from './AbstractBase'
+import { PartialDeep } from 'type-fest'
 
 export const PLAIN_OBJECT_KEY_CLIENT = 'client'
 export const PLAIN_OBJECT_KEY_PERSONAL = 'personal'
@@ -31,13 +32,13 @@ export const PLAIN_OBJECT_KEYS = [
  * Input of the ClientData class that is used to create the object
  */
 export interface ClientDataInput {
-    client: Partial<ClientInformationInput>
-    personal: Partial<PersonalInformationInput>
-    idCard: Partial<IdCardInformationInput>
-    address: Partial<AddressInformationInput>
-    contact: Partial<ContactInformationInput>
-    bankAccounts: Array<Partial<BankAccountInput>>
-    company: Partial<CompanyInformationInput>
+    client: PartialDeep<ClientInformationInput>
+    personal: PartialDeep<PersonalInformationInput>
+    idCard: PartialDeep<IdCardInformationInput>
+    address: PartialDeep<AddressInformationInput>
+    contact: PartialDeep<ContactInformationInput>
+    bankAccounts: Array<PartialDeep<BankAccountInput>>
+    company: PartialDeep<CompanyInformationInput>
 }
 
 /**
@@ -51,6 +52,13 @@ export interface ClientDataOutput {
     contact: ContactInformationOutput
     bankAccounts: BankAccountOutput[]
     company: CompanyInformationOutput
+}
+
+export interface ClientDataDifference {
+    path: string
+    originalValue: unknown
+    changedValue: unknown
+    uniqueIdProp?: string
 }
 
 export interface ClientDataJSONSchema extends JSONSchemaObject {
@@ -100,7 +108,7 @@ export class ClientData extends AbstractBase {
     readonly #company: CompanyInformation = new CompanyInformation()
 
     constructor(
-        input: Partial<ClientDataInput> = {}
+        input: PartialDeep<ClientDataInput> = {}
     ) {
         super()
         const {
@@ -127,6 +135,86 @@ export class ClientData extends AbstractBase {
         this.#company = getInstanceOfClass<CompanyInformation>(company, CompanyInformation)
     }
 
+    compareWith(clientData: PartialDeep<ClientDataOutput>): ClientDataDifference[] {
+        const differences: ClientDataDifference[] = []
+        const ownKeys = Object.keys(this.toJSON())
+        const currentEntries = Object.entries(this.toJSON())
+        const passedEntries = Object.entries(clientData).filter(([key, value]) => value !== undefined && ownKeys.includes(key))
+        for (const [modifiedKey, modifiedValue] of passedEntries) {
+            const current = currentEntries.find(([currentKey]) => currentKey === modifiedKey)
+            if (current) {
+                const [, currentValue] = current
+                switch (modifiedKey) {
+                    case 'bankAccounts': {
+                        if (!Array.isArray(modifiedValue)) {
+                            continue
+                        }
+                        for (const account of modifiedValue) {
+                            const matchingAccount = (currentValue as BankAccountOutput[]).find(item => item.id === account.id)
+                            if (!matchingAccount) {
+                                differences.push(...Object.entries(account).map(([key, value]) => ({
+                                    path: `bankAccounts.[${account.id}].${key}`,
+                                    originalValue: undefined,
+                                    changedValue: value,
+                                    uniqueIdProp: 'id'
+                                })))
+                            } else {
+                                differences.push(...new BankAccount(matchingAccount).compareWith(account).map(difference => ({
+                                    ...difference,
+                                    path: `bankAccounts.[${account.id}].${difference.path}`
+                                })))
+                            }
+                        }
+                        break
+                    }
+                    case PLAIN_OBJECT_KEY_ADDRESS: {
+                        differences.push(...this.address.compareWith(modifiedValue as PartialDeep<AddressInformationOutput>).map(difference => ({
+                            ...difference,
+                            path: `address.${difference.path}`
+                        })))
+                        break
+                    }
+                    case PLAIN_OBJECT_KEY_COMPANY: {
+                        differences.push(...this.company.compareWith(modifiedValue as PartialDeep<CompanyInformationOutput>).map(difference => ({
+                            ...difference,
+                            path: `company.${difference.path}`
+                        })))
+                        break
+                    }
+                    case PLAIN_OBJECT_KEY_CONTACT: {
+                        differences.push(...this.contact.compareWith(modifiedValue as PartialDeep<ContactInformationOutput>).map(difference => ({
+                            ...difference,
+                            path: `contact.${difference.path}`
+                        })))
+                        break
+                    }
+                    case PLAIN_OBJECT_KEY_ID_CARD: {
+                        differences.push(...this.idCard.compareWith(modifiedValue as PartialDeep<IdCardInformationOutput>).map(difference => ({
+                            ...difference,
+                            path: `idCard.${difference.path}`
+                        })))
+                        break
+                    }
+                    case PLAIN_OBJECT_KEY_PERSONAL: {
+                        differences.push(...this.personal.compareWith(modifiedValue as PartialDeep<PersonalInformationOutput>).map(difference => ({
+                            ...difference,
+                            path: `personal.${difference.path}`
+                        })))
+                        break
+                    }
+                    case PLAIN_OBJECT_KEY_CLIENT: {
+                        differences.push(...this.client.compareWith(modifiedValue as PartialDeep<ClientInformationOutput>).map(difference => ({
+                            ...difference,
+                            path: `client.${difference.path}`
+                        })))
+                        break
+                    }
+                }
+            }
+        }
+        return differences
+    }
+
     /**
      * Create a new instance of the ClientData class using positional arguments
      *
@@ -141,15 +229,15 @@ export class ClientData extends AbstractBase {
      * @param mailingAddress client's mailing address
      */
     static create(
-        client: Partial<ClientInformationInput> | undefined,
-        personal: Partial<PersonalInformationInput> | undefined,
-        idCard: Partial<IdCardInformationInput> | undefined,
-        address: Partial<AddressInformationInput> | undefined,
-        contact: Partial<ContactInformationInput> | undefined,
-        bankAccounts: Array<Partial<BankAccountInput>> | undefined,
-        company: Partial<CompanyInformationInput> | undefined,
-        regularAddress?: Partial<AddressInput>,
-        mailingAddress?: Partial<AddressInput>
+        client: PartialDeep<ClientInformationInput> | undefined,
+        personal: PartialDeep<PersonalInformationInput> | undefined,
+        idCard: PartialDeep<IdCardInformationInput> | undefined,
+        address: PartialDeep<AddressInformationInput> | undefined,
+        contact: PartialDeep<ContactInformationInput> | undefined,
+        bankAccounts: Array<PartialDeep<BankAccountInput>> | undefined,
+        company: PartialDeep<CompanyInformationInput> | undefined,
+        regularAddress?: PartialDeep<AddressInput>,
+        mailingAddress?: PartialDeep<AddressInput>
     ): ClientData {
         const passedAddress = new AddressInformation(address).toPlainObject()
         if (regularAddress) {
@@ -160,7 +248,7 @@ export class ClientData extends AbstractBase {
         }
         address = passedAddress
 
-        const plain: Partial<ClientDataInput> = {
+        const plain: PartialDeep<ClientDataInput> = {
             [PLAIN_OBJECT_KEY_CLIENT]: client,
             [PLAIN_OBJECT_KEY_PERSONAL]: personal,
             [PLAIN_OBJECT_KEY_ID_CARD]: idCard,
@@ -376,7 +464,7 @@ export class ClientData extends AbstractBase {
     /**
      * Create a new instance of the ClientData class from a plain object
      */
-    static fromPlainObject(plainObject: Partial<ClientDataInput>): ClientData {
+    static fromPlainObject(plainObject: PartialDeep<ClientDataInput>): ClientData {
         return new ClientData(plainObject)
     }
 

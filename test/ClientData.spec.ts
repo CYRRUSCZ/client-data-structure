@@ -144,44 +144,202 @@ describe('ClientData', () => {
 })
 
 describe('ClientData validations', () => {
-    it('Expect valid ClientData', () => {
-        for (const testCase of testCasesValidData) {
-            const clientData = new ClientData(testCase.data)
-            expect(clientData.validate()).toBe(true)
+    it.each(testCasesValidData)('validates valid client data: %#', (testCase) => {
+        const clientData = new ClientData(testCase.data)
+        expect(clientData.validate()).toBe(true)
+    })
+
+    it.each(expectErrorsTestCases)('throws validation error: %#', (testCase) => {
+        const clientData = new ClientData(testCase.data)
+        expect(() => clientData.validate()).toThrow()
+        const errors = clientData.getValidationErrors()
+        const validationErrors = errors.map(error => `${error.instancePath ? `${error.instancePath} ` : ''}${error.message}`)
+        if (Array.isArray(testCase.expected)) {
+            expect(validationErrors.sort()).toEqual(testCase.expected.sort())
+        } else {
+            expect(validationErrors[0]).toBe(testCase.expected)
         }
     })
 
-    it('Expect ClientData validations throws exceptions', () => {
-        for (const testCase of expectErrorsTestCases) {
-            const clientData = new ClientData(testCase.data)
-            try {
-                clientData.validate()
-            } catch (error) {
-                const errors = clientData.getValidationErrors()
-                const validationErrors = errors.map(error => `${error.instancePath ? `${error.instancePath} ` : ''}${error.message}`)
-                if (Array.isArray(testCase.expected)) {
-                    expect(validationErrors.sort()).toEqual(testCase.expected.sort())
-                } else {
-                    expect((error as Error).message).toBe(testCase.expected)
-                }
-            }
+    it.each(expectPojoErrorsTestCases)('throws validation error when POJO directly passed: %#', (testCase) => {
+        const clientData = new ClientData()
+        expect(() => clientData.validate(testCase.data)).toThrow()
+        const errors = clientData.getValidationErrors()
+        const validationErrors = errors.map(error => `${error.instancePath ? `${error.instancePath} ` : ''}${error.message}`)
+        if (Array.isArray(testCase.expected)) {
+            expect(validationErrors.sort()).toEqual(testCase.expected.sort())
+        } else {
+            expect(validationErrors[0]).toBe(testCase.expected)
         }
     })
+})
 
-    it('Expect ClientData validations throws exceptions when POJO directly passed to validate()', () => {
-        for (const testCase of expectPojoErrorsTestCases) {
-            const clientData = new ClientData()
-            try {
-                clientData.validate(testCase.data)
-            } catch (error) {
-                const errors = clientData.getValidationErrors()
-                const validationErrors = errors.map(error => `${error.instancePath ? `${error.instancePath} ` : ''}${error.message}`)
-                if (Array.isArray(testCase.expected)) {
-                    expect(validationErrors.sort()).toEqual(testCase.expected.sort())
-                } else {
-                    expect((error as Error).message).toBe(testCase.expected)
-                }
+describe('ClientData.compareWith', () => {
+    const originalData = new ClientData({
+        client: {
+            internalId: 'client-123',
+            investmentParameters: []
+        },
+        personal: {
+            firstName: 'Jan',
+            lastName: 'Novak',
+            birthNumber: '900101/1234',
+            dateOfBirth: new Date('1990-01-01T12:00:00.000Z')
+        },
+        idCard: {
+            type: 'id',
+            number: 'AB123456'
+        },
+        address: {
+            address: {
+                street: 'Main St',
+                streetNumber: '10',
+                city: 'Prague',
+                postalCode: '11000',
+                country: 'CZE'
+            },
+            mailingAddress: {
+                street: 'Main St',
+                streetNumber: '10',
+                city: 'Prague',
+                postalCode: '11000',
+                country: 'CZE'
+            }
+        },
+        contact: {
+            email: 'jan.novak@example.com',
+            phoneNumber: '+420123456789'
+        },
+        bankAccounts: [
+            {
+                id: 'bank-1',
+                iban: 'CZ6508000000192000145399',
+                currency: 'CZK'
+            }
+        ]
+    })
+
+    it('returns empty array when comparing identical client data', () => {
+        const serialized = JSON.parse(JSON.stringify(originalData.toJSON()))
+        const differences = originalData.compareWith(serialized)
+        expect(differences).toEqual([])
+    })
+
+    it('detects client information change', () => {
+        const modified = {
+            ...originalData.toJSON(),
+            client: {
+                ...originalData.toJSON().client,
+                internalId: 'client-999'
             }
         }
+        const differences = originalData.compareWith(modified)
+        expect(differences.length).toBeGreaterThan(0)
+        const internalIdChange = differences.find(d => d.path === 'client.internalId')
+        expect(internalIdChange).toEqual({
+            path: 'client.internalId',
+            originalValue: 'client-123',
+            changedValue: 'client-999'
+        })
+    })
+
+    it('detects personal information change', () => {
+        const modified = {
+            ...originalData.toJSON(),
+            personal: {
+                ...originalData.toJSON().personal,
+                firstName: 'Petr'
+            }
+        }
+        const differences = originalData.compareWith(modified)
+        expect(differences.length).toBeGreaterThan(0)
+        const firstNameChange = differences.find(d => d.path === 'personal.firstName')
+        expect(firstNameChange).toEqual({
+            path: 'personal.firstName',
+            originalValue: 'Jan',
+            changedValue: 'Petr'
+        })
+    })
+
+    it('detects ID card change', () => {
+        const modified = {
+            ...originalData.toJSON(),
+            idCard: {
+                ...originalData.toJSON().idCard,
+                number: 'CD789012'
+            }
+        }
+        const differences = originalData.compareWith(modified)
+        expect(differences.length).toBeGreaterThan(0)
+        const numberChange = differences.find(d => d.path === 'idCard.number')
+        expect(numberChange).toEqual({
+            path: 'idCard.number',
+            originalValue: 'AB123456',
+            changedValue: 'CD789012'
+        })
+    })
+
+    it('detects contact information change', () => {
+        const modified = {
+            ...originalData.toJSON(),
+            contact: {
+                ...originalData.toJSON().contact,
+                email: 'petr.svoboda@example.com'
+            }
+        }
+        const differences = originalData.compareWith(modified)
+        expect(differences.length).toBeGreaterThan(0)
+        const emailChange = differences.find(d => d.path === 'contact.email')
+        expect(emailChange).toEqual({
+            path: 'contact.email',
+            originalValue: 'jan.novak@example.com',
+            changedValue: 'petr.svoboda@example.com'
+        })
+    })
+
+    it('detects bank account change', () => {
+        const modified = {
+            ...originalData.toJSON(),
+            bankAccounts: [
+                {
+                    ...originalData.toJSON().bankAccounts[0],
+                    currency: 'EUR'
+                }
+            ]
+        }
+        const differences = originalData.compareWith(modified)
+        expect(differences.length).toBeGreaterThan(0)
+        const currencyChange = differences.find(d => d.path.includes('currency'))
+        expect(currencyChange).toBeDefined()
+        expect(currencyChange?.originalValue).toBe('CZK')
+        expect(currencyChange?.changedValue).toBe('EUR')
+    })
+
+    it('handles company data comparison', () => {
+        const companyData = new ClientData({
+            client: {
+                internalId: 'company-123'
+            },
+            company: {
+                name: 'ACME Corp',
+                ic: '12345678'
+            }
+        })
+
+        const modified = {
+            ...companyData.toJSON(),
+            company: {
+                ...companyData.toJSON().company,
+                name: 'ACME Industries'
+            }
+        }
+        const differences = companyData.compareWith(modified)
+        expect(differences.length).toBeGreaterThan(0)
+        const nameChange = differences.find(d => d.path === 'company.name')
+        expect(nameChange).toEqual({
+            path: 'company.name',
+            originalValue: 'ACME Corp',
+            changedValue: 'ACME Industries'
+        })
     })
 })

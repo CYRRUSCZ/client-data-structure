@@ -13,7 +13,13 @@ const maxDateOfBirth = (() => {
     return new Date(Date.UTC(year - 1, month, day, 12, 0, 0, 0)).toISOString()
 })()
 
-const minValidityDate = '2025-10-23T12:00:00.000Z' // Hardcoded for testing
+const minValidityDate = (() => {
+    const now = new Date()
+    const year = now.getUTCFullYear()
+    const month = now.getUTCMonth()
+    const day = now.getUTCDate()
+    return new Date(Date.UTC(year, month, day, 12, 0, 0, 0)).toISOString()
+})()
 
 const validityValidDate = (() => {
     const now = new Date()
@@ -22,7 +28,6 @@ const validityValidDate = (() => {
     const day = now.getUTCDate()
     return new Date(Date.UTC(year + 1, month, day, 12, 0, 0, 0))
 })()
-
 
 export const expectErrorsTestCases = [
     {
@@ -74,8 +79,8 @@ export const expectErrorsTestCases = [
                 taxDomicile: 'CZE',
                 placeOfBirth: 'Brno',
                 citizenship: 'CZE',
-                gender: 'male',
-            },
+                gender: 'male'
+            }
         },
         expected: [
             'must match \"else\" schema',
@@ -112,7 +117,7 @@ export const expectErrorsTestCases = [
                 taxDomicile: 'CZE',
                 placeOfBirth: 'Brno',
                 citizenship: 'CZE',
-                gender: 'male',
+                gender: 'male'
             },
             address: {
                 address: {
@@ -130,7 +135,7 @@ export const expectErrorsTestCases = [
                     country: 'CZE'
                 },
                 useMailingAddress: true
-            },
+            }
         },
         expected: [
             'must match \"else\" schema',
@@ -165,8 +170,8 @@ export const expectPojoErrorsTestCases: TestCase[] = [
                 taxDomicile: 'CZE',
                 placeOfBirth: 'Brno',
                 citizenship: 'CZE',
-                gender: 'male',
-            },
+                gender: 'male'
+            }
         },
         expected: [
             'must have required property \'address\'',
@@ -174,7 +179,7 @@ export const expectPojoErrorsTestCases: TestCase[] = [
             'must have required property \'client\'',
             'must have required property \'company\'',
             'must have required property \'contact\'',
-            'must match "then" schema',
+            'must match "then" schema'
         ]
     },
     {
@@ -191,7 +196,7 @@ export const expectPojoErrorsTestCases: TestCase[] = [
                 taxDomicile: 'CZE',
                 placeOfBirth: 'Brno',
                 citizenship: 'CZE',
-                gender: 'male',
+                gender: 'male'
             },
             address: {
                 address: {
@@ -209,14 +214,14 @@ export const expectPojoErrorsTestCases: TestCase[] = [
                     country: 'CZE'
                 },
                 useMailingAddress: true
-            },
+            }
         },
         expected: [
             'must have required property \'bankAccounts\'',
             'must have required property \'client\'',
             'must have required property \'company\'',
             'must have required property \'contact\'',
-            'must match "then" schema',
+            'must match "then" schema'
         ]
     }
 ]
@@ -278,7 +283,7 @@ export const testCasesValidData: TestCase[] = [
                 taxDomicile: 'CZE',
                 placeOfBirth: 'Brno',
                 citizenship: 'CZE',
-                gender: 'male',
+                gender: 'male'
             },
             idCard: {
                 number: '123456789',
@@ -307,7 +312,7 @@ export const testCasesValidData: TestCase[] = [
             },
             contact: {
                 email: 'email@somewhere.com',
-                phoneNumber: '+420123456789',
+                phoneNumber: '+420123456789'
             },
             bankAccounts: [],
             company: {}
@@ -376,7 +381,7 @@ export const testCasesValidData: TestCase[] = [
             },
             contact: {
                 email: 'email@somewhere.com',
-                phoneNumber: '+420123456789',
+                phoneNumber: '+420123456789'
             },
             bankAccounts: [],
             company: {

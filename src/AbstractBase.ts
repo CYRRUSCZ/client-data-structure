@@ -21,7 +21,6 @@ export abstract class AbstractBase implements ValidationAware, JSONSchemaAware {
     _errors: ErrorObject[] = []
 
     validate(input?: Record<string, any>): boolean {
-        // Reset previously collected errors before every validation run (bug fix: accumulate errors across calls)
         this._errors = []
         const validate = this.bootstrapValidator()
         const dataToBeValidated = transformDataBeforeValidation(input ?? this.toJSON())
@@ -54,6 +53,5 @@ export abstract class AbstractBase implements ValidationAware, JSONSchemaAware {
     }
 
     abstract toJSON(): Record<string, any>
-
     abstract toJSONSchema(): JSONSchemaObject
 }

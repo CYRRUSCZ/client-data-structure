@@ -1,5 +1,7 @@
+import { PartialDeep } from 'type-fest'
 import { AbstractBase, type JSONSchema, type JSONSchemaObject } from './AbstractBase'
 import { Address, type AddressJSONSchema, type AddressInput, type AddressOutput } from './Address'
+import { ClientDataDifference } from './ClientData'
 
 /**
  * Input of the AddressInformation class that is used to create the object
@@ -8,12 +10,12 @@ export interface AddressInformationInput {
     /**
      * The residency address
      */
-    address: Address | Partial<AddressInput>
+    address: Address | PartialDeep<AddressInput>
 
     /**
      * The mailing address
      */
-    mailingAddress: Address | Partial<AddressInput>
+    mailingAddress: Address | PartialDeep<AddressInput>
 
     /**
      * Flag that indicates if the mailing address should be used as the postal address
@@ -70,7 +72,7 @@ export class AddressInformation extends AbstractBase {
     readonly #mailingAddress: Address
     readonly #useMailingAddress: boolean
 
-    constructor(input: Partial<AddressInformationInput> = {}) {
+    constructor(input: PartialDeep<AddressInformationInput> = {}) {
         super()
         const {
             address,
@@ -90,11 +92,11 @@ export class AddressInformation extends AbstractBase {
      * @param useMailingAddress flag that indicates if the mailing address should be used as the postal address
      */
     static create(
-        address: Address | Partial<AddressInput> | null | undefined,
-        mailingAddress: Address | Partial<AddressInput> | null | undefined,
+        address: Address | PartialDeep<AddressInput> | null | undefined,
+        mailingAddress: Address | PartialDeep<AddressInput> | null | undefined,
         useMailingAddress = false
     ): AddressInformation {
-        const plain: Partial<AddressInformationInput> = {
+        const plain: PartialDeep<AddressInformationInput> = {
             useMailingAddress
         }
         plain[ADDRESS_TYPE_REGULAR] = address ?? {}
@@ -133,6 +135,30 @@ export class AddressInformation extends AbstractBase {
             useMailingAddress: this.useMailingAddress
         }
         return plainObject
+    }
+
+    compareWith(addressInformation: PartialDeep<AddressInformationOutput>): ClientDataDifference[] {
+        const differences: ClientDataDifference[] = []
+        if (addressInformation.useMailingAddress !== undefined && addressInformation.useMailingAddress !== this.useMailingAddress) {
+            differences.push({
+                path: 'useMailingAddress',
+                originalValue: this.useMailingAddress,
+                changedValue: addressInformation.useMailingAddress
+            })
+        }
+        if (addressInformation.address !== undefined) {
+            differences.push(...this.address.compareWith(addressInformation.address).map(difference => ({
+                ...difference,
+                path: `address.${difference.path}`
+            })))
+        }
+        if (addressInformation.mailingAddress !== undefined) {
+            differences.push(...this.mailingAddress.compareWith(addressInformation.mailingAddress).map(difference => ({
+                ...difference,
+                path: `mailingAddress.${difference.path}`
+            })))
+        }
+        return differences
     }
 
     toJSONSchema(): AddressInformationJSONSchema {
@@ -177,7 +203,7 @@ export class AddressInformation extends AbstractBase {
      *
      * @param plainObject the plain object that is used to create the AddressInformation object
      */
-    static fromPlainObject(plainObject: Partial<AddressInformationOutput>): AddressInformation {
+    static fromPlainObject(plainObject: PartialDeep<AddressInformationOutput>): AddressInformation {
         return new AddressInformation(plainObject)
     }
 

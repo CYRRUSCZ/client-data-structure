@@ -1,4 +1,6 @@
+import { PartialDeep } from 'type-fest'
 import { AbstractBase, type JSONSchema, type JSONSchemaObject } from './AbstractBase'
+import { ClientDataDifference } from './ClientData'
 import { getStringOrNull, getValidDate } from './helpers'
 
 /**
@@ -49,7 +51,7 @@ export class InvestmentParameter extends AbstractBase {
     readonly #value: string | null = null
     readonly #isInvestmentCategory: boolean
 
-    constructor(input: Partial<InvestmentParameterInput> = {}) {
+    constructor(input: PartialDeep<InvestmentParameterInput> = {}) {
         super()
         const {
             version,
@@ -85,7 +87,7 @@ export class InvestmentParameter extends AbstractBase {
         value: string | null | undefined,
         isInvestmentCategory: boolean | undefined
     ): InvestmentParameter {
-        const plain: Partial<InvestmentParameterInput> = {
+        const plain: PartialDeep<InvestmentParameterInput> = {
             version,
             uid,
             name,
@@ -178,7 +180,28 @@ export class InvestmentParameter extends AbstractBase {
     /**
      * Creates an InvestmentParameter object from a plain object
      */
-    static fromPlainObject(plainObject: Partial<InvestmentParameterInput>): InvestmentParameter {
+    static fromPlainObject(plainObject: PartialDeep<InvestmentParameterInput>): InvestmentParameter {
         return new InvestmentParameter(plainObject)
+    }
+
+    compareWith(address: PartialDeep<InvestmentParameterOutput>): ClientDataDifference[] {
+        const differences: ClientDataDifference[] = []
+        const ownKeys = Object.keys(this.toJSON())
+        const currentEntries = Object.entries(this.toJSON())
+        const passedEntries = Object.entries(address).filter(([key, value]) => value !== undefined && ownKeys.includes(key))
+        for (const [modifiedKey, modifiedValue] of passedEntries) {
+            const current = currentEntries.find(([currentKey]) => currentKey === modifiedKey)
+            if (current) {
+                const [, currentValue] = current
+                if (currentValue !== modifiedValue) {
+                    differences.push({
+                        path: modifiedKey,
+                        originalValue: currentValue,
+                        changedValue: modifiedValue
+                    })
+                }
+            }
+        }
+        return differences
     }
 }

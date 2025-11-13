@@ -1,4 +1,6 @@
+import { PartialDeep } from 'type-fest'
 import { AbstractBase, type JSONSchema, type JSONSchemaObject } from './AbstractBase'
+import { ClientDataDifference } from './ClientData'
 import { SupportedIdCardTypes } from './enums'
 import { getStringOrNull, getNormalizedDate } from './helpers'
 import { countries } from '@cyrrus/locale-utils'
@@ -52,7 +54,7 @@ export class IdCardInformation extends AbstractBase {
     readonly #scanNotAllowed: boolean = false
 
     constructor(
-        input: Partial<IdCardInformationInput> = {}
+        input: PartialDeep<IdCardInformationInput> = {}
     ) {
         super()
         const {
@@ -89,7 +91,7 @@ export class IdCardInformation extends AbstractBase {
         type: string | null | undefined,
         scanNotAllowed: boolean | undefined = false
     ): IdCardInformation {
-        const plain: Partial<IdCardInformationInput> = {
+        const plain: PartialDeep<IdCardInformationInput> = {
             number,
             issuedBy,
             country,
@@ -216,7 +218,40 @@ export class IdCardInformation extends AbstractBase {
     /**
      * Converts a plain object to an IdCardInformation object
      */
-    static fromPlainObject(plainObject: Partial<IdCardInformationOutput>): IdCardInformation {
+    static fromPlainObject(plainObject: PartialDeep<IdCardInformationOutput>): IdCardInformation {
         return new IdCardInformation(plainObject)
+    }
+
+    compareWith(idCardInformation: PartialDeep<IdCardInformationOutput>): ClientDataDifference[] {
+        const differences: ClientDataDifference[] = []
+        const ownKeys = Object.keys(this.toJSON())
+        const currentEntries = Object.entries(this.toJSON())
+        const passedEntries = Object.entries(idCardInformation).filter(([key, value]) => value !== undefined && ownKeys.includes(key))
+        for (const [modifiedKey, modifiedValue] of passedEntries) {
+            const current = currentEntries.find(([currentKey]) => currentKey === modifiedKey)
+            if (current) {
+                const [, currentValue] = current
+                if (modifiedKey === 'validity' && typeof modifiedValue !== 'boolean') {
+                    const currentDate = getNormalizedDate(currentValue)
+                    const modifiedDate = getNormalizedDate(modifiedValue)
+                    if (currentDate.getTime() !== modifiedDate.getTime()) {
+                        differences.push({
+                            path: modifiedKey,
+                            originalValue: currentValue,
+                            changedValue: modifiedValue
+                        })
+                    }
+                    continue
+                }
+                if (currentValue !== modifiedValue) {
+                    differences.push({
+                        path: modifiedKey,
+                        originalValue: currentValue,
+                        changedValue: modifiedValue
+                    })
+                }
+            }
+        }
+        return differences
     }
 }

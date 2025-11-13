@@ -3,6 +3,8 @@ import { getNormalizedDate, getStringOrNull, transformDataBeforeValidation } fro
 import { mod11_10 as mod1110 } from 'cdigit'
 import { countries } from '@cyrrus/locale-utils'
 import { SupportedGenderOptions } from './enums'
+import { ClientDataDifference } from './ClientData'
+import { PartialDeep } from 'type-fest'
 
 /**
  * Input of the PersonalInformation class that is used to create the object
@@ -100,7 +102,7 @@ export class PersonalInformation extends AbstractBase {
     readonly #gender: string | null = null
 
     constructor(
-        input: Partial<PersonalInformationInput> = {}
+        input: PartialDeep<PersonalInformationInput> = {}
     ) {
         super()
         const {
@@ -160,7 +162,7 @@ export class PersonalInformation extends AbstractBase {
         citizenship: string | null | undefined,
         gender: string | null | undefined
     ): PersonalInformation {
-        const plain: Partial<PersonalInformationInput> = {
+        const plain: PartialDeep<PersonalInformationInput> = {
             prenominal,
             firstName,
             lastName,
@@ -529,7 +531,40 @@ export class PersonalInformation extends AbstractBase {
     /**
      * Converts a plain object to a PersonalInformation instance
      */
-    static fromPlainObject(plainObject: Partial<PersonalInformationInput> = {}): PersonalInformation {
+    static fromPlainObject(plainObject: PartialDeep<PersonalInformationInput> = {}): PersonalInformation {
         return new PersonalInformation(plainObject)
+    }
+
+    compareWith(personalInformation: PartialDeep<PersonalInformationOutput>): ClientDataDifference[] {
+        const differences: ClientDataDifference[] = []
+        const ownKeys = Object.keys(this.toJSON())
+        const currentEntries = Object.entries(this.toJSON())
+        const passedEntries = Object.entries(personalInformation).filter(([key, value]) => value !== undefined && ownKeys.includes(key))
+        for (const [modifiedKey, modifiedValue] of passedEntries) {
+            const current = currentEntries.find(([currentKey]) => currentKey === modifiedKey)
+            if (current) {
+                const [, currentValue] = current
+                if (modifiedKey === 'dateOfBirth' && typeof modifiedValue !== 'boolean') {
+                    const currentDate = getNormalizedDate(currentValue)
+                    const modifiedDate = getNormalizedDate(modifiedValue)
+                    if (currentDate.getTime() !== modifiedDate.getTime()) {
+                        differences.push({
+                            path: modifiedKey,
+                            originalValue: currentValue,
+                            changedValue: modifiedValue
+                        })
+                    }
+                    continue
+                }
+                if (currentValue !== modifiedValue) {
+                    differences.push({
+                        path: modifiedKey,
+                        originalValue: currentValue,
+                        changedValue: modifiedValue
+                    })
+                }
+            }
+        }
+        return differences
     }
 }

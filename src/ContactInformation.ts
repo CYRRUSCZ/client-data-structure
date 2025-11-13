@@ -1,4 +1,6 @@
+import { PartialDeep } from 'type-fest'
 import { AbstractBase, type JSONSchema, type JSONSchemaObject } from './AbstractBase'
+import { ClientDataDifference } from './ClientData'
 import { getStringOrNull, transformDataBeforeValidation } from './helpers'
 import { parsePhoneNumberFromString } from 'libphonenumber-js'
 
@@ -36,7 +38,7 @@ export class ContactInformation extends AbstractBase {
     readonly #phoneNumber: string | null = null
 
     constructor(
-        input: Partial<ContactInformationInput> = {}
+        input: PartialDeep<ContactInformationInput> = {}
     ) {
         super()
         const {
@@ -57,7 +59,7 @@ export class ContactInformation extends AbstractBase {
         email: string | null | undefined,
         phoneNumber: string | null | undefined
     ): ContactInformation {
-        const plain: Partial<ContactInformationInput> = {
+        const plain: PartialDeep<ContactInformationInput> = {
             email,
             phoneNumber
         }
@@ -79,12 +81,10 @@ export class ContactInformation extends AbstractBase {
     }
 
     validate(input?: Record<string, any>): boolean {
-        // Reset previous errors (bug 4)
         this._errors = []
         const validate = this.bootstrapValidator()
         const dataToBeValidated = transformDataBeforeValidation(input ?? this.toJSON())
 
-        // Only validate phone number format if present (bug 7)
         if (dataToBeValidated.phoneNumber !== null && dataToBeValidated.phoneNumber !== undefined && dataToBeValidated.phoneNumber !== '') {
             try {
                 ContactInformation.validatePhoneNumber(String(dataToBeValidated.phoneNumber))
@@ -159,7 +159,6 @@ export class ContactInformation extends AbstractBase {
                     pattern: '^(\\()?\\+[0-9\\s]+(\\))?[0-9\\s]+$'
                 }
             },
-            // Removed non-existent 'phonePassword' from required (bug 2)
             required: ['email', 'phoneNumber']
         }
     }
@@ -174,7 +173,28 @@ export class ContactInformation extends AbstractBase {
     /**
      * Create a new instance of the ContactInformation class from a plain object
      */
-    static fromPlainObject(plainObject: Partial<ContactInformationOutput>): ContactInformation {
+    static fromPlainObject(plainObject: PartialDeep<ContactInformationOutput>): ContactInformation {
         return new ContactInformation(plainObject)
+    }
+
+    compareWith(contactInformation: PartialDeep<ContactInformationOutput>): ClientDataDifference[] {
+        const differences: ClientDataDifference[] = []
+        const ownKeys = Object.keys(this.toJSON())
+        const currentEntries = Object.entries(this.toJSON())
+        const passedEntries = Object.entries(contactInformation).filter(([key, value]) => value !== undefined && ownKeys.includes(key))
+        for (const [modifiedKey, modifiedValue] of passedEntries) {
+            const current = currentEntries.find(([currentKey]) => currentKey === modifiedKey)
+            if (current) {
+                const [, currentValue] = current
+                if (currentValue !== modifiedValue) {
+                    differences.push({
+                        path: modifiedKey,
+                        originalValue: currentValue,
+                        changedValue: modifiedValue
+                    })
+                }
+            }
+        }
+        return differences
     }
 }

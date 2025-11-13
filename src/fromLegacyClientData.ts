@@ -7,6 +7,7 @@ import { type RepresentativeInput } from './Representative'
 import { type CompanyInformationInput } from './CompanyInformation'
 import { type ClientInformationInput } from './ClientInformation'
 import { type BankAccountInput } from './BankAccount'
+import type { PartialDeep } from 'type-fest'
 
 /**
  * Migration function from legacy ClientData (v8.2.1) to current version
@@ -31,7 +32,7 @@ export function fromLegacyClientData(input: LegacyClientDataInput): ClientData {
     const legacyClientData = new LegacyClientData(input).toPlainObject()
 
     // Create a migrated input object for the current ClientData structure
-    const migratedInput: Partial<ClientDataInput> = {
+    const migratedInput: PartialDeep<ClientDataInput> = {
         client: migrateClientInformation(legacyClientData.client),
         personal: legacyClientData.personal, // PersonalInformation structure unchanged
         idCard: migrateIdCardInformation(legacyClientData.idCard),
@@ -66,7 +67,14 @@ function migrateClientInformation({
     bankAccountsConfirmedByAffidavit: _bankAccountsConfirmedByAffidavit,
     investmentProfiles: _investmentProfiles,
     ...rest
-}: LegacyClientInformationOutput): Partial<ClientInformationInput> {
+}: LegacyClientInformationOutput): PartialDeep<ClientInformationInput> {
+    void _capitolId
+    void _brokerId
+    void _externalBrokerCapitolId
+    void _externalBrokerAgentCapitolId
+    void _crmId
+    void _bankAccountsConfirmedByAffidavit
+    void _investmentProfiles
     return {
         ...rest,
         internalId: dataOriginId,
@@ -85,7 +93,7 @@ function migrateClientInformation({
  * Legacy investmentProfiles and investmentServices are dropped in the new structure
  * Field rename: added → addedAt
  */
-function migrateInvestmentParameters(legacyParameters: LegacyInvestmentParameterOutput[]): Array<Partial<InvestmentParameterInput>> {
+function migrateInvestmentParameters(legacyParameters: LegacyInvestmentParameterOutput[]): Array<PartialDeep<InvestmentParameterInput>> {
     return legacyParameters.map(({ added, ...rest }) => ({
         ...rest,
         addedAt: added
@@ -98,7 +106,7 @@ function migrateInvestmentParameters(legacyParameters: LegacyInvestmentParameter
  * - type 'OP' → 'id'
  * - type 'Pas' → 'passport'
  */
-function migrateIdCardInformation(legacy: LegacyIdCardInformationOutput): Partial<IdCardInformationInput> {
+function migrateIdCardInformation(legacy: LegacyIdCardInformationOutput): PartialDeep<IdCardInformationInput> {
     return {
         ...legacy,
         type: migrateIdCardType(legacy.type)
@@ -116,8 +124,8 @@ function migrateIdCardType(legacyType: string | null): string | null {
     }
 
     const typeMap: Record<string, string> = {
-        'OP': 'id',
-        'Pas': 'passport'
+        OP: 'id',
+        Pas: 'passport'
     }
 
     const mappedType = typeMap[legacyType]
@@ -132,7 +140,7 @@ function migrateIdCardType(legacyType: string | null): string | null {
  * Migrates ContactInformation from legacy v8.2.1 to current structure
  * - phonePassword field removed (was in legacy, not in current)
  */
-function migrateContactInformation({ email, phoneNumber }: LegacyContactInformationOutput): Partial<ContactInformationInput> {
+function migrateContactInformation({ email, phoneNumber }: LegacyContactInformationOutput): PartialDeep<ContactInformationInput> {
     return { email, phoneNumber }
 }
 
@@ -143,20 +151,23 @@ function migrateContactInformation({ email, phoneNumber }: LegacyContactInformat
  * Fields removed from legacy: capitolId
  * New fields (set to null or from client): cytronId (null), isConfirmedByAffidavit (from client.bankAccountsConfirmedByAffidavit)
  */
-function migrateBankAccounts(legacyBankAccounts: LegacyBankAccountOutput[], bankAccountsConfirmedByAffidavit: boolean): Array<Partial<BankAccountInput>> {
-    return legacyBankAccounts.map(({ foreign, capitolId: _capitolId, ...rest }) => ({
-        ...rest,
-        isForeign: foreign,
-        cytronId: null,
-        isConfirmedByAffidavit: bankAccountsConfirmedByAffidavit
-    }))
+function migrateBankAccounts(legacyBankAccounts: LegacyBankAccountOutput[], bankAccountsConfirmedByAffidavit: boolean): Array<PartialDeep<BankAccountInput>> {
+    return legacyBankAccounts.map(({ foreign, capitolId: _capitolId, ...rest }) => {
+        void _capitolId
+        return {
+            ...rest,
+            isForeign: foreign,
+            cytronId: null,
+            isConfirmedByAffidavit: bankAccountsConfirmedByAffidavit
+        }
+    })
 }
 
 /**
  * Migrates CompanyInformation from legacy v8.2.1 to current structure
  * - representatives array migrated with field transformations
  */
-function migrateCompanyInformation(legacy: LegacyCompanyInformationOutput): Partial<CompanyInformationInput> {
+function migrateCompanyInformation(legacy: LegacyCompanyInformationOutput): PartialDeep<CompanyInformationInput> {
     return {
         ...legacy,
         representatives: legacy.representatives.map(migrateRepresentative)
@@ -170,7 +181,10 @@ function migrateCompanyInformation(legacy: LegacyCompanyInformationOutput): Part
  * New fields (set to null): cytronId, contactId
  * - contact structure unchanged (RepresentativeContactInformation has same structure as ContactInformation)
  */
-function migrateRepresentative({ capitolId: _capitolId, capitolContactId: _capitolContactId, idCard, position: _position, ...rest }: LegacyRepresentativeOutput): Partial<RepresentativeInput> {
+function migrateRepresentative({ capitolId: _capitolId, capitolContactId: _capitolContactId, idCard, position: _position, ...rest }: LegacyRepresentativeOutput): PartialDeep<RepresentativeInput> {
+    void _capitolId
+    void _capitolContactId
+    void _position
     return {
         ...rest,
         idCard: migrateIdCardInformation(idCard),

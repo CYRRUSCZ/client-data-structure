@@ -1,27 +1,8 @@
 # CYRRUS Client Data Structure
 
-## Introduction
-This library is a TypeScript-based set of classes that represents client data structure designed for the **Cytron** business core system. It provides normalized, serializable DTOs for client information (both persons and companies) that can be used to communicate with CYRRUS DocHub API and other integrated systems.
+TypeScript library providing normalized, serializable DTOs for client data (persons and companies) used in CYRRUS DocHub API and Cytron business core system integrations.
 
-**Current Version**: 9.x (Cytron-compatible)
-
-> **Legacy Version Notice**: Version 8.x was designed for the legacy **Capitol** business core system and is now **deprecated**. 
-> For documentation on version 8.x, see [README_v8_LEGACY.md](./README_v8_LEGACY.md).
-
-## Version 9 - Cytron Integration
-
-Version 9 represents a major refactoring of the library to align with the new Cytron business core system. Key changes from version 8 include:
-
-### Breaking Changes from v8
-- **Field renames**: `dataOriginId` → `internalId`, `residency` → `isResident`, `foreign` → `isForeign`
-- **ID card type changes**: `'OP'` → `'id'`, `'Pas'` → `'passport'`
-- **Removed fields**: `InvestmentProfile`, `InvestmentService`, `phonePassword` (from representatives), all Capitol-related ID fields (`capitolId`, `externalBrokerCapitolId`, `externalBrokerAgentCapitolId`)
-- **ID system migration**: Capitol IDs have been completely removed and replaced with Cytron IDs
-
-For detailed migration information, see `src/fromLegacyClientData.ts`.
-
-## API Documentation
-See the generated TypeDoc documentation in `./docs`
+**Version**: 9.x (Cytron-compatible) | **Legacy**: [Version 8.x documentation](./README_v8_LEGACY.md)
 
 ## Installation
 
@@ -29,149 +10,133 @@ See the generated TypeDoc documentation in `./docs`
 npm install @cyrrus/client-data-structure
 ```
 
-## Validation
-The library provides built-in JSON Schema validation using AJV. Validation is **opt-in** and requires the following peer dependencies to be installed:
-
-- `ajv` - JSON Schema validator
-- `ajv-formats` - Format validation (email, date, etc.)
-- `cdigit` - Check digit validation
-- `ibantools` - IBAN validation
-- `libphonenumber-js` - Phone number validation
-
-### Usage Example
+## Quick Start
 
 ```typescript
 import { ClientData } from '@cyrrus/client-data-structure'
 
-const clientData = new ClientData({
-    client: { type: 'person', /* ... */ },
-    personal: { firstName: 'John', lastName: 'Doe', /* ... */ },
-    // ... other fields
+// Create client data
+const client = new ClientData({
+    client: { type: 'person', isResident: true },
+    personal: { firstName: 'John', lastName: 'Doe' },
+    contact: { email: 'john@example.com' },
+    address: { address: { street: '123 Main St', city: 'Prague' } },
+    bankAccounts: []
 })
 
-// Validation (throws on error)
-try {
-    clientData.validate()
-    console.log('Valid client data')
-} catch (error) {
-    console.error('Validation errors:', error.cause)
-}
+// Serialize
+const json = JSON.stringify(client)
+const plain = client.toPlainObject()
 
-// Serialization
-const plainObject = clientData.toPlainObject()
-const jsonString = JSON.stringify(clientData)
+// Validate (requires peer dependencies)
+client.validate() // throws on error with details in error.cause
 ```
 
 ## Data Structure
 
-The `ClientData` class is the root class with the following main components:
+`ClientData` contains seven main components:
 
-### Core Components
+| Component | Type | Usage | Key Fields |
+|-----------|------|-------|------------|
+| `client` | `ClientInformation` | System metadata | type, internalId, contactId, isResident, investmentParameters, brokerContactId |
+| `personal` | `PersonalInformation` | Personal details | firstName, lastName, dateOfBirth, birthNumber, citizenship |
+| `idCard` | `IdCardInformation` | ID document | number, type, issuedBy, validUntil |
+| `address` | `AddressInformation` | Addresses | address (postal), mailingAddress, useMailingAddress |
+| `contact` | `ContactInformation` | Communication | email, phoneNumber |
+| `bankAccounts` | `BankAccount[]` | Bank accounts | accountNumber, bankCode, iban, swift, currency |
+| `company` | `CompanyInformation` | Company data | name, ic, dic, lei, representatives[] |
 
-- **`client`** - `ClientInformation` - System metadata and investment parameters
-  - Client type (person/company/self-employed)
-  - Data origin and internal IDs
-  - Cytron ID, CRM ID
-  - Investment parameters and categories
-  - Residency and economic sector information
-  - Broker assignments
+**Client Types**: `person`, `company`, `selfemployed`
+- **Person/Self-employed**: Uses `personal`, `idCard`
+- **Company**: Uses `company` with `representatives[]` array
 
-- **`personal`** - `PersonalInformation` - Personal details (for persons and self-employed)
-  - Names and titles (prenominal, firstName, lastName, postnominal)
-  - Birth information (dateOfBirth, birthNumber, placeOfBirth)
-  - Tax domicile and citizenship
-  - Gender and politician status
+See `dataExamples/person.json` and `dataExamples/company.json` for complete examples.
 
-- **`idCard`** - `IdCardInformation` - Identification document details
-  - Document number, type (id/passport/etc.)
-  - Issuing authority and country
-  - Validity date
-  - Scan permissions
+## Validation
 
-- **`address`** - `AddressInformation` - Postal and mailing addresses
-  - Primary address (recipient, street, city, country, postal code)
-  - Optional mailing address
-  - Flag for using mailing address as postal
+Validation is **opt-in** - install peer dependencies:
 
-- **`contact`** - `ContactInformation` - Communication details
-  - Email address
-  - Phone number
+```bash
+npm install ajv ajv-formats cdigit ibantools libphonenumber-js
+```
 
-- **`bankAccounts`** - `BankAccount[]` - Bank account information
-  - Domestic accounts (prefix, account number, bank code)
-  - Foreign accounts (IBAN, SWIFT, bank details)
-  - Currency and account holder information
-
-- **`company`** - `CompanyInformation` - Company-specific data (for companies)
-  - Company identification (IC, DIC, LEI)
-  - Company name and tax domicile
-  - Array of `Representative` objects with personal details, positions, and ownership information
-
-### Data Examples
-
-For complete data structure examples for both persons and companies, see:
-- `dataExamples/person.json` - Example person client data
-- `dataExamples/company.json` - Example company client data with representatives
+All classes extend `AbstractBase` providing:
+- `validate()` - Throws with validation errors in `error.cause`
+- `toJSONSchema()` - Returns JSON Schema definition
+- `toPlainObject()` / `toJSON()` - Serialization
 
 ## Architecture
 
-### Class Design Principles
+### Immutable Classes
+- Private readonly fields (`#field`) with public getters
+- No setters - instances cannot be mutated after creation
+- Constructor accepts `Partial<XInput>` with defaults
 
-All data classes extend `AbstractBase` which provides:
-- **JSON Schema generation** via `toJSONSchema()`
-- **AJV validation** via `validate()` (throws errors with `_errors` array populated)
-- **Immutable instances** - All fields are private readonly (`#field` syntax) with public getters
-- **Serialization** - `toPlainObject()` and `toJSON()` methods
+### Helper Functions
+- `getStringOrNull()` - Normalizes strings, returns `null` for empty
+- `getNormalizedDate()` - Parses dates to `YYYY-MM-DDTHH:MM:SS.SSSZ` format (noon UTC)
+- `getInstanceOfClass()` - Handles both plain objects and class instances
 
-### Constructor Pattern
+### Type System
+Each class exports three types:
+- `XInput` - Constructor input (partial/optional fields)
+- `XOutput` - Serialized output (plain object)
+- `XJSONSchema` - JSON Schema type definition
 
-Every class accepts partial inputs with defaults and uses helper functions for type safety:
+## Migration from v8
 
-```typescript
-constructor(input: Partial<XInput> = {}) {
-    super()
-    const { field1, field2 } = input
-    this.#field1 = getStringOrNull(field1)
-    this.#field2 = getInstanceOfClass<SomeClass>(field2, SomeClass)
-}
-```
+Key breaking changes from version 8.x:
 
-### Type Definitions
+| Change Type | v8 | v9 | Location | Notes |
+|-------------|----|----|----------|-------|
+| **Field Rename** | `dataOriginId` | `internalId` | ClientInformation | |
+| **Field Rename** | `residency` | `isResident` | ClientInformation | |
+| **Field Rename** | `foreign` | `isForeign` | BankAccount | |
+| **Field Rename** | `added` | `addedAt` | InvestmentParameter | |
+| **Enum Value** | `'OP'` | `'id'` | IdCardInformation.type | |
+| **Enum Value** | `'Pas'` | `'passport'` | IdCardInformation.type | |
+| **Removed** | `capitolId` | *(removed)* | ClientInformation | Capitol → Cytron |
+| **Removed** | `brokerId` | *(removed)* | ClientInformation | Capitol → Cytron |
+| **Removed** | `externalBrokerCapitolId` | *(removed)* | ClientInformation | Capitol → Cytron |
+| **Removed** | `externalBrokerAgentCapitolId` | *(removed)* | ClientInformation | Capitol → Cytron |
+| **Removed** | `crmId` | *(removed)* | ClientInformation | Capitol → Cytron |
+| **Removed** | `bankAccountsConfirmedByAffidavit` | *(removed)* | ClientInformation | Moved to BankAccount |
+| **Removed** | `investmentProfiles` | *(removed)* | ClientInformation | Simplified structure |
+| **Removed** | `capitolId` | *(removed)* | Representative | Capitol → Cytron |
+| **Removed** | `capitolContactId` | *(removed)* | Representative | Capitol → Cytron |
+| **Removed** | `position` | *(removed)* | Representative | |
+| **Removed** | `capitolId` | *(removed)* | BankAccount | Capitol → Cytron |
+| **Removed** | `phonePassword` | *(removed)* | ContactInformation | |
+| **Added** | *(new)* | `contactId` | ClientInformation | Set to null |
+| **Added** | *(new)* | `brokerContactId` | ClientInformation | Set to null |
+| **Added** | *(new)* | `externalBrokerContactId` | ClientInformation | Set to null |
+| **Added** | *(new)* | `externalBrokerAgentContactId` | ClientInformation | Set to null |
+| **Added** | `legislation` | `preferredLanguage` | ClientInformation | Field renamed/remapped |
+| **Added** | *(new)* | `cytronId` | Representative | Set to null |
+| **Added** | *(new)* | `contactId` | Representative | Set to null |
+| **Added** | *(new)* | `cytronId` | BankAccount | Set to null |
+| **Added** | *(new)* | `isConfirmedByAffidavit` | BankAccount | From client.bankAccountsConfirmedByAffidavit |
+| **Entity Removed** | `InvestmentProfile` | *(removed)* | - | Simplified to InvestmentParameter only |
+| **Entity Removed** | `InvestmentService` | *(removed)* | - | No longer supported |
 
-Each class has three type definitions:
-- `XInput` - Constructor input (all fields optional)
-- `XOutput` - Serialized plain object output
-- `XJSONSchema` - JSON Schema structure for validation
-
-## Migrating from Version 8
-
-If you're upgrading from version 8.x, the library provides a migration utility:
-
+Use migration helper:
 ```typescript
 import { fromLegacyClientData } from '@cyrrus/client-data-structure'
 
-const v8Data = { /* version 8 structure */ }
-const v9Data = fromLegacyClientData(v8Data)
+const v9Client = fromLegacyClientData(v8Data)
 ```
-
-**Note**: Capitol-related ID fields are removed during migration as they have been replaced with Cytron IDs in the new system.
 
 ## Development
 
 ```bash
-# Build the library
-npm run build
-
-# Run tests
-npm test
-
-# Generate documentation
-npm run docs
-
-# Lint code
-npm run lint
+npm run build  # Build ESM + CJS + types to dist/
+npm test       # Run Jest tests (builds test bundle first)
+npm run docs   # Generate TypeDoc documentation
+npm run lint   # ESLint with TypeScript strict rules
 ```
+
+**Build Output**: Dual-format (ESM `.js` + CJS `.cjs`) with source maps and type definitions
 
 ## License
 
-See LICENSE file for details.
+MIT

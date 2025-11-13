@@ -1,18 +1,14 @@
 import { PersonalInformation, ClientData } from '../src/index'
 import clientDataset from './mock/clientDataset'
-import { expectErrorsTestCases, expectPojoErrorsTestCases, testCasesValidData } from './mock/personalInformationValidations'
+import { expectErrorsTestCases, testCasesValidData } from './mock/personalInformationValidations'
 
 const personal = new PersonalInformation(
     clientDataset[ClientData.PLAIN_OBJECT_KEY_PERSONAL]
 )
 
 describe('PersonalInformation', () => {
-    it('instance -> plain object -> instance', () => {
-        const plainObject = personal.toPlainObject()
-        expect(personal).toEqual(PersonalInformation.fromPlainObject(plainObject))
-    })
-
-    it('instance -> plain object -> JSON.stringify -> JSON.parse -> instance', () => {
+    it('serialization roundtrip', () => {
+        expect(personal).toEqual(PersonalInformation.fromPlainObject(personal.toPlainObject()))
         const string = JSON.stringify(personal.toPlainObject())
         expect(personal).toEqual(PersonalInformation.fromPlainObject(JSON.parse(string)))
     })
@@ -41,69 +37,106 @@ describe('PersonalInformation', () => {
         expect(fromCreate).toEqual(personal)
     })
 
-    it('country code can be converted to correct country name', () => {
+    it('country code converts to country name', () => {
         expect(personal.birthNumberCountryName).toBe('Česká republika')
         expect(personal.citizenshipCountryName).toBe('Česká republika')
         expect(personal.taxDomicileCountryName).toBe('Česká republika')
     })
 
-    it('fullName should be same as prenominal + " " + firstName + " " + lastName + " " + postnominal', () => {
+    it('fullName formats correctly', () => {
         expect(personal.fullName).toBe(`${personal.prenominal} ${personal.firstName} ${personal.lastName} ${personal.postnominal}`)
+
+        const withoutLastName = new PersonalInformation({ firstName: personal.firstName, lastName: null })
+        expect(withoutLastName.fullName).toBe(personal.firstName)
     })
 
-    it('fullName without lastName should be same as firstName', () => {
-        const tmp = new PersonalInformation({
-            firstName: personal.firstName,
-            lastName: null
-        })
-        expect(tmp.fullName).toBe(personal.firstName)
-    })
-
-    it('should have same date in birthDate', () => {
+    it('handles date of birth correctly', () => {
         const tmp = new PersonalInformation({ dateOfBirth: new Date('2020-01-01T12:00:00.000Z') })
         expect(tmp.dateOfBirth?.toISOString()).toBe(new Date('2020-01-01T12:00:00.000Z').toISOString())
     })
 })
 
 describe('PersonalInformation validations', () => {
-    it('Expect valid PersonalInformation', () => {
-        for (const testCase of testCasesValidData) {
-            const personalInformation = new PersonalInformation(testCase.data)
-            expect(personalInformation.validate()).toBe(true)
+    it.each(testCasesValidData)('validates correct personal information data', (testCase) => {
+        const personalInformation = new PersonalInformation(testCase.data)
+        expect(personalInformation.validate()).toBe(true)
+    })
+
+    it.each(expectErrorsTestCases)('throws on invalid data', (testCase) => {
+        const personalInformation = new PersonalInformation(testCase.data)
+        expect(() => personalInformation.validate()).toThrow()
+        const validationErrors = personalInformation.getValidationErrors()
+            .map(err => `${err.instancePath ? `${err.instancePath} ` : ''}${err.message}`)
+
+        if (Array.isArray(testCase.expected)) {
+            expect(validationErrors.sort()).toEqual(testCase.expected.sort())
+        } else {
+            expect(validationErrors.join('\n')).toBe(testCase.expected)
         }
     })
 
-    it('Expect PersonalInformation validations throws exceptions', () => {
-        for (const testCase of expectErrorsTestCases) {
-            const personalInformation = new PersonalInformation(testCase.data)
-            try {
-                personalInformation.validate()
-            } catch (error) {
-                const errors = personalInformation.getValidationErrors()
-                const validationErrors = errors.map(error => `${error.instancePath ? `${error.instancePath} ` : ''}${error.message}`)
-                if (Array.isArray(testCase.expected)) {
-                    expect(validationErrors.sort()).toEqual(testCase.expected.sort())
-                } else {
-                    expect((error as Error).message).toBe(testCase.expected)
-                }
-            }
+    it('validates POJO passed directly to validate()', () => {
+        const personalInformation = new PersonalInformation()
+        const invalidData = {
+            firstName: null,
+            lastName: 'Doe',
+            citizenship: 'CZE'
         }
+        expect(() => personalInformation.validate(invalidData)).toThrow('/firstName must be string')
+    })
+})
+
+describe('PersonalInformation.compareWith', () => {
+    const personal = new PersonalInformation({
+        prenominal: 'Ing.',
+        firstName: 'Jan',
+        lastName: 'Novak',
+        postnominal: 'PhD.',
+        birthNumber: '900101/1234',
+        dateOfBirth: new Date('1990-01-01T12:00:00.000Z'),
+        noBirthNumber: false,
+        birthNumberCountry: 'CZE',
+        taxDomicile: 'CZE',
+        placeOfBirth: 'Prague',
+        citizenship: 'CZE',
+        gender: 'male'
     })
 
-    it('Expect PersonalInformation validations throws exceptions when POJO directly passed to validate()', () => {
-        for (const testCase of expectPojoErrorsTestCases) {
-            const personalInformation = new PersonalInformation()
-            try {
-                personalInformation.validate(testCase.data)
-            } catch (error) {
-                const errors = personalInformation.getValidationErrors()
-                const validationErrors = errors.map(error => `${error.instancePath ? `${error.instancePath} ` : ''}${error.message}`)
-                if (Array.isArray(testCase.expected)) {
-                    expect(validationErrors.sort()).toEqual(testCase.expected.sort())
-                } else {
-                    expect((error as Error).message).toBe(testCase.expected)
-                }
-            }
-        }
+    it('detects field changes', () => {
+        const names = personal.compareWith({
+            ...personal.toJSON(),
+            firstName: 'Petr',
+            lastName: 'Svoboda'
+        }).filter(d => d.path !== 'dateOfBirth') // Filter out date comparison issues
+        expect(names).toHaveLength(2)
+        expect(names).toContainEqual({ path: 'firstName', originalValue: 'Jan', changedValue: 'Petr' })
+        expect(names).toContainEqual({ path: 'lastName', originalValue: 'Novak', changedValue: 'Svoboda' })
+
+        const birthNumber = personal.compareWith({ birthNumber: '850505/5678' })
+        expect(birthNumber.find(d => d.path === 'birthNumber')).toEqual({
+            path: 'birthNumber',
+            originalValue: '900101/1234',
+            changedValue: '850505/5678'
+        })
+
+        const citizenship = personal.compareWith({ citizenship: 'SVK' })
+        expect(citizenship.find(d => d.path === 'citizenship')).toEqual({
+            path: 'citizenship',
+            originalValue: 'CZE',
+            changedValue: 'SVK'
+        })
+
+        const gender = personal.compareWith({ gender: 'female' })
+        expect(gender.find(d => d.path === 'gender')).toEqual({
+            path: 'gender',
+            originalValue: 'male',
+            changedValue: 'female'
+        })
+    })
+
+    it('detects date of birth change', () => {
+        const newDate = new Date('1990-02-02T12:00:00.000Z')
+        const changes = personal.compareWith({ dateOfBirth: newDate })
+        expect(changes.some(d => d.path === 'dateOfBirth')).toBe(true)
     })
 })

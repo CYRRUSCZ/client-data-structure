@@ -110,20 +110,17 @@ This provides type-safe key access: `ClientData.PLAIN_OBJECT_KEY_CLIENT`
 `fromLegacyClientData.ts` migrates from v8.2.1 → v9.0.0:
 - Field renames: `dataOriginId→internalId`, `residency→isResident`, `foreign→isForeign`
 - ID card type changes: `'OP'→'id'`, `'Pas'→'passport'`
-- Removed: InvestmentProfile, InvestmentService, phonePassword
-- Capitol IDs → Cytron IDs (set to null in migration)
+- Removed: `InvestmentProfile`, `InvestmentService`, `phonePassword` from representatives
+- Capitol IDs removed and replaced with Cytron IDs (set to null in migration)
 
 ## Important Notes
 
 ### Representative vs Person
-- `Representative` is for company representatives (no ContactInformation.phonePassword)
+- `Representative` is for company representatives (no `phonePassword` field)
 - `PersonalInformation` is reused in both `ClientData.personal` and `Representative.personal`
 
 ### Data Examples
 See `dataExamples/person.json` and `dataExamples/company.json` for complete structure examples
-
-### Capitol Web Service Mapping
-README.md contains detailed mapping to Capitol API calls (GetClient.dll methods) - reference when integrating with external systems
 
 ## Common Pitfalls
 - Don't validate without peer dependencies installed - calls will fail

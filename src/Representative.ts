@@ -2,9 +2,10 @@ import { getInstanceOfClass, getStringOrNull } from './helpers'
 import { Address, type AddressJSONSchema, type AddressInput, type AddressOutput } from './Address'
 import { IdCardInformation, type IdCardInformationJSONSchema, type IdCardInformationInput, type IdCardInformationOutput } from './IdCardInformation'
 import { PersonalInformation, type PersonalInformationJSONSchema, type PersonalInformationInput, type PersonalInformationOutput } from './PersonalInformation'
-import { ClientData } from './ClientData'
+import { ClientData, ClientDataDifference } from './ClientData'
 import { AbstractBase, type JSONSchema, type JSONSchemaObject } from './AbstractBase'
 import { ContactInformation, ContactInformationInput, ContactInformationJSONSchema, ContactInformationOutput } from './ContactInformation'
+import type { PartialDeep } from 'type-fest'
 
 export const PLAIN_OBJECT_KEY_ID = 'id'
 
@@ -12,11 +13,11 @@ export const PLAIN_OBJECT_KEY_ID = 'id'
  * Input of the Representative class that is used to create the object
  */
 export interface RepresentativeInput {
-    personal: Partial<PersonalInformationInput>
-    address: Partial<AddressInput>
-    idCard: Partial<IdCardInformationInput>
+    personal: PartialDeep<PersonalInformationInput>
+    address: PartialDeep<AddressInput>
+    idCard: PartialDeep<IdCardInformationInput>
     id: string | null
-    contact: Partial<ContactInformationInput>
+    contact: PartialDeep<ContactInformationInput>
     isRepresentative?: boolean
     isRealOwner?: boolean
     realOwnerReasonChar?: string | null
@@ -92,7 +93,7 @@ export class Representative extends AbstractBase {
     readonly #hasPowerOfAttorney: boolean = false
 
     constructor(
-        input: Partial<RepresentativeInput> = {}
+        input: PartialDeep<RepresentativeInput> = {}
     ) {
         super()
         const {
@@ -141,11 +142,11 @@ export class Representative extends AbstractBase {
      * @param hasPowerOfAttorney flag indicating that the representative has a power of attorney
      */
     static create(
-        personal: Partial<PersonalInformationInput> | undefined,
-        address: Partial<AddressInput> | undefined,
-        idCard: Partial<IdCardInformationInput> | undefined,
+        personal: PartialDeep<PersonalInformationInput> | undefined,
+        address: PartialDeep<AddressInput> | undefined,
+        idCard: PartialDeep<IdCardInformationInput> | undefined,
         id: string | null | undefined,
-        contact: Partial<ContactInformationInput> | undefined,
+        contact: PartialDeep<ContactInformationInput> | undefined,
         isRepresentative: boolean | undefined = true,
         isRealOwner: boolean | undefined = false,
         realOwnerReasonChar: string | null | undefined = null,
@@ -154,7 +155,7 @@ export class Representative extends AbstractBase {
         contactId: string | null | undefined = null,
         hasPowerOfAttorney: boolean | undefined = false
     ): Representative {
-        const plain: Partial<RepresentativeInput> = {
+        const plain: PartialDeep<RepresentativeInput> = {
             isRepresentative,
             isRealOwner,
             realOwnerReasonChar,
@@ -327,7 +328,55 @@ export class Representative extends AbstractBase {
     /**
      * Create a new instance of the Representative class from a plain object
      */
-    static fromPlainObject(plainObject: Partial<RepresentativeInput>): Representative {
+    static fromPlainObject(plainObject: PartialDeep<RepresentativeInput>): Representative {
         return new Representative(plainObject)
+    }
+
+    compareWith(representative: PartialDeep<RepresentativeOutput>): ClientDataDifference[] {
+        const differences: ClientDataDifference[] = []
+        if (representative.address !== undefined) {
+            differences.push(...this.address.compareWith(representative.address).map(difference => ({
+                ...difference,
+                path: `address.${difference.path}`
+            })))
+        }
+        if (representative.personal !== undefined) {
+            differences.push(...this.personal.compareWith(representative.personal).map(difference => ({
+                ...difference,
+                path: `personal.${difference.path}`
+            })))
+        }
+        if (representative.idCard !== undefined) {
+            differences.push(...this.idCard.compareWith(representative.idCard).map(difference => ({
+                ...difference,
+                path: `idCard.${difference.path}`
+            })))
+        }
+        if (representative.contact !== undefined) {
+            differences.push(...this.contact.compareWith(representative.contact).map(difference => ({
+                ...difference,
+                path: `contact.${difference.path}`
+            })))
+        }
+        const ownKeys = Object.keys(this.toJSON())
+        const currentEntries = Object.entries(this.toJSON())
+        const passedEntries = Object.entries(representative).filter(([key, value]) => value !== undefined && ownKeys.includes(key))
+        for (const [modifiedKey, modifiedValue] of passedEntries) {
+            if (['address', 'personal', 'idCard', 'contact'].includes(modifiedKey)) {
+                continue
+            }
+            const current = currentEntries.find(([currentKey]) => currentKey === modifiedKey)
+            if (current) {
+                const [, currentValue] = current
+                if (currentValue !== modifiedValue) {
+                    differences.push({
+                        path: modifiedKey,
+                        originalValue: currentValue,
+                        changedValue: modifiedValue
+                    })
+                }
+            }
+        }
+        return differences
     }
 }

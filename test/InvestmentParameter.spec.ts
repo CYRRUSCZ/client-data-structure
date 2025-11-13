@@ -84,3 +84,61 @@ describe('InvestmentParameter validations', () => {
         }
     })
 })
+
+describe('InvestmentParameter.compareWith', () => {
+    const originalParam = new InvestmentParameter({
+        version: 'v1',
+        uid: 'param-123',
+        name: 'Risk Profile',
+        addedAt: new Date('2023-01-01T12:00:00.000Z'),
+        value: '5',
+        isInvestmentCategory: true
+    })
+
+    it('returns empty array when comparing identical investment parameters', () => {
+        const differences = originalParam.compareWith(originalParam.toJSON())
+        expect(differences).toEqual([])
+    })
+
+    it('detects value change', () => {
+        const modified = {
+            ...originalParam.toJSON(),
+            value: '7'
+        }
+        const differences = originalParam.compareWith(modified)
+        expect(differences).toHaveLength(1)
+        expect(differences[0]).toEqual({
+            path: 'value',
+            originalValue: '5',
+            changedValue: '7'
+        })
+    })
+
+    it('detects name change', () => {
+        const modified = {
+            ...originalParam.toJSON(),
+            name: 'Updated Risk Profile'
+        }
+        const differences = originalParam.compareWith(modified)
+        expect(differences).toHaveLength(1)
+        expect(differences[0]).toEqual({
+            path: 'name',
+            originalValue: 'Risk Profile',
+            changedValue: 'Updated Risk Profile'
+        })
+    })
+
+    it('detects isInvestmentCategory flag change', () => {
+        const modified = {
+            ...originalParam.toJSON(),
+            isInvestmentCategory: false
+        }
+        const differences = originalParam.compareWith(modified)
+        expect(differences).toHaveLength(1)
+        expect(differences[0]).toEqual({
+            path: 'isInvestmentCategory',
+            originalValue: true,
+            changedValue: false
+        })
+    })
+})

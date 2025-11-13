@@ -1,4 +1,6 @@
+import { PartialDeep } from 'type-fest'
 import { AbstractBase, type JSONSchemaObject, type JSONSchema } from './AbstractBase'
+import { ClientDataDifference } from './ClientData'
 import { getInstanceOfClass, getStringOrNull } from './helpers'
 import { Representative, type RepresentativeInput, type RepresentativeOutput } from './Representative'
 
@@ -17,7 +19,7 @@ export interface CompanyInformationInput {
     dic: string | null
     lei: string | null
     taxDomicile: string | null
-    representatives: Array<Partial<RepresentativeInput>>
+    representatives: Array<PartialDeep<RepresentativeInput>>
     name: string | null
 }
 
@@ -58,7 +60,7 @@ export class CompanyInformation extends AbstractBase {
     readonly #representatives: Representative[] = []
 
     constructor(
-        input: Partial<CompanyInformationInput> = {}
+        input: PartialDeep<CompanyInformationInput> = {}
     ) {
         super()
         const {
@@ -99,10 +101,10 @@ export class CompanyInformation extends AbstractBase {
         dic: string | null | undefined,
         lei: string | null | undefined,
         taxDomicile: string | null | undefined,
-        representatives: Array<Partial<RepresentativeInput>>,
+        representatives: Array<PartialDeep<RepresentativeInput>>,
         name: string | null | undefined
     ): CompanyInformation {
-        const plain: Partial<CompanyInformationInput> = {
+        const plain: PartialDeep<CompanyInformationInput> = {
             [PLAIN_OBJECT_KEY_IC]: ic,
             [PLAIN_OBJECT_KEY_DIC]: dic,
             [PLAIN_OBJECT_KEY_LEI]: lei,
@@ -218,7 +220,50 @@ export class CompanyInformation extends AbstractBase {
     /**
      * Create a new instance of the CompanyInformation class from a plain object
      */
-    static fromPlainObject(plainObject: Partial<CompanyInformationInput>): CompanyInformation {
+    static fromPlainObject(plainObject: PartialDeep<CompanyInformationInput>): CompanyInformation {
         return new CompanyInformation(plainObject)
+    }
+
+    compareWith(companyInformation: PartialDeep<CompanyInformationOutput>): ClientDataDifference[] {
+        const differences: ClientDataDifference[] = []
+        const ownKeys = Object.keys(this.toJSON())
+        const currentEntries = Object.entries(this.toJSON())
+        const passedEntries = Object.entries(companyInformation).filter(([key, value]) => value !== undefined && ownKeys.includes(key))
+        for (const [modifiedKey, modifiedValue] of passedEntries) {
+            const current = currentEntries.find(([currentKey]) => currentKey === modifiedKey)
+            if (current) {
+                const [, currentValue] = current
+                if (modifiedKey === 'representatives') {
+                    if (!Array.isArray(modifiedValue)) {
+                        continue
+                    }
+                    for (const param of modifiedValue) {
+                        const matchingParam = (currentValue as RepresentativeOutput[]).find(item => item.id === param.id)
+                        if (!matchingParam) {
+                            differences.push(...Object.entries(param).map(([key, value]) => ({
+                                path: `representatives.[${param.id}].${key}`,
+                                originalValue: null,
+                                changedValue: value,
+                                uniqueIdProp: 'id'
+                            })))
+                        } else {
+                            differences.push(...new Representative(matchingParam).compareWith(param).map(difference => ({
+                                ...difference,
+                                path: `representatives.[${param.id}].${difference.path}`
+                            })))
+                        }
+                    }
+                    continue
+                }
+                if (currentValue !== modifiedValue) {
+                    differences.push({
+                        path: modifiedKey,
+                        originalValue: currentValue,
+                        changedValue: modifiedValue
+                    })
+                }
+            }
+        }
+        return differences
     }
 }
