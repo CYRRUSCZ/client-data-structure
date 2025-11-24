@@ -106,12 +106,69 @@ static get PLAIN_OBJECT_KEY_FIELD() { return 'field' }
 ```
 This provides type-safe key access: `ClientData.PLAIN_OBJECT_KEY_CLIENT`
 
-### Legacy Migration
-`fromLegacyClientData.ts` migrates from v8.2.1 → v9.0.0:
-- Field renames: `dataOriginId→internalId`, `residency→isResident`, `foreign→isForeign`
-- ID card type changes: `'OP'→'id'`, `'Pas'→'passport'`
-- Removed: `InvestmentProfile`, `InvestmentService`, `phonePassword` from representatives
-- Capitol IDs removed and replaced with Cytron IDs (set to null in migration)
+### Legacy Migration from v8 to v9
+
+Version 9 represents a major architectural shift from the legacy Capitol business core system to the new Cytron system. The `fromLegacyClientData.ts` utility provides automated migration from v8.2.1 to v9.0.0+.
+
+#### Breaking Changes Summary
+
+**System Transition: Capitol → Cytron**
+- All Capitol-specific ID fields removed
+- New Cytron contact ID fields added (set to `null` during migration, populated by Cytron post-migration)
+- ID system completely replaced to support new business core architecture
+
+**Field Renames**
+- `dataOriginId` → `internalId` (ClientInformation)
+- `residency` → `isResident` (ClientInformation)
+- `foreign` → `isForeign` (BankAccount)
+- `added` → `addedAt` (InvestmentParameter)
+
+**Enum Value Changes**
+- IdCardInformation.type: `'OP'` → `'id'` (Czech ID card)
+- IdCardInformation.type: `'Pas'` → `'passport'`
+
+**Removed Fields & Entities**
+- **ClientInformation**: `capitolId`, `brokerId`, `externalBrokerCapitolId`, `externalBrokerAgentCapitolId`, `crmId`, `bankAccountsConfirmedByAffidavit`, `investmentProfiles`
+- **Representative**: `capitolId`, `capitolContactId`, `position`
+- **BankAccount**: `capitolId`
+- **ContactInformation**: `phonePassword` (removed from all contexts - person, company, and representatives)
+- **Entity removed**: `InvestmentProfile` class (simplified to InvestmentParameter only)
+- **Entity removed**: `InvestmentService` class
+
+**Added Fields**
+- **ClientInformation**: `contactId`, `brokerContactId`, `externalBrokerContactId`, `externalBrokerAgentContactId`, `preferredLanguage`
+- **Representative**: `cytronId`, `contactId`
+- **BankAccount**: `cytronId`, `isConfirmedByAffidavit` (migrated from client.bankAccountsConfirmedByAffidavit)
+
+**Field Behavior Changes**
+- **dataOrigin**: Now accepts any string value (v8 limited to specific values like 'capitol', 'internal')
+- **legislation**: Kept in v9 alongside new `preferredLanguage` field (both have separate meanings; during migration `preferredLanguage` is inferred from `legislation`)
+- **Gender values**: Unchanged (`'male'`, `'female'`, `'other'`)
+
+#### Migration Strategy
+
+```typescript
+import { fromLegacyClientData } from '@cyrrus/client-data-structure'
+
+// Migrate v8 data to v9 structure
+const v9Client = fromLegacyClientData(v8ClientData)
+
+// Post-migration: Cytron system populates new ID fields
+// - client.contactId
+// - client.brokerContactId
+// - client.externalBrokerContactId
+// - client.externalBrokerAgentContactId
+// - representatives[].cytronId
+// - representatives[].contactId
+// - bankAccounts[].cytronId
+```
+
+**Important Notes:**
+- All new Cytron ID fields are initialized to `null` during migration
+- These fields are populated by the Cytron business core system after migration
+- Migration is one-way only (v9 → v8 not supported)
+- Bank account affidavit confirmation moved from client-level to individual account-level
+- Representative position field removed (business logic change in v9)
 
 ## Important Notes
 
