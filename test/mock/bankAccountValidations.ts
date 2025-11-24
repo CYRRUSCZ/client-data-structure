@@ -14,7 +14,7 @@ export const expectErrorsTestCases: TestCase[] = [
             code: '0800',
             currency: 'CZK',
             isForeign: false,
-            isConfirmedByAffidavit: null
+            isConfirmedByAffidavit: true
         },
         expected: [
             '/account must be string',
@@ -28,7 +28,7 @@ export const expectErrorsTestCases: TestCase[] = [
             code: null,
             currency: 'CZK',
             isForeign: false,
-            isConfirmedByAffidavit: null
+            isConfirmedByAffidavit: true
         },
         expected: [
             '/code must be string',
@@ -42,7 +42,7 @@ export const expectErrorsTestCases: TestCase[] = [
             code: '0300',
             currency: null,
             isForeign: false,
-            isConfirmedByAffidavit: null
+            isConfirmedByAffidavit: true
         },
         expected: [
             '/currency must be string',
@@ -56,7 +56,7 @@ export const expectErrorsTestCases: TestCase[] = [
             code: '0300',
             currency: 'YAN',
             isForeign: false,
-            isConfirmedByAffidavit: null
+            isConfirmedByAffidavit: true
         },
         expected: [
             '/currency must be equal to one of the allowed values'
@@ -71,7 +71,7 @@ export const expectErrorsTestCases: TestCase[] = [
             iban: 'IT60 AAAA BBBB 1010 0000 0123 456',
             swift: 'UNCRITMM',
             isForeign: true,
-            isConfirmedByAffidavit: null
+            isConfirmedByAffidavit: true
         },
         expected: [
             '/iban Invalid IBAN'
@@ -88,7 +88,7 @@ export const expectErrorsTestCases: TestCase[] = [
             iban: 'CZ65 0800 0000 1920 0014 5399',
             swift: 'UNCRITMMAAAAA',
             isForeign: true,
-            isConfirmedByAffidavit: null
+            isConfirmedByAffidavit: true
         },
         expected: [
             '/swift Invalid SWIFT/BIC',
@@ -103,7 +103,7 @@ export const expectErrorsTestCases: TestCase[] = [
             iban: 'CZ65 0800 0000 1920 0014 5399',
             swift: 'UNCRITMM',
             isForeign: true,
-            isConfirmedByAffidavit: null
+            isConfirmedByAffidavit: true
         },
         expected: [
             '/bankNameAddress must be string',
@@ -117,7 +117,7 @@ export const expectErrorsTestCases: TestCase[] = [
             iban: 'CZ65 0800 0000 1920 0014 5399',
             swift: 'UNCRITMM',
             isForeign: true,
-            isConfirmedByAffidavit: null
+            isConfirmedByAffidavit: true
         },
         expected: [
             '/accountName must be string',
@@ -136,7 +136,7 @@ export const testCasesValidData: TestCase[] = [
             code: '0800',
             currency: 'CZK',
             isForeign: false,
-            isConfirmedByAffidavit: null
+            isConfirmedByAffidavit: true
         }
     },
     {
@@ -152,7 +152,7 @@ export const testCasesValidData: TestCase[] = [
             bankNameAddress: 'test banka',
             accountName: 'test jmeno',
             isForeign: true,
-            isConfirmedByAffidavit: null
+            isConfirmedByAffidavit: true
         }
     }
 ]

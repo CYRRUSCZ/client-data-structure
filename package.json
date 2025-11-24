@@ -1,6 +1,6 @@
 {
     "name": "@cyrrus/client-data-structure",
-    "version": "9.1.0",
+    "version": "9.2.0",
     "description": "A common structure for CYRRUS client data as used in DocHub and other integrations",
     "type": "module",
     "types": "./dist/index.d.ts",

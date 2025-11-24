@@ -18,10 +18,10 @@ export interface BankAccountInput {
     swift: string | null
     bankNameAddress: string | null
     accountName: string | null
-    isForeign?: boolean
+    isForeign: boolean
     cytronId?: string | number | null
     _id?: string | null
-    isConfirmedByAffidavit?: boolean | null
+    isConfirmedByAffidavit: boolean
 }
 
 /**
@@ -39,7 +39,7 @@ export interface BankAccountOutput {
     accountName: string | null
     isForeign: boolean
     cytronId: string | number | null
-    isConfirmedByAffidavit: boolean | null
+    isConfirmedByAffidavit: boolean
 }
 
 export interface BankAccountJSONSchema extends JSONSchemaObject {
@@ -89,7 +89,7 @@ export class BankAccount extends AbstractBase {
     readonly #accountName: string | null = null
     readonly #isForeign: boolean = false
     readonly #cytronId: string | number | null = null
-    readonly #isConfirmedByAffidavit: boolean | null = null
+    readonly #isConfirmedByAffidavit: boolean = false
 
     constructor(input: PartialDeep<BankAccountInput> = {}) {
         super()
@@ -119,7 +119,7 @@ export class BankAccount extends AbstractBase {
         this.#isForeign = (isForeign === true)
         this.#id = (id !== undefined && id !== null) ? getStringOrNull(id) : getStringOrNull(_id)
         this.#cytronId = cytronId ?? null
-        this.#isConfirmedByAffidavit = isConfirmedByAffidavit ?? null
+        this.#isConfirmedByAffidavit = isConfirmedByAffidavit ?? false
     }
 
     /**
@@ -148,9 +148,9 @@ export class BankAccount extends AbstractBase {
         swift: string | null | undefined,
         bankNameAddress: string | null | undefined,
         accountName: string | null | undefined,
-        isForeign: boolean | undefined = false,
+        isForeign: boolean = false,
         cytronId: string | number | null | undefined = null,
-        isConfirmedByAffidavit: boolean | null | undefined = null
+        isConfirmedByAffidavit: boolean = false
     ): BankAccount {
         const plain: PartialDeep<BankAccountInput> = {
             id,
@@ -259,7 +259,7 @@ export class BankAccount extends AbstractBase {
     /**
      * Flag that indicates if the bank account is confirmed by affidavit
      */
-    get isConfirmedByAffidavit(): boolean | null {
+    get isConfirmedByAffidavit(): boolean {
         return this.#isConfirmedByAffidavit
     }
 

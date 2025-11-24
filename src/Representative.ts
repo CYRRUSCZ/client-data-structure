@@ -18,13 +18,13 @@ export interface RepresentativeInput {
     idCard: PartialDeep<IdCardInformationInput>
     id: string | null
     contact: PartialDeep<ContactInformationInput>
-    isRepresentative?: boolean
-    isRealOwner?: boolean
+    isRepresentative: boolean
+    isRealOwner: boolean
     realOwnerReasonChar?: string | null
     realOwnerReasonNumber?: string | null
     cytronId?: string | null
     contactId?: string | null
-    hasPowerOfAttorney?: boolean
+    hasPowerOfAttorney: boolean
     _id?: string | null
 }
 
@@ -147,13 +147,13 @@ export class Representative extends AbstractBase {
         idCard: PartialDeep<IdCardInformationInput> | undefined,
         id: string | null | undefined,
         contact: PartialDeep<ContactInformationInput> | undefined,
-        isRepresentative: boolean | undefined = true,
-        isRealOwner: boolean | undefined = false,
+        isRepresentative: boolean = true,
+        isRealOwner: boolean = false,
         realOwnerReasonChar: string | null | undefined = null,
         realOwnerReasonNumber: string | null | undefined = null,
         cytronId: string | null | undefined = null,
         contactId: string | null | undefined = null,
-        hasPowerOfAttorney: boolean | undefined = false
+        hasPowerOfAttorney: boolean = false
     ): Representative {
         const plain: PartialDeep<RepresentativeInput> = {
             isRepresentative,

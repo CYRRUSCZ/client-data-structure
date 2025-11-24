@@ -85,7 +85,7 @@ export class InvestmentParameter extends AbstractBase {
         name: string | null | undefined,
         addedAt: Date | string | null | undefined,
         value: string | null | undefined,
-        isInvestmentCategory: boolean | undefined
+        isInvestmentCategory: boolean
     ): InvestmentParameter {
         const plain: PartialDeep<InvestmentParameterInput> = {
             version,

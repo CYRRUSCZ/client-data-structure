@@ -28,7 +28,7 @@ export interface ClientInformationInput {
     dataOrigin: string | null | undefined
     internalId: string | null | undefined
     contactId: string | null | undefined
-    isResident: boolean | null | undefined
+    isResident: boolean
     economicalSectorCode: string | null | undefined
     brokerContactId: string | null | undefined
     externalBrokerContactId: string | null | undefined
@@ -141,7 +141,7 @@ export class ClientInformation extends AbstractBase {
         dataOrigin: string | null | undefined,
         internalId: string | null | undefined,
         contactId: string | null | undefined,
-        isResident: boolean | null | undefined,
+        isResident: boolean,
         economicalSectorCode: string | null | undefined,
         brokerContactId: string | null | undefined,
         externalBrokerContactId: string | null | undefined,

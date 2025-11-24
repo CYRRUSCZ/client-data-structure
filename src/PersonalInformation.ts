@@ -155,7 +155,7 @@ export class PersonalInformation extends AbstractBase {
         postnominal: string | null | undefined,
         birthNumber: string | null | undefined,
         dateOfBirth: Date | string | null | undefined,
-        noBirthNumber: boolean | undefined,
+        noBirthNumber: boolean,
         birthNumberCountry: string | null | undefined,
         taxDomicile: string | null | undefined,
         placeOfBirth: string | null | undefined,

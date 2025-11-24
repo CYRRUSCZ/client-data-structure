@@ -14,7 +14,7 @@ export interface IdCardInformationInput {
     country: string | null | undefined
     validity: Date | string | null | undefined
     type: string | null | undefined
-    scanNotAllowed?: boolean
+    scanNotAllowed: boolean
 }
 
 /**
@@ -89,7 +89,7 @@ export class IdCardInformation extends AbstractBase {
         country: string | null | undefined,
         validity: Date | string | null | undefined,
         type: string | null | undefined,
-        scanNotAllowed: boolean | undefined = false
+        scanNotAllowed: boolean = false
     ): IdCardInformation {
         const plain: PartialDeep<IdCardInformationInput> = {
             number,

@@ -68,7 +68,7 @@ describe('BankAccount.compareWith', () => {
         isForeign: false,
         account: '123456789',
         code: '0100',
-        isConfirmedByAffidavit: null
+        isConfirmedByAffidavit: false
     })
 
     it('returns empty array for identical bank accounts', () => {

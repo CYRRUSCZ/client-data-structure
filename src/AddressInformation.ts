@@ -20,7 +20,7 @@ export interface AddressInformationInput {
     /**
      * Flag that indicates if the mailing address should be used as the postal address
      */
-    useMailingAddress?: boolean
+    useMailingAddress: boolean
 }
 
 export interface AddressInformationOutput {
