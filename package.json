@@ -1,6 +1,6 @@
 {
     "name": "@cyrrus/client-data-structure",
-    "version": "9.1.0",
+    "version": "9.1.1",
     "description": "A common structure for CYRRUS client data as used in DocHub and other integrations",
     "type": "module",
     "types": "./dist/index.d.ts",
@@ -39,26 +39,26 @@
     },
     "homepage": "https://github.com/CYRRUSCZ/client-data-structure#readme",
     "devDependencies": {
-        "@stylistic/eslint-plugin": "^5.5.0",
+        "@stylistic/eslint-plugin": "^5.6.1",
         "@stylistic/eslint-plugin-migrate": "^4.4.1",
         "@types/jest": "^30.0.0",
-        "@typescript-eslint/eslint-plugin": "^8.46.3",
-        "@typescript-eslint/parser": "^8.46.2",
+        "@typescript-eslint/eslint-plugin": "^8.49.0",
+        "@typescript-eslint/parser": "^8.49.0",
         "ajv": "^8.17.1",
         "ajv-formats": "^3.0.1",
-        "cdigit": "^4.0.2",
-        "esbuild": "0.25.12",
+        "cdigit": "^4.0.3",
+        "esbuild": "0.27.1",
         "eslint": "^9.39.1",
         "ibantools": "^4.5.1",
         "jest": "^30.2.0",
-        "libphonenumber-js": "^1.12.25",
-        "ts-jest": "^29.4.5",
+        "libphonenumber-js": "^1.12.31",
+        "ts-jest": "^29.4.6",
         "tsconfig-paths": "^4.2.0",
-        "tsup": "^8.5.0",
-        "type-fest": "^5.2.0",
-        "typedoc": "^0.28.14",
+        "tsup": "^8.5.1",
+        "type-fest": "^5.3.1",
+        "typedoc": "^0.28.15",
         "typescript": "^5.9.3",
-        "typescript-eslint": "^8.46.3"
+        "typescript-eslint": "^8.49.0"
     },
     "publishConfig": {
         "registry": "https://vrdc.cyrrus.cz"
@@ -66,9 +66,9 @@
     "peerDependencies": {
         "ajv": "^8.17.1",
         "ajv-formats": "^3.0.1",
-        "cdigit": "^4.0.2",
+        "cdigit": "^4.0.3",
         "ibantools": "^4.5.1",
-        "libphonenumber-js": "^1.12.25"
+        "libphonenumber-js": "^1.12.31"
     },
     "dependencies": {
         "@cyrrus/clientdatastructure": "^8.2.1",
