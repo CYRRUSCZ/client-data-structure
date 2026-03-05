@@ -61,7 +61,7 @@ Every class has three type definitions:
 
 ### Building
 ```bash
-npm run build  # tsup builds ESM + CJS + .d.ts files to dist/
+npm run build  # tsdown builds ESM + CJS + .d.ts files to dist/
 npm run docs   # Generate TypeDoc documentation
 ```
 - Outputs to `dist/`: `.js` (ESM), `.cjs` (CJS), `.d.ts` (types)
@@ -253,7 +253,7 @@ toJSON(): Output {
 
 ### Generated Files Warning
 **Never edit generated files** - they are overwritten by build processes:
-- `dist/**/*` - All compiled outputs from tsup
+- `dist/**/*` - All compiled outputs from tsdown
 - Type definition files regenerated on each build
 
 ## Cost-Effective AI Agent Usage
