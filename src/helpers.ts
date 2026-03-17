@@ -1,4 +1,5 @@
 import type { ContactInformation, IdCardInformation, PersonalInformation, Representative, AddressInformation, Address, CompanyInformation, ClientInformation, BankAccount, InvestmentParameter } from './index'
+import { country3ToCountry2, country2ToCountry3 } from '@cyrrus/locale-utils'
 
 export function getValidDate(inputDate: Date | string | null | undefined, throwInvalid = false): Date {
     if (inputDate instanceof Date) {
@@ -49,6 +50,27 @@ export function getStringOrNull(input: unknown): string | null {
     // eslint-disable-next-line @typescript-eslint/no-base-to-string -- we know what we are doing
     const output = `${input}`.trim()
     return (output.length > 0) ? output : null
+}
+
+export function getLegalIdOrNull(input: unknown): string | null {
+    if (typeof input !== 'string') {
+        return null
+    }
+    const sanitized = input.trim().toUpperCase().replace(/[^\dA-Z]/ig, '')
+    return sanitized.length > 0 ? sanitized : null
+}
+
+export function getIso2CountryOrNull(input: unknown): string | null {
+    if (typeof input === 'string') {
+        const sanitized = input.trim().toUpperCase()
+        if (/^[A-Z]{2}$/ig.test(sanitized) && country2ToCountry3(sanitized) !== null) {
+            return sanitized
+        }
+        if (sanitized.length > 2) {
+            return country3ToCountry2(sanitized)
+        }
+    }
+    return null
 }
 
 export function isESClass(input: unknown): boolean {

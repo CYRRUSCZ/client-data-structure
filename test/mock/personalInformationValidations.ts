@@ -18,7 +18,7 @@ export const expectErrorsTestCases: TestCase[] = [
             birthNumberCountry: 'CR',
             taxDomicile: 'CR',
             placeOfBirth: 'Wien',
-            citizenship: 'Praha',
+            citizenship: 'CZ',
             gender: 'man'
         },
         expected: [
@@ -35,7 +35,7 @@ export const expectErrorsTestCases: TestCase[] = [
             birthNumberCountry: 'CR',
             taxDomicile: 'CR',
             placeOfBirth: 'Wien',
-            citizenship: 'Praha',
+            citizenship: 'CZ',
             gender: 'male',
         },
         expected: [
@@ -52,7 +52,7 @@ export const expectErrorsTestCases: TestCase[] = [
             birthNumberCountry: 'CR',
             taxDomicile: 'CR',
             placeOfBirth: 'Wien',
-            citizenship: 'Praha',
+            citizenship: 'CZ',
             gender: 'male',
         },
         expected: [
@@ -69,7 +69,7 @@ export const expectErrorsTestCases: TestCase[] = [
             birthNumberCountry: 'CR',
             taxDomicile: 'CR',
             placeOfBirth: 'Wien',
-            citizenship: 'Praha',
+            citizenship: 'CZ',
             gender: 'male',
         },
         expected: [
@@ -88,7 +88,7 @@ export const expectErrorsTestCases: TestCase[] = [
             birthNumberCountry: 'CR',
             taxDomicile: 'CR',
             placeOfBirth: 'Wien',
-            citizenship: 'Praha',
+            citizenship: 'CZ',
             gender: 'male',
         },
         expected: [
@@ -106,7 +106,7 @@ export const expectErrorsTestCases: TestCase[] = [
             birthNumberCountry: null,
             taxDomicile: 'CR',
             placeOfBirth: 'Wien',
-            citizenship: 'Praha',
+            citizenship: 'CZ',
             gender: 'male',
         },
         expected: [
@@ -122,7 +122,7 @@ export const expectErrorsTestCases: TestCase[] = [
             birthNumberCountry: 'CR',
             taxDomicile: null,
             placeOfBirth: 'Wien',
-            citizenship: 'Praha',
+            citizenship: 'CZ',
             gender: 'male',
         },
         expected: [
@@ -138,7 +138,7 @@ export const expectErrorsTestCases: TestCase[] = [
             birthNumberCountry: 'CR',
             taxDomicile: 'CR',
             placeOfBirth: null,
-            citizenship: 'Praha',
+            citizenship: 'CZ',
             gender: 'male',
         },
         expected: [
@@ -176,7 +176,7 @@ export const expectPojoErrorsTestCases: TestCase[] = [
             birthNumberCountry: 'CR',
             taxDomicile: 'CR',
             placeOfBirth: 'Wien',
-            citizenship: 'Praha',
+            citizenship: 'CZ',
             gender: 'man',
         },
         expected: [
@@ -193,7 +193,7 @@ export const expectPojoErrorsTestCases: TestCase[] = [
             birthNumberCountry: 'CR',
             taxDomicile: 'CR',
             placeOfBirth: 'Wien',
-            citizenship: 'Praha',
+            citizenship: 'CZ',
             gender: 'male',
         },
         expected: [
@@ -210,7 +210,7 @@ export const expectPojoErrorsTestCases: TestCase[] = [
             birthNumberCountry: 'CR',
             taxDomicile: 'CR',
             placeOfBirth: 'Wien',
-            citizenship: 'Praha',
+            citizenship: 'CZ',
             gender: 'male',
         },
         expected: [
@@ -227,7 +227,7 @@ export const expectPojoErrorsTestCases: TestCase[] = [
             birthNumberCountry: 'CR',
             taxDomicile: 'CR',
             placeOfBirth: 'Wien',
-            citizenship: 'Praha',
+            citizenship: 'CZ',
             gender: 'male',
         },
         expected: [
@@ -246,7 +246,7 @@ export const expectPojoErrorsTestCases: TestCase[] = [
             birthNumberCountry: 'CR',
             taxDomicile: 'CR',
             placeOfBirth: 'Wien',
-            citizenship: 'Praha',
+            citizenship: 'CZ',
             gender: 'male',
         },
         expected: [
@@ -264,7 +264,7 @@ export const expectPojoErrorsTestCases: TestCase[] = [
             birthNumberCountry: null,
             taxDomicile: 'CR',
             placeOfBirth: 'Wien',
-            citizenship: 'Praha',
+            citizenship: 'CZ',
             gender: 'male',
         },
         expected: [
@@ -280,7 +280,7 @@ export const expectPojoErrorsTestCases: TestCase[] = [
             birthNumberCountry: 'CR',
             taxDomicile: null,
             placeOfBirth: 'Wien',
-            citizenship: 'Praha',
+            citizenship: 'CZ',
             gender: 'male',
         },
         expected: [
@@ -296,7 +296,7 @@ export const expectPojoErrorsTestCases: TestCase[] = [
             birthNumberCountry: 'CR',
             taxDomicile: 'CR',
             placeOfBirth: null,
-            citizenship: 'Praha',
+            citizenship: 'CZ',
             gender: 'male',
         },
         expected: [
@@ -349,7 +349,7 @@ export const testCasesValidData: TestCase[] = [
             birthNumberCountry: 'CR',
             taxDomicile: 'CR',
             placeOfBirth: 'Wien',
-            citizenship: 'Praha',
+            citizenship: 'CZ',
             gender: 'male',
         }
     },
@@ -365,7 +365,7 @@ export const testCasesValidData: TestCase[] = [
             birthNumberCountry: 'CR',
             taxDomicile: 'CR',
             placeOfBirth: 'Wien',
-            citizenship: 'Praha',
+            citizenship: 'CZ',
             gender: 'female',
         }
     },
@@ -381,7 +381,7 @@ export const testCasesValidData: TestCase[] = [
             birthNumberCountry: 'CR',
             taxDomicile: 'CR',
             placeOfBirth: 'Wien',
-            citizenship: 'Praha',
+            citizenship: 'CZ',
             gender: 'other',
         }
     },
@@ -397,7 +397,7 @@ export const testCasesValidData: TestCase[] = [
             birthNumberCountry: 'CR',
             taxDomicile: 'CR',
             placeOfBirth: 'Wien',
-            citizenship: 'Praha',
+            citizenship: 'CZ',
             gender: 'other',
         }
     },
@@ -413,7 +413,7 @@ export const testCasesValidData: TestCase[] = [
             birthNumberCountry: 'CR',
             taxDomicile: 'CR',
             placeOfBirth: 'Wien',
-            citizenship: 'Praha',
+            citizenship: 'CZ',
             gender: 'other',
         }
     },
@@ -428,7 +428,7 @@ export const testCasesValidData: TestCase[] = [
             birthNumberCountry: 'CR',
             taxDomicile: 'CR',
             placeOfBirth: 'Wien',
-            citizenship: 'Praha',
+            citizenship: 'CZ',
             gender: 'other',
         }
     }

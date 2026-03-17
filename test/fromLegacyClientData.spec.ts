@@ -235,7 +235,7 @@ describe('fromLegacyClientData', () => {
         it('should preserve other idCard fields', () => {
             expect(migratedData.idCard.number).toBe('123456789')
             expect(migratedData.idCard.issuedBy).toBe('Prague')
-            expect(migratedData.idCard.country).toBe('CZE')
+            expect(migratedData.idCard.country).toBe('CZ')
         })
     })
 

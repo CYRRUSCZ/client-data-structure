@@ -29,7 +29,8 @@ export const expectErrorsTestCases: TestCase[] = [
             representatives: []
         },
         expected: [
-            '/ic must be string'
+            '/ic must be string',
+            '/taxDomicile must be string'
         ]
     },
     {
@@ -42,7 +43,8 @@ export const expectErrorsTestCases: TestCase[] = [
             representatives: []
         },
         expected: [
-            '/name must be string'
+            '/name must be string',
+            '/taxDomicile must be string'
         ]
     }
 ]
@@ -182,8 +184,8 @@ export const testCasesValidData: TestCase[] = [
     {
         data: {
             name: 'FooBaarBaZqaz',
-            ic: 123456789,
-            dic: 123456789,
+            ic: '123456789',
+            dic: '123456789',
             lei: null,
             taxDomicile: 'CZ',
             representatives: []

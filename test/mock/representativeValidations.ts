@@ -37,7 +37,7 @@ export const expectErrorsTestCases: TestCase[] = [
                 birthNumberCountry: 'CR',
                 taxDomicile: 'CR',
                 placeOfBirth: 'Wien',
-                citizenship: 'Praha',
+                citizenship: 'CZ',
                 gender: 'male',
             },
             isRepresentative: true,
@@ -116,7 +116,7 @@ export const expectErrorsTestCases: TestCase[] = [
                 birthNumberCountry: 'CR',
                 taxDomicile: 'CR',
                 placeOfBirth: 'Wien',
-                citizenship: 'Praha',
+                citizenship: 'CZ',
                 gender: 'male',
             },
             idCard: {
@@ -153,7 +153,7 @@ export const expectErrorsTestCases: TestCase[] = [
                 birthNumberCountry: 'CR',
                 taxDomicile: 'CR',
                 placeOfBirth: 'Wien',
-                citizenship: 'Praha',
+                citizenship: 'CZ',
                 gender: 'male',
             },
             address: {
@@ -192,7 +192,7 @@ export const expectErrorsTestCases: TestCase[] = [
                 birthNumberCountry: 'CR',
                 taxDomicile: 'CR',
                 placeOfBirth: 'Wien',
-                citizenship: 'Praha',
+                citizenship: 'CZ',
                 gender: 'male',
             },
             address: {
@@ -232,7 +232,7 @@ export const expectPojoErrorsTestCases: TestCase[] = [
                 birthNumberCountry: 'CR',
                 taxDomicile: 'CR',
                 placeOfBirth: 'Wien',
-                citizenship: 'Praha',
+                citizenship: 'CZ',
                 gender: 'male',
             },
             address: {
@@ -339,7 +339,7 @@ export const testCasesValidData: TestCase[] = [
                 birthNumberCountry: 'CR',
                 taxDomicile: 'CR',
                 placeOfBirth: 'Wien',
-                citizenship: 'Praha',
+                citizenship: 'CZ',
                 gender: 'male',
             },
             address: {

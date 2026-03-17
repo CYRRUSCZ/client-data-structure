@@ -115,14 +115,14 @@ describe('PersonalInformation.compareWith', () => {
         const birthNumber = personal.compareWith({ birthNumber: '850505/5678' })
         expect(birthNumber.find(d => d.path === 'birthNumber')).toEqual({
             path: 'birthNumber',
-            originalValue: '900101/1234',
+            originalValue: '9001011234',
             changedValue: '850505/5678'
         })
 
         const citizenship = personal.compareWith({ citizenship: 'SVK' })
         expect(citizenship.find(d => d.path === 'citizenship')).toEqual({
             path: 'citizenship',
-            originalValue: 'CZE',
+            originalValue: 'CZ',
             changedValue: 'SVK'
         })
 

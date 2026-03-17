@@ -1,7 +1,7 @@
 import { PartialDeep } from 'type-fest'
 import { AbstractBase, type JSONSchemaObject, type JSONSchema } from './AbstractBase'
 import { ClientDataDifference } from './ClientData'
-import { getInstanceOfClass, getStringOrNull } from './helpers'
+import { getInstanceOfClass, getIso2CountryOrNull, getLegalIdOrNull, getStringOrNull } from './helpers'
 import { Representative, type RepresentativeInput, type RepresentativeOutput } from './Representative'
 
 export const PLAIN_OBJECT_KEY_IC = 'ic'
@@ -71,11 +71,11 @@ export class CompanyInformation extends AbstractBase {
             representatives,
             name
         } = input
-        this.#ic = getStringOrNull(ic)
-        this.#dic = getStringOrNull(dic)
-        this.#lei = getStringOrNull(lei)
+        this.#ic = getLegalIdOrNull(ic)
+        this.#dic = getLegalIdOrNull(dic)
+        this.#lei = getLegalIdOrNull(lei)
         this.#name = getStringOrNull(name)
-        this.#taxDomicile = getStringOrNull(taxDomicile)
+        this.#taxDomicile = getIso2CountryOrNull(taxDomicile)
         if (Array.isArray(representatives)) {
             for (const data of representatives) {
                 const entry = getInstanceOfClass<Representative>(data, Representative)

@@ -2,8 +2,9 @@ import { PartialDeep } from 'type-fest'
 import { AbstractBase, type JSONSchema, type JSONSchemaObject } from './AbstractBase'
 import { ClientDataDifference } from './ClientData'
 import { SupportedIdCardTypes } from './enums'
-import { getStringOrNull, getNormalizedDate } from './helpers'
-import { countries } from '@cyrrus/locale-utils'
+import { getStringOrNull, getNormalizedDate, getIso2CountryOrNull } from './helpers'
+import { AvailableLanguages } from './enums'
+import { countriesLocalized, country2ToCountry3 } from '@cyrrus/locale-utils'
 
 /**
  * Input of the IdCardInformation class that is used to create the object
@@ -67,7 +68,7 @@ export class IdCardInformation extends AbstractBase {
         } = input
         this.#number = getStringOrNull(number)
         this.#issuedBy = getStringOrNull(issuedBy)
-        this.#country = getStringOrNull(country)
+        this.#country = getIso2CountryOrNull(country)
         this.#validity = getNormalizedDate(validity)
         this.#type = getStringOrNull(type)
         this.#scanNotAllowed = scanNotAllowed
@@ -124,13 +125,38 @@ export class IdCardInformation extends AbstractBase {
     }
 
     /**
-     * The validity of the identification card
+     * Country name of the identification card in Czech
      */
     get countryName(): string | null {
-        if (this.#country === null) {
+        if (!this.#country) {
             return null
         }
-        return countries[this.#country] ?? this.#country
+        if (typeof this.#country !== 'string') {
+            return null
+        }
+        const countryAlpha3 = country2ToCountry3(this.#country)
+        if (countryAlpha3 !== null && countryAlpha3 in countriesLocalized.cs_CZ) {
+            return countriesLocalized.cs_CZ[countryAlpha3]
+        }
+        return this.#country ?? null
+    }
+
+    /**
+     * Country name of the identification card in the specified locale
+     * @param locale - string that represents the locale - e.g. 'cs_CZ', 'en_US'
+     */
+    localizedCountryName(locale: AvailableLanguages): string | null {
+        if (!this.#country) {
+            return null
+        }
+        if (typeof this.#country !== 'string') {
+            return null
+        }
+        const countryAlpha3 = country2ToCountry3(this.#country)
+        if (locale in countriesLocalized && countryAlpha3 !== null && countryAlpha3 in countriesLocalized[locale]) {
+            return countriesLocalized[locale][countryAlpha3]
+        }
+        return this.#country ?? null
     }
 
     /**

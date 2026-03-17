@@ -1,8 +1,8 @@
 import { AbstractBase, type JSONSchema, type JSONSchemaObject } from './AbstractBase'
-import { getNormalizedDate, getStringOrNull, transformDataBeforeValidation } from './helpers'
+import { getIso2CountryOrNull, getLegalIdOrNull, getNormalizedDate, getStringOrNull, transformDataBeforeValidation } from './helpers'
 import { mod11_10 as mod1110 } from 'cdigit'
-import { countries } from '@cyrrus/locale-utils'
-import { SupportedGenderOptions } from './enums'
+import { countriesLocalized, country2ToCountry3 } from '@cyrrus/locale-utils'
+import { AvailableLanguages, SupportedGenderOptions } from './enums'
 import { ClientDataDifference } from './ClientData'
 import { PartialDeep } from 'type-fest'
 
@@ -123,13 +123,13 @@ export class PersonalInformation extends AbstractBase {
         this.#firstName = getStringOrNull(firstName)
         this.#lastName = getStringOrNull(lastName)
         this.#postnominal = getStringOrNull(postnominal)
-        this.#birthNumber = getStringOrNull(birthNumber)
+        this.#birthNumber = getLegalIdOrNull(birthNumber)
         this.#dateOfBirth = getNormalizedDate(dateOfBirth)
         this.#noBirthNumber = (noBirthNumber === true)
-        this.#birthNumberCountry = getStringOrNull(birthNumberCountry)
-        this.#taxDomicile = getStringOrNull(taxDomicile)
+        this.#birthNumberCountry = getIso2CountryOrNull(birthNumberCountry)
+        this.#taxDomicile = getIso2CountryOrNull(taxDomicile)
         this.#placeOfBirth = getStringOrNull(placeOfBirth)
-        this.#citizenship = getStringOrNull(citizenship)
+        this.#citizenship = getIso2CountryOrNull(citizenship)
         this.#gender = getStringOrNull(gender)
     }
 
@@ -259,10 +259,35 @@ export class PersonalInformation extends AbstractBase {
      * Country of the birth number
      */
     get birthNumberCountryName(): string | null {
-        if (this.#birthNumberCountry === null) {
+        if (!this.#birthNumberCountry) {
             return null
         }
-        return countries[this.#birthNumberCountry] ?? this.#birthNumberCountry
+        if (typeof this.#birthNumberCountry !== 'string') {
+            return null
+        }
+        const countryAlpha3 = country2ToCountry3(this.#birthNumberCountry)
+        if (countryAlpha3 !== null && countryAlpha3 in countriesLocalized.cs_CZ) {
+            return countriesLocalized.cs_CZ[countryAlpha3]
+        }
+        return this.#birthNumberCountry ?? null
+    }
+
+    /**
+     * Country of the birth number in the specified locale
+     * @param locale - string that represents the locale
+     */
+    localizedBirthNumberCountryName(locale: AvailableLanguages): string | null {
+        if (!this.#birthNumberCountry) {
+            return null
+        }
+        if (typeof this.#birthNumberCountry !== 'string') {
+            return null
+        }
+        const countryAlpha3 = country2ToCountry3(this.#birthNumberCountry)
+        if (locale in countriesLocalized && countryAlpha3 !== null && countryAlpha3 in countriesLocalized[locale]) {
+            return countriesLocalized[locale][countryAlpha3]
+        }
+        return this.#birthNumberCountry ?? null
     }
 
     /**
@@ -276,10 +301,35 @@ export class PersonalInformation extends AbstractBase {
      * Country of the tax domicile
      */
     get taxDomicileCountryName(): string | null {
-        if (this.#taxDomicile === null) {
+        if (!this.#taxDomicile) {
             return null
         }
-        return countries[this.#taxDomicile] ?? this.#taxDomicile
+        if (typeof this.#taxDomicile !== 'string') {
+            return null
+        }
+        const countryAlpha3 = country2ToCountry3(this.#taxDomicile)
+        if (countryAlpha3 !== null && countryAlpha3 in countriesLocalized.cs_CZ) {
+            return countriesLocalized.cs_CZ[countryAlpha3]
+        }
+        return this.#taxDomicile ?? null
+    }
+
+    /**
+     * Country of the tax domicile in the specified locale
+     * @param locale - string that represents the locale
+     */
+    localizedTaxDomicileCountryName(locale: AvailableLanguages): string | null {
+        if (!this.#taxDomicile) {
+            return null
+        }
+        if (typeof this.#taxDomicile !== 'string') {
+            return null
+        }
+        const countryAlpha3 = country2ToCountry3(this.#taxDomicile)
+        if (locale in countriesLocalized && countryAlpha3 !== null && countryAlpha3 in countriesLocalized[locale]) {
+            return countriesLocalized[locale][countryAlpha3]
+        }
+        return this.#taxDomicile ?? null
     }
 
     /**
@@ -300,10 +350,35 @@ export class PersonalInformation extends AbstractBase {
      * Country of the citizenship
      */
     get citizenshipCountryName(): string | null {
-        if (this.#citizenship === null) {
+        if (!this.#citizenship) {
             return null
         }
-        return countries[this.#citizenship] ?? this.#citizenship
+        if (typeof this.#citizenship !== 'string') {
+            return null
+        }
+        const countryAlpha3 = country2ToCountry3(this.#citizenship)
+        if (countryAlpha3 !== null && countryAlpha3 in countriesLocalized.cs_CZ) {
+            return countriesLocalized.cs_CZ[countryAlpha3]
+        }
+        return this.#citizenship ?? null
+    }
+
+    /**
+     * Country of the citizenship in the specified locale
+     * @param locale - string that represents the locale
+     */
+    localizedCitizenshipCountryName(locale: AvailableLanguages): string | null {
+        if (!this.#citizenship) {
+            return null
+        }
+        if (typeof this.#citizenship !== 'string') {
+            return null
+        }
+        const countryAlpha3 = country2ToCountry3(this.#citizenship)
+        if (locale in countriesLocalized && countryAlpha3 !== null && countryAlpha3 in countriesLocalized[locale]) {
+            return countriesLocalized[locale][countryAlpha3]
+        }
+        return this.#citizenship ?? null
     }
 
     validate(input?: Record<string, any>): boolean {
@@ -312,20 +387,30 @@ export class PersonalInformation extends AbstractBase {
         const validate = this.bootstrapValidator()
         const dataToBeValidated = transformDataBeforeValidation(input ?? this.toJSON())
 
-        try {
-            PersonalInformation.validateBirthNumber(String(this.#birthNumber ?? ''), String(this.#birthNumberCountry ?? ''))
-        } catch (error) {
-            const errorMessage = error instanceof Error ? error.message : 'Invalid birth number'
-            const errorObject = {
-                instancePath: '/birthNumber',
-                keyword: 'birthNumber',
-                schemaPath: '',
-                params: {},
-                message: errorMessage
-            }
-            this._errors.push(errorObject)
+        // Only validate birth number when using instance data (not an externally provided POJO),
+        // and only when all required fields are present and noBirthNumber is false.
+        const birthNumberToValidate = input === undefined ? this.#birthNumber : null
+        const birthNumberCountryToValidate = input === undefined ? this.#birthNumberCountry : null
+        const skipBirthNumberValidation = this.#noBirthNumber
+            || birthNumberToValidate === null
+            || birthNumberCountryToValidate === null
 
-            throw new Error(errorMessage, { cause: this._errors })
+        if (!skipBirthNumberValidation) {
+            try {
+                PersonalInformation.validateBirthNumber(String(birthNumberToValidate), String(birthNumberCountryToValidate))
+            } catch (error) {
+                const errorMessage = error instanceof Error ? error.message : 'Invalid birth number'
+                const errorObject = {
+                    instancePath: '/birthNumber',
+                    keyword: 'birthNumber',
+                    schemaPath: '',
+                    params: {},
+                    message: errorMessage
+                }
+                this._errors.push(errorObject)
+
+                throw new Error(errorMessage, { cause: error })
+            }
         }
 
         const isValid = validate(dataToBeValidated)
@@ -344,7 +429,13 @@ export class PersonalInformation extends AbstractBase {
     }
 
     static validateBirthNumber(birthNumber: string, birthNumberCountryCode: string): boolean {
-        if (birthNumberCountryCode === 'HRV') {
+        const countryCode = getIso2CountryOrNull(String(birthNumberCountryCode).trim().toUpperCase())
+        if (countryCode === null) {
+            throw new Error('Invalid birth number country code')
+        }
+        birthNumberCountryCode = countryCode
+
+        if (birthNumberCountryCode === 'HR') {
             const numericValue = birthNumber.replace(/\D/ig, '')
             // HRV OIB must be exactly 11 digits
             if (numericValue.length !== 11) {
@@ -358,14 +449,14 @@ export class PersonalInformation extends AbstractBase {
             return true
         }
 
-        if (birthNumberCountryCode === 'CZE' || birthNumberCountryCode === 'SVK') {
+        if (birthNumberCountryCode === 'CZ' || birthNumberCountryCode === 'SK') {
             if (birthNumber === '') {
-                throw new Error('Invalid CZE/SVK birth number')
+                throw new Error('Invalid CZ/SK birth number')
             }
 
             const numericValue = birthNumber.replace(/\D/ig, '')
             if (numericValue.length < 9) {
-                throw new Error('Invalid CZE/SVK birth number')
+                throw new Error('Invalid CZ/SK birth number')
             }
             let year = parseInt(numericValue.substring(0, 2))
             let month = parseInt(numericValue.substring(2, 4))
@@ -380,7 +471,7 @@ export class PersonalInformation extends AbstractBase {
                     mod = 0
                 }
                 if (mod !== c) {
-                    throw new Error('Invalid CZE/SVK birth number')
+                    throw new Error('Invalid CZ/SK birth number')
                 }
 
                 year += year < 54 ? 2000 : 1900
@@ -396,7 +487,7 @@ export class PersonalInformation extends AbstractBase {
 
             const date = new Date(year, month - 1, day)
             if (date.getFullYear() !== year || date.getMonth() + 1 !== month || date.getDate() !== day) {
-                throw new Error('Invalid CZE/SVK birth number')
+                throw new Error('Invalid CZ/SK birth number')
             }
 
             return true

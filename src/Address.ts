@@ -1,5 +1,5 @@
-import { getStringOrNull } from './helpers'
-import { countriesLocalized } from '@cyrrus/locale-utils'
+import { getIso2CountryOrNull, getStringOrNull } from './helpers'
+import { countriesLocalized, country2ToCountry3 } from '@cyrrus/locale-utils'
 import { AbstractBase, type JSONSchema, type JSONSchemaObject } from './AbstractBase'
 import { AvailableLanguages } from './enums'
 import { ClientDataDifference } from './ClientData'
@@ -81,7 +81,7 @@ export class Address extends AbstractBase {
         this.#cytronId = getStringOrNull(cytronId)
         this.#street = getStringOrNull(street)
         this.#city = getStringOrNull(city)
-        this.#country = getStringOrNull(country)
+        this.#country = getIso2CountryOrNull(country)
         this.#postalCode = getStringOrNull(postalCode)
         this.#streetNumber = getStringOrNull(streetNumber)
     }
@@ -170,7 +170,14 @@ export class Address extends AbstractBase {
         if (!this.#country) {
             return null
         }
-        return countriesLocalized.cs_CZ[this.#country] ?? this.#country ?? null
+        if (typeof this.#country !== 'string') {
+            return null
+        }
+        const countryAlpha3 = country2ToCountry3(this.#country)
+        if (countryAlpha3 !== null && countryAlpha3 in countriesLocalized.cs_CZ) {
+            return countriesLocalized.cs_CZ[countryAlpha3]
+        }
+        return this.#country ?? null
     }
 
     /**
@@ -188,7 +195,14 @@ export class Address extends AbstractBase {
         if (!this.#country) {
             return null
         }
-        return countriesLocalized[locale][this.#country] ?? this.#country ?? null
+        if (typeof this.#country !== 'string') {
+            return null
+        }
+        const countryAlpha3 = country2ToCountry3(this.#country)
+        if (locale in countriesLocalized && countryAlpha3 !== null && countryAlpha3 in countriesLocalized[locale]) {
+            return countriesLocalized[locale][countryAlpha3]
+        }
+        return this.#country ?? null
     }
 
     /**

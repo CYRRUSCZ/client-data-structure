@@ -116,7 +116,7 @@ describe('CompanyInformation.compareWith', () => {
         const taxChange = company.compareWith({ ...company.toJSON(), taxDomicile: 'SVK' })
         expect(taxChange.find(d => d.path === 'taxDomicile')).toEqual({
             path: 'taxDomicile',
-            originalValue: 'CZE',
+            originalValue: 'CZ',
             changedValue: 'SVK'
         })
     })

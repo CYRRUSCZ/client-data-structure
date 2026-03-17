@@ -77,6 +77,20 @@ All classes extend `AbstractBase` providing:
 - `getNormalizedDate()` - Parses dates to `YYYY-MM-DDTHH:MM:SS.SSSZ` format (noon UTC)
 - `getInstanceOfClass()` - Handles both plain objects and class instances
 
+### Legal ID Sanitization
+
+Legal identifiers are sanitized during construction using the internal legal ID normalizer.
+
+- Affects: `PersonalInformation.birthNumber`, `CompanyInformation.ic`, `CompanyInformation.dic`, `CompanyInformation.lei`
+- Behavior: trims, converts to uppercase, removes all non-alphanumeric characters
+- Invalid input type behavior: non-string values are normalized to `null`
+
+```typescript
+new PersonalInformation({ birthNumber: ' 900101/1234 ' }).birthNumber // -> '9001011234'
+new CompanyInformation({ ic: ' cz-123 45 678 ' }).ic // -> 'CZ12345678'
+new CompanyInformation({ dic: 123456 as unknown as string }).dic // -> null
+```
+
 ### Type System
 Each class exports three types:
 - `XInput` - Constructor input (partial/optional fields)
@@ -118,6 +132,38 @@ Key breaking changes from version 8.x:
 | **Added** | *(new)* | `isConfirmedByAffidavit` | BankAccount | From client.bankAccountsConfirmedByAffidavit |
 | **Entity Removed** | `InvestmentProfile` | *(removed)* | - | Simplified to InvestmentParameter only |
 | **Entity Removed** | `InvestmentService` | *(removed)* | - | No longer supported |
+
+### Country Code Normalization (ISO 3166-1 alpha-3 → alpha-2)
+
+All country code fields now store and output **ISO 3166-1 alpha-2** codes (e.g. `'CZ'`, `'SK'`, `'DE'`) instead of alpha-3 codes (e.g. `'CZE'`, `'SVK'`, `'DEU'`). This aligns with the Cytron business core system which uses alpha-2 codes natively.
+
+**Affected fields**: `Address.country`, `IdCardInformation.country`, `PersonalInformation.birthNumberCountry`, `PersonalInformation.taxDomicile`, `PersonalInformation.citizenship`, `CompanyInformation.taxDomicile`.
+
+The constructors **accept both alpha-2 and alpha-3 input** — alpha-3 values are automatically normalized to alpha-2 on construction. Invalid or unrecognized country codes are stored as `null`.
+
+```typescript
+// Both inputs produce the same stored alpha-2 code
+new PersonalInformation({ citizenship: 'CZE' }).citizenship // → 'CZ'
+new PersonalInformation({ citizenship: 'CZ' }).citizenship  // → 'CZ'
+new PersonalInformation({ citizenship: 'xyz' }).citizenship // → null
+```
+
+**Localized country names** are available via dedicated getters and locale methods:
+
+| Class | Czech name getter | Localized name method |
+|-------|------------------|-----------------------|
+| `Address` | `countryName` | `localizedCountryName(locale)` |
+| `IdCardInformation` | `countryName` | `localizedCountryName(locale)` |
+| `PersonalInformation` | `birthNumberCountryName`, `citizenshipCountryName`, `taxDomicileCountryName` | `localizedBirthNumberCountryName(locale)`, `localizedCitizenshipCountryName(locale)`, `localizedTaxDomicileCountryName(locale)` |
+
+```typescript
+const personal = new PersonalInformation({ citizenship: 'CZ' })
+personal.citizenship             // → 'CZ'
+personal.citizenshipCountryName  // → 'Česká republika' (Czech locale)
+personal.localizedCitizenshipCountryName(AvailableLanguages.en_US) // → 'Czech Republic'
+```
+
+**Migration impact**: If your code stores or compares country codes, update any hardcoded alpha-3 literals to alpha-2. The `fromLegacyClientData()` migration helper handles this conversion automatically for v8 data.
 
 Use migration helper:
 ```typescript

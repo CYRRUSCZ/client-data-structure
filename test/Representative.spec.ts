@@ -181,7 +181,7 @@ describe('Representative.compareWith', () => {
         })
         expect(birthNumberChange.find(d => d.path === 'personal.birthNumber')).toEqual({
             path: 'personal.birthNumber',
-            originalValue: '900101/1234',
+            originalValue: '9001011234',
             changedValue: '850505/5678'
         })
     })
