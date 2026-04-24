@@ -1,6 +1,5 @@
 import { Ajv, type ValidateFunction, type ErrorObject } from 'ajv'
 import addFormats from 'ajv-formats'
-
 import { transformDataBeforeValidation } from './helpers'
 import type { ValidationAware } from './Interfaces/ValidationAware'
 import type { JSONSchemaAware } from './Interfaces/JsonSchemaAware'
