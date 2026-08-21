@@ -13,14 +13,6 @@ const maxDateOfBirth = (() => {
     return new Date(Date.UTC(year - 1, month, day, 12, 0, 0, 0)).toISOString()
 })()
 
-const minValidityDate = (() => {
-    const now = new Date()
-    const year = now.getUTCFullYear()
-    const month = now.getUTCMonth()
-    const day = now.getUTCDate()
-    return new Date(Date.UTC(year, month, day, 12, 0, 0, 0)).toISOString()
-})()
-
 const validityValidDate = (() => {
     const now = new Date()
     const year = now.getUTCFullYear()
@@ -50,7 +42,6 @@ export const expectErrorsTestCases = [
             '/idCard/number must be string',
             '/idCard/type must be equal to one of the allowed values',
             '/idCard/type must be string',
-            `/idCard/validity should be >= ${minValidityDate}`,
             '/personal must match "else" schema',
             '/personal must match "then" schema',
             '/personal/birthNumber must be string',
@@ -100,7 +91,6 @@ export const expectErrorsTestCases = [
             '/idCard/number must be string',
             '/idCard/type must be equal to one of the allowed values',
             '/idCard/type must be string',
-            `/idCard/validity should be >= ${minValidityDate}`
         ]
     },
     {
@@ -150,7 +140,6 @@ export const expectErrorsTestCases = [
             '/idCard/number must be string',
             '/idCard/type must be equal to one of the allowed values',
             '/idCard/type must be string',
-            `/idCard/validity should be >= ${minValidityDate}`
         ]
     }
 ]

@@ -1,286 +1,94 @@
-# CYRRUS Client Data Structure - AI Coding Agent Instructions
+# Client Data Structure Agent Instructions
 
-## Instructions Usage
-This library is used by the dochub-nsure monorepo and other CYRRUS systems. When working in projects that depend on this library, combine these instructions with project-specific ones.
+## Scope And Sources Of Truth
 
-Code may contain `/** <COPILOT_INSTRUCTION> ... </COPILOT_INSTRUCTION> */` blocks - always consider those instructions for the specific file context.
+Apply these instructions throughout this repository. Apply any file-local `<COPILOT_INSTRUCTION>` block as a more specific rule.
 
-## Project Overview
-This is a **TypeScript library** for representing client data structures used in CYRRUS DocHub API integrations. It provides normalized, serializable DTOs for client information (both persons and companies) with built-in JSON Schema validation using AJV.
+Use the owning files for volatile facts:
 
-**Package Type**: Dual-format (ESM + CJS) TypeScript library with full type definitions
+- `package.json` for scripts, exports, dependencies, and versions
+- `tsdown.config.ts`, `jest.config.ts`, and `eslint.config.ts` for tool behavior
+- source and focused tests for runtime behavior
+- `README_v8_LEGACY.md` and `src/fromLegacyClientData.ts` for legacy migration behavior
 
-## Architecture & Key Patterns
+This package is consumed by DocHub and other systems, but its consumers may use compiled package exports or custom development aliases. Inspect the consumer configuration instead of assuming source or `dist` consumption.
 
-### Class Hierarchy
-All data classes extend `AbstractBase` which provides:
-- JSON Schema generation via `toJSONSchema()` 
-- AJV validation via `validate()` (throws errors with `_errors` array populated)
-- Private readonly fields (using `#field` syntax) with public getters
-- Immutable instances - no setters allowed
+## Package Model
 
-### Constructor Pattern
-Every class follows this pattern:
-```typescript
-constructor(input: Partial<XInput> = {}) {
-    super()
-    const { field1, field2 } = input
-    this.#field1 = getStringOrNull(field1)
-    this.#field2 = getInstanceOfClass<SomeClass>(field2, SomeClass)
-}
-```
-- Always accept partial inputs with defaults
-- Use helper functions: `getStringOrNull()`, `getNormalizedDate()`, `getInstanceOfClass()`
-- Nested classes are instantiated via `getInstanceOfClass()` to handle both plain objects and class instances
+`@cyrrus/client-data-structure` is an immutable TypeScript DTO library for person and company client data. It publishes dual ESM/CJS JavaScript and matching declaration files.
 
-### Input/Output Types
-Every class has three type definitions:
-- `XInput` - constructor input (all fields optional)
-- `XOutput` - serialized plain object output
-- `XJSONSchema` - JSON Schema structure for validation
+Most data classes:
 
-### Validation
-- Validation is **opt-in** via peer dependencies (ajv, ajv-formats, cdigit, ibantools, libphonenumber-js)
-- Call `validate()` to trigger - it throws with validation errors in `error.cause`
-- Date fields are normalized to `YYYY-MM-DDTHH:MM:SS.SSSZ` before validation
-- JSON Schema uses conditional logic (if/then/else) for client type-specific validation (person vs company)
+- extend `AbstractBase`
+- accept a partial input object with a default empty object
+- normalize missing scalar values to `null`
+- store private readonly fields and expose getters
+- define matching `Input`, `Output`, and JSON Schema types
+- instantiate nested DTOs through helpers such as `getInstanceOfClass`
 
-### Client Data Structure
-`ClientData` is the root class with 7 main components:
-- `client` - ClientInformation (system metadata, investment parameters)
-- `personal` - PersonalInformation (name, birth info, citizenship)
-- `idCard` - IdCardInformation (document details)
-- `address` - AddressInformation (postal + mailing addresses)
-- `contact` - ContactInformation (email, phone)
-- `bankAccounts` - BankAccount[] (account details)
-- `company` - CompanyInformation (company details + representatives[])
+Follow the nearest existing class rather than assuming every class has identical fields or validation rules.
 
-**Type-specific fields**: Companies use `company` with `representatives[]`, persons/self-employed use `personal` and `idCard`.
+## Commands
 
-## Development Workflows
+Use the scripts declared in `package.json`:
 
-### Building
 ```bash
-npm run build  # tsdown builds ESM + CJS + .d.ts files to dist/
-npm run docs   # Generate TypeDoc documentation
-```
-- Outputs to `dist/`: `.js` (ESM), `.cjs` (CJS), `.d.ts` (types)
-- Source maps generated
-- Code is minified
-- **Critical for monorepos**: Dependent apps/packages use compiled `/dist` outputs, not source files
-
-### Testing
-```bash
-npm test  # runs testBuild.mjs then Jest
-```
-- **Pre-test**: `testBuild.mjs` uses esbuild to bundle `src/index.ts` → `test/client-data-structure.cjs`
-- Tests import from bundled CJS file (not source)
-- Test pattern: Create instances → serialize → deserialize → compare equality
-- Mock data in `test/mock/` provides validation test cases
-
-### Linting
-```bash
+npm run build
+npm test
 npm run lint
-```
-- Uses TypeScript ESLint with strict type checking
-- Stylistic rules: 4-space indent, no semicolons, 1tbs braces
-- `@typescript-eslint/explicit-function-return-type` enforced (except expressions)
-
-## Key Conventions
-
-### Date Handling
-- All dates stored as `Date` objects internally
-- Use `getNormalizedDate()` to parse - ensures `12:00:00.000Z` time
-- Serialized as ISO strings via `toJSON()`
-- Test files expect `YYYY-MM-DDTHH:MM:SS.SSSZ` format
-
-### Null vs Undefined
-- **Never use `undefined`** in outputs - use `null` for empty values
-- Input fields can be optional/undefined
-- `getStringOrNull()` converts empty strings, undefined, null → `null`
-
-### Static Constants
-Export constants for plain object keys:
-```typescript
-static get PLAIN_OBJECT_KEY_FIELD() { return 'field' }
-```
-This provides type-safe key access: `ClientData.PLAIN_OBJECT_KEY_CLIENT`
-
-### Legacy Migration from v8 to v9
-
-Version 9 represents a major architectural shift from the legacy Capitol business core system to the new Cytron system. The `fromLegacyClientData.ts` utility provides automated migration from v8.2.1 to v9.0.0+.
-
-#### Breaking Changes Summary
-
-**System Transition: Capitol → Cytron**
-- All Capitol-specific ID fields removed
-- New Cytron contact ID fields added (set to `null` during migration, populated by Cytron post-migration)
-- ID system completely replaced to support new business core architecture
-
-**Field Renames**
-- `dataOriginId` → `internalId` (ClientInformation)
-- `residency` → `isResident` (ClientInformation)
-- `foreign` → `isForeign` (BankAccount)
-- `added` → `addedAt` (InvestmentParameter)
-
-**Enum Value Changes**
-- IdCardInformation.type: `'OP'` → `'id'` (Czech ID card)
-- IdCardInformation.type: `'Pas'` → `'passport'`
-
-**Removed Fields & Entities**
-- **ClientInformation**: `capitolId`, `brokerId`, `externalBrokerCapitolId`, `externalBrokerAgentCapitolId`, `crmId`, `bankAccountsConfirmedByAffidavit`, `investmentProfiles`
-- **Representative**: `capitolId`, `capitolContactId`, `position`
-- **BankAccount**: `capitolId`
-- **ContactInformation**: `phonePassword` (removed from all contexts - person, company, and representatives)
-- **Entity removed**: `InvestmentProfile` class (simplified to InvestmentParameter only)
-- **Entity removed**: `InvestmentService` class
-
-**Added Fields**
-- **ClientInformation**: `contactId`, `brokerContactId`, `externalBrokerContactId`, `externalBrokerAgentContactId`, `preferredLanguage`
-- **Representative**: `cytronId`, `contactId`
-- **BankAccount**: `cytronId`, `isConfirmedByAffidavit` (migrated from client.bankAccountsConfirmedByAffidavit)
-
-**Field Behavior Changes**
-- **dataOrigin**: Now accepts any string value (v8 limited to specific values like 'capitol', 'internal')
-- **legislation**: Kept in v9 alongside new `preferredLanguage` field (both have separate meanings; during migration `preferredLanguage` is inferred from `legislation`)
-- **Gender values**: Unchanged (`'male'`, `'female'`, `'other'`)
-
-#### Migration Strategy
-
-```typescript
-import { fromLegacyClientData } from '@cyrrus/client-data-structure'
-
-// Migrate v8 data to v9 structure
-const v9Client = fromLegacyClientData(v8ClientData)
-
-// Post-migration: Cytron system populates new ID fields
-// - client.contactId
-// - client.brokerContactId
-// - client.externalBrokerContactId
-// - client.externalBrokerAgentContactId
-// - representatives[].cytronId
-// - representatives[].contactId
-// - bankAccounts[].cytronId
+npm run docs
 ```
 
-**Important Notes:**
-- All new Cytron ID fields are initialized to `null` during migration
-- These fields are populated by the Cytron business core system after migration
-- Migration is one-way only (v9 → v8 not supported)
-- Bank account affidavit confirmation moved from client-level to individual account-level
-- Representative position field removed (business logic change in v9)
+- `npm run build` uses tsdown to create ESM, CJS, source maps, and declarations in `dist/`.
+- The current build is not minified.
+- `npm test` runs Jest; `ts-jest` transforms TypeScript directly. There is no pre-test bundle step.
+- Tests import source modules and use fixtures under `test/mock/`.
 
-## Important Notes
+Run a focused Jest test first when possible, then lint and build when public types or package exports change.
 
-### Representative vs Person
-- `Representative` is for company representatives (no `phonePassword` field)
-- `PersonalInformation` is reused in both `ClientData.personal` and `Representative.personal`
+## Serialization And Validation
 
-### Data Examples
-See `dataExamples/person.json` and `dataExamples/company.json` for complete structure examples
+- Outputs use `null`, not `undefined`, for absent values.
+- Use the existing normalization helpers instead of ad hoc coercion.
+- Date fields use `getNormalizedDate`, which normalizes valid dates to noon UTC before ISO serialization.
+- `toPlainObject()` is the serialized representation used for schema validation and transport.
+- `validate()` performs AJV validation and throws with validation details attached as the error cause.
+- Validation dependencies are peer dependencies at runtime; do not silently bundle or replace them.
+- Preserve conditional JSON Schema rules for person, self-employed, and company variants.
 
-## Common Pitfalls
-- Don't validate without peer dependencies installed - calls will fail
-- Don't mutate instances after creation - all fields are readonly
-- Don't forget to bundle test file before running Jest (`testBuild.mjs` runs automatically with `npm test`)
-- Date parsing: always use helper functions, not raw `new Date()`
-- JSON Schema validation happens on plain objects, not class instances - use `toPlainObject()` first
-- In monorepo contexts, ensure this package is built before dependent apps (`npm run build` in this package)
+When adding or changing a field, update the constructor normalization, private field/getter, input/output types, plain-object serialization, JSON Schema, key constant where that class uses them, examples if applicable, and focused tests.
 
-## Writing Testable Code
+## Type And Export Rules
 
-### Testing Philosophy
-This library demonstrates testable patterns that should be followed when extending:
+- Use explicit return types as required by ESLint.
+- Preserve four-space indentation, semicolon-free style, and existing brace conventions.
+- Use `export type` for interfaces and type aliases in barrel files; tsdown must not emit type-only names as runtime exports.
+- Preserve both import and require conditions in `package.json` exports when adding a public subpath.
+- Do not expose `undefined` in serialized output types.
 
-```typescript
-// ✅ Good - Pure transformation functions
-export function getStringOrNull(input: unknown): string | null {
-    // Pure logic, easily testable
-}
+## Legacy Migration
 
-// ✅ Good - Immutable data structures with clear contracts
-class ClientData extends AbstractBase {
-    readonly #field: Type
-    get field(): Type { return this.#field }
-}
+`fromLegacyClientData` is the one-way v8-to-v9 migration boundary. Keep migration behavior aligned with its focused tests and legacy type package.
 
-// ✅ Good - Dependency injection for validation
-constructor(input: Partial<XInput> = {}) {
-    // Accepts partial inputs, uses helper functions
-}
-```
+Important invariants include:
 
-### Testable Patterns Used Here
-- **Pure helper functions** in `helpers.ts` for data transformation
-- **Immutable classes** with readonly fields prevent side effects
-- **Type-safe interfaces** define clear Input/Output contracts
-- **Validation separation** via AbstractBase with opt-in peer dependencies
-- **Serialization/deserialization** cycle ensures data integrity
+- legacy Capitol identifiers are not carried into v9 fields
+- new Cytron/contact identifiers initialize to `null`
+- client-level bank-account affidavit confirmation moves to each migrated account
+- renamed fields and ID-card enum values are converted explicitly
+- migration does not imply a supported v9-to-v8 conversion
 
-## Code Style & Conventions
+Do not expand migration behavior from prose alone; verify the legacy source type and the migration implementation.
 
-### General Guidelines
-- **No semicolons** - ESLint enforces semicolon-free style
-- **4-space indentation** - Stylistic plugin enforces consistent spacing
-- **1tbs brace style** - Opening brace on same line
-- **Explicit return types** - Required on all functions except expressions (`@typescript-eslint/explicit-function-return-type`)
-- **Private fields** - Use `#field` syntax with public getters only
-- **Null over undefined** - All outputs must use `null`, never `undefined`
+## Generated Files And Validation
 
-### TypeScript Specifics
-```typescript
-// ✅ Correct - Explicit return type
-function getData(): string | null {
-    return getStringOrNull(value)
-}
+Do not edit `dist/`, generated declarations, source maps, or generated TypeDoc output directly. Regenerate them with the owning script.
 
-// ✅ Correct - Private field with getter
-class Example {
-    readonly #name: string | null = null
-    get name(): string | null { return this.#name }
-}
+After changes, run the cheapest relevant check:
 
-// ❌ Wrong - Missing return type
-function getData() {
-    return value
-}
+1. Focused Jest test
+2. `npm test` for model or migration changes
+3. `npm run lint`
+4. `npm run build` for public API or export changes
 
-// ❌ Wrong - Using undefined in output
-toJSON(): Output {
-    return { field: undefined } // Should be null
-}
-```
-
-### Generated Files Warning
-**Never edit generated files** - they are overwritten by build processes:
-- `dist/**/*` - All compiled outputs from tsdown
-- Type definition files regenerated on each build
-
-## Cost-Effective AI Agent Usage
-
-### Best Practices for This Library
-
-#### **Batch Related Changes**
-- When adding new fields to classes, update Input/Output/JSONSchema types together
-- Handle validation rules, type definitions, and tests in the same session
-- Update related classes together (e.g., ClientData + Representative + CompanyInformation)
-
-#### **Provide Comprehensive Context**
-- Include relevant class files when asking about structure changes
-- Show existing patterns from similar classes before requesting new ones
-- Reference test patterns from `test/` directory for validation examples
-
-#### **Use Specific, Actionable Requests**
-- "Add `middleName` field to PersonalInformation following the existing pattern for `firstName`"
-- "Create new BankAccountType class with validation, following BankAccount pattern"
-- Include type requirements: "field should be string | null with validation for email format"
-
-#### **Leverage Existing Patterns**
-- Use `grep_search` to find similar implementations before asking
-- Reference helper functions (`getStringOrNull`, `getNormalizedDate`, `getInstanceOfClass`)
-- Check existing JSON Schema patterns in other classes for conditional validation
-
-#### **Optimize Follow-ups**
-- Include full validation error output when debugging
-- Request complete class implementation rather than incremental additions
-- Use "follow the pattern in X class" to leverage existing code structure
+Do not fix unrelated failures as part of a focused change; report them separately.

@@ -13,7 +13,31 @@ const validityValidDate = (() => {
     return new Date(Date.UTC(year + 1, month, day, 12, 0, 0, 0))
 })()
 
+const minValidityDate = (() => {
+    const now = new Date()
+    const year = now.getUTCFullYear()
+    const month = now.getUTCMonth()
+    const day = now.getUTCDate()
+    return new Date(Date.UTC(year, month, day, 12, 0, 0, 0))
+})()
+
+const expiredValidityDate = new Date(minValidityDate)
+expiredValidityDate.setUTCDate(expiredValidityDate.getUTCDate() - 1)
+
 export const expectErrorsTestCases: TestCase[] = [
+    {
+        data: {
+            number: '123456789',
+            issuedBy: 'Uncle Bob',
+            country: 'CR',
+            validity: expiredValidityDate,
+            type: 'id',
+            scanNotAllowed: true,
+        },
+        expected: [
+            `/validity should be >= ${minValidityDate.toISOString()}`
+        ]
+    },
     {
         data: {
             number: '',

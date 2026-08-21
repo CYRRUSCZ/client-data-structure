@@ -1,6 +1,7 @@
 {
     "name": "@cyrrus/client-data-structure",
-    "version": "9.2.1",
+    "version": "9.2.2",
+    "packageManager": "pnpm@11.22.0",
     "description": "A common structure for CYRRUS client data as used in DocHub and other integrations",
     "type": "module",
     "main": "./dist/index.cjs",
@@ -32,7 +33,7 @@
     "scripts": {
         "build": "tsdown",
         "lint": "eslint --config eslint.config.ts --fix --quiet",
-        "test": "jest",
+        "test": "vitest run",
         "docs": "typedoc --out docs src"
     },
     "repository": {
@@ -52,32 +53,30 @@
     "devDependencies": {
         "@eslint/js": "^10.0.1",
         "@stylistic/eslint-plugin": "^5.10.0",
-        "@types/jest": "^30.0.0",
-        "ajv": "^8.18.0",
+        "ajv": "^8.20.0",
         "ajv-formats": "^3.0.1",
-        "cdigit": "^4.0.3",
-        "eslint": "^10.0.3",
-        "ibantools": "^4.5.1",
-        "jest": "^30.3.0",
-        "libphonenumber-js": "^1.12.40",
-        "ts-jest": "^29.4.6",
+        "cdigit": "^5.0.1",
+        "eslint": "^10.8.1",
+        "ibantools": "^4.5.4",
+        "libphonenumber-js": "^1.13.11",
         "tsconfig-paths": "^4.2.0",
-        "tsdown": "^0.21.4",
-        "type-fest": "^5.4.4",
-        "typedoc": "^0.28.17",
-        "typescript": "^5.9.3",
-        "typescript-eslint": "^8.57.1",
-        "jiti": "^2.6.1"
+        "tsdown": "^0.22.14",
+        "type-fest": "^5.8.0",
+        "typedoc": "^0.28.20",
+        "typescript": "^6.0.3",
+        "typescript-eslint": "^8.67.0",
+        "jiti": "^2.7.0",
+        "vitest": "^4.1.11"
     },
     "publishConfig": {
         "registry": "https://vrdc.cyrrus.cz"
     },
     "peerDependencies": {
-        "ajv": "^8.18.0",
+        "ajv": "^8.20.0",
         "ajv-formats": "^3.0.1",
-        "cdigit": "^4.0.3",
-        "ibantools": "^4.5.1",
-        "libphonenumber-js": "^1.12.40"
+        "cdigit": "^5.0.1",
+        "ibantools": "^4.5.4",
+        "libphonenumber-js": "^1.13.11"
     },
     "dependencies": {
         "@cyrrus/clientdatastructure": "^8.2.1",
