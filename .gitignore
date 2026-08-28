@@ -7,3 +7,15 @@ docs
 .history
 test/client-data-structure.cjs
 .qodo
+
+# CYRRUS AI Skills (managed by @cyrrus/skills-mcp-server)
+.github/skills/use-cyrrus-bruno-spec/
+.github/skills/use-cyrrus-bug-finder/
+.github/skills/use-cyrrus-esm-stack/
+.github/skills/use-cyrrus-gortex/
+.github/skills/use-cyrrus-guardian/
+.github/skills/use-cyrrus-healthcheck/
+.github/skills/use-cyrrus-logtape/
+.github/skills/use-cyrrus-nest-vite/
+.github/skills/use-cyrrus-openapi-spec/
+.github/skills/use-cyrrus-stack/

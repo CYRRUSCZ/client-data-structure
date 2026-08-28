@@ -57,7 +57,7 @@ See `dataExamples/person.json` and `dataExamples/company.json` for complete exam
 Validation is **opt-in** - install peer dependencies:
 
 ```bash
-npm install ajv ajv-formats cdigit ibantools libphonenumber-js
+npm install ajv ajv-formats ibantools libphonenumber-js
 ```
 
 All classes extend `AbstractBase` providing:

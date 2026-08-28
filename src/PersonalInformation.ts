@@ -1,6 +1,6 @@
 import { AbstractBase, type JSONSchema, type JSONSchemaObject } from './AbstractBase'
 import { getIso2CountryOrNull, getLegalIdOrNull, getNormalizedDate, getStringOrNull, transformDataBeforeValidation } from './helpers'
-import { mod11_10 as mod1110 } from 'cdigit'
+import { validateMod11_10 } from './validateMod11_10'
 import { countriesLocalized, country2ToCountry3 } from '@cyrrus/locale-utils'
 import { AvailableLanguages, SupportedGenderOptions } from './enums'
 import { ClientDataDifference } from './ClientData'
@@ -441,7 +441,7 @@ export class PersonalInformation extends AbstractBase {
             if (numericValue.length !== 11) {
                 throw new Error('Invalid HRV birth number - must be 11 digits')
             }
-            const isOIBValid = mod1110.validate(numericValue)
+            const isOIBValid = validateMod11_10(numericValue)
             if (!isOIBValid) {
                 throw new Error('Invalid HRV birth number - checksum failed')
             }

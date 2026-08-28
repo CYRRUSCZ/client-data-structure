@@ -1,6 +1,7 @@
 export * from './AddressInformation'
 export * from './ContactInformation'
 export * from './PersonalInformation'
+export * from './validateMod11_10'
 export * from './ClientInformation'
 export * from './IdCardInformation'
 export * from './CompanyInformation'
