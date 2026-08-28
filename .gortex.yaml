@@ -1,0 +1,8 @@
+workspace: dochub-ecosystem
+project: client-data-structure
+
+excludes:
+  - "node_modules/**"
+  - "**/*.generated.go"
+  - "**/dist"
+  - "**/.history"

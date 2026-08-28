@@ -1,0 +1,14 @@
+{
+    "servers": {
+        "gortex": {
+            "type": "stdio",
+            "command": "${env:HOME}/.local/bin/gortex",
+            "args": ["mcp"],
+            "env": {
+                "GORTEX_INDEX_WORKERS": "8",
+                "GORTEX_LAZY_TOOLS": "true",
+                "GORTEX_TOOL_BUDGET": "20"
+            }
+        }
+    }
+}
