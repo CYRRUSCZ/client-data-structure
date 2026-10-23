@@ -66,16 +66,14 @@ export const expectErrorsTestCases: TestCase[] = [
             birthNumber: '902412/1589456',
             dateOfBirth: new Date('1990-12-24'),
             noBirthNumber: false,
-            birthNumberCountry: 'CR',
+            birthNumberCountry: 'CZ',
             taxDomicile: 'CR',
             placeOfBirth: 'Wien',
             citizenship: 'CZ',
             gender: 'male',
         },
         expected: [
-            '/birthNumber must match pattern "^\\s*\\d{6}[ /]*\\d{3,4}\\s*$"',
-            'must match "else" schema',
-            'must match "then" schema'
+            '/birthNumber Invalid CZ/SK birth number'
         ]
     },
     {
@@ -93,7 +91,6 @@ export const expectErrorsTestCases: TestCase[] = [
         },
         expected: [
             '/birthNumber must be string',
-            'must match "else" schema',
             'must match "then" schema'
         ]
     },
@@ -224,16 +221,14 @@ export const expectPojoErrorsTestCases: TestCase[] = [
             birthNumber: '902412/1589456',
             dateOfBirth: new Date('1990-12-24'),
             noBirthNumber: false,
-            birthNumberCountry: 'CR',
+            birthNumberCountry: 'CZ',
             taxDomicile: 'CR',
             placeOfBirth: 'Wien',
             citizenship: 'CZ',
             gender: 'male',
         },
         expected: [
-            '/birthNumber must match pattern "^\\s*\\d{6}[ /]*\\d{3,4}\\s*$"',
-            'must match "else" schema',
-            'must match "then" schema'
+            '/birthNumber Invalid CZ/SK birth number'
         ]
     },
     {
@@ -251,7 +246,6 @@ export const expectPojoErrorsTestCases: TestCase[] = [
         },
         expected: [
             '/birthNumber must be string',
-            'must match "else" schema',
             'must match "then" schema'
         ]
     },
