@@ -42,7 +42,6 @@ export const expectErrorsTestCases = [
             '/idCard/number must be string',
             '/idCard/type must be equal to one of the allowed values',
             '/idCard/type must be string',
-            '/personal must match "else" schema',
             '/personal must match "then" schema',
             '/personal/birthNumber must be string',
             '/personal/birthNumberCountry must be string',

@@ -99,8 +99,7 @@ export const expectErrorsTestCases: TestCase[] = [
             '/personal/gender must be string',
             '/personal/lastName must be string',
             '/personal/placeOfBirth must be string',
-            '/personal/taxDomicile must be string',
-            '/personal must match "else" schema'
+            '/personal/taxDomicile must be string'
         ]
     },
     {

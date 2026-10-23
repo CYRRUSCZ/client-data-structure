@@ -64,21 +64,17 @@ export interface PersonalInformationJSONSchema extends JSONSchemaObject {
         }
     }
     then: {
-        if: {
-            properties: {
-                birthNumberCountry: JSONSchema
-            }
+        properties: {
+            birthNumber: JSONSchema
         }
-        then: {
-            properties: {
-                birthNumber: JSONSchema
+        allOf: Array<{
+            if: JSONSchema
+            then: {
+                properties: {
+                    birthNumber: JSONSchema
+                }
             }
-        }
-        else: {
-            properties: {
-                birthNumber: JSONSchema
-            }
-        }
+        }>
         required: string[]
     }
     required: string[]
@@ -571,32 +567,54 @@ export class PersonalInformation extends AbstractBase {
                     }
                 }
             },
+            // A birth number format is known only for CZ, SK and HR, any other country accepts any value.
             // oxlint-disable-next-line no-thenable
             then: {
-                if: {
-                    properties: {
-                        birthNumberCountry: {
-                            const: 'HRV'
-                        }
+                properties: {
+                    birthNumber: {
+                        type: 'string'
                     }
                 },
-                // oxlint-disable-next-line no-thenable
-                then: {
-                    properties: {
-                        birthNumber: {
-                            type: 'string',
-                            pattern: '^\\d{11}$'
+                allOf: [
+                    {
+                        if: {
+                            properties: {
+                                birthNumberCountry: {
+                                    enum: ['HR', 'HRV']
+                                }
+                            },
+                            required: ['birthNumberCountry']
+                        },
+                        // oxlint-disable-next-line no-thenable
+                        then: {
+                            properties: {
+                                birthNumber: {
+                                    type: 'string',
+                                    pattern: '^\\d{11}$'
+                                }
+                            }
+                        }
+                    },
+                    {
+                        if: {
+                            properties: {
+                                birthNumberCountry: {
+                                    enum: ['CZ', 'CZE', 'SK', 'SVK']
+                                }
+                            },
+                            required: ['birthNumberCountry']
+                        },
+                        // oxlint-disable-next-line no-thenable
+                        then: {
+                            properties: {
+                                birthNumber: {
+                                    type: 'string',
+                                    pattern: '^\\s*\\d{6}[ /]*\\d{3,4}\\s*$'
+                                }
+                            }
                         }
                     }
-                },
-                else: {
-                    properties: {
-                        birthNumber: {
-                            type: 'string',
-                            pattern: '^\\s*\\d{6}[ /]*\\d{3,4}\\s*$'
-                        }
-                    }
-                },
+                ],
                 required: ['birthNumber']
             },
             required: [

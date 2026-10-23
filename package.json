@@ -1,6 +1,6 @@
 {
     "name": "@cyrrus/client-data-structure",
-    "version": "9.2.3",
+    "version": "9.2.4",
     "packageManager": "pnpm@11.24.0",
     "description": "A common structure for CYRRUS client data as used in DocHub and other integrations",
     "type": "module",
